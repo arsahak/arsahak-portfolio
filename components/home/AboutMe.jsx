@@ -37,7 +37,7 @@ const AboutMe = () => {
                 {`I am skilled in designing RESTful APIs, implementing microservices, and deploying applications on AWS and Azure. I thrive in Agile environments, using Git for version control, and continually learning new technologies to deliver high-performance, secure, and user-friendly applications.`}
               </p>
               <Link
-                href={"/portfolio"}
+                href={"/assets/arsahak-resume.pdf"}
                 className="flex items-center justify-center px-2 py-2.5 mb-2 text-sm font-medium text-black bg-white border border-white bg-none hover:bg-primary hover:border-primary md:text-lg md:px-8 me-0 md:me-6 rounded-md max-w-56 mt-8"
               >
                 View Resume
