@@ -1,0 +1,33 @@
+.border-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  width: 200px;
+  position: relative;
+}
+
+.animated-border {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  box-sizing: border-box;
+  border: 2px solid transparent;
+  border-radius: 50%; /* Optional: for circular border */
+  animation: draw-border 2s ease-in-out forwards;
+}
+
+@keyframes draw-border {
+  0% {
+    border-color: transparent;
+    border-width: 0;
+  }
+  50% {
+    border-color: transparent;
+    border-width: 2px;
+  }
+  100% {
+    border-color: #3498db;
+    border-width: 2px;
+  }
+}
