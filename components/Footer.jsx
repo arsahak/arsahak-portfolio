@@ -49,7 +49,7 @@ const Footer = () => {
                 ))}
               </ul>
             </div> */}
-            <div className="flex items-center gap-x-4">
+            <div className="flex items-center gap-x-4 mt-4">
               <SocialIcon
                 icon={FaFacebook}
                 url={"https://www.facebook.com/arsahak1"}

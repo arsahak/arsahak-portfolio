@@ -23,7 +23,7 @@ const PortfolioBar = () => {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-xl font-extrabold text-white truncate md:text-4xl">
-                    <CountUp start={1} end={4} duration={3} delay={0} />
+                    <CountUp start={1} end={3} duration={3} delay={0} />
                   </p>
                   <p className="text-xs text-white truncate md:text-lg">
                     Years of experience

@@ -14,8 +14,8 @@ const AboutMe = () => {
           <div className="w-[100%] md:w-[40%]">
             <ScrollMotionEffect effect="fade-right" duration="2000">
               <Image
-                src={"/assets/about/aboutimg.png"}
-                alt=""
+                src={"/assets/home/aboutpic.png"}
+                alt="AR Sahak"
                 width={700}
                 height={140}
                 className="w-[700px] h-auto"
@@ -36,26 +36,28 @@ const AboutMe = () => {
               <p className="text-base text-center text-white md:text-lg md:text-left">
                 {`I am skilled in designing RESTful APIs, implementing microservices, and deploying applications on AWS and Azure. I thrive in Agile environments, using Git for version control, and continually learning new technologies to deliver high-performance, secure, and user-friendly applications.`}
               </p>
-              <Link
-                href={"/assets/arsahak-resume.pdf"}
-                className="flex items-center justify-center px-2 py-2.5 mb-2 text-sm font-medium text-black bg-white border border-white bg-none hover:bg-primary hover:border-primary md:text-lg md:px-8 me-0 md:me-6 rounded-md max-w-56 mt-8"
-              >
-                View Resume
-                <span>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    className="ml-2 text-black size-5"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M8.25 3.75H19.5a.75.75 0 0 1 .75.75v11.25a.75.75 0 0 1-1.5 0V6.31L5.03 20.03a.75.75 0 0 1-1.06-1.06L17.69 5.25H8.25a.75.75 0 0 1 0-1.5Z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </span>
-              </Link>
+              <div className="flex justify-center md:justify-start">
+                <Link
+                  href={"/assets/arsahak-resume.pdf"}
+                  className="flex items-center justify-center px-2 py-2.5 mb-2 text-sm font-medium text-black bg-white border border-white bg-none hover:bg-primary hover:border-primary md:text-lg md:px-8 me-0 md:me-6 rounded-md max-w-56 mt-8"
+                >
+                  View Resume
+                  <span>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      className="ml-2 text-black size-4 md:size-5"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M8.25 3.75H19.5a.75.75 0 0 1 .75.75v11.25a.75.75 0 0 1-1.5 0V6.31L5.03 20.03a.75.75 0 0 1-1.06-1.06L17.69 5.25H8.25a.75.75 0 0 1 0-1.5Z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </span>
+                </Link>
+              </div>
             </ScrollMotionEffect>
           </div>
         </div>

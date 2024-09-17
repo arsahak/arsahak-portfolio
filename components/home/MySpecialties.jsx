@@ -135,8 +135,8 @@ const MySpecialties = () => {
               >
                 <div className="flex items-center justify-center">
                   <Image
-                    src="/assets/home/arjoneel-roundpic.png"
-                    alt="Arjo Neel"
+                    src="/assets/home/roundpic.png"
+                    alt="AR Sahak"
                     width={250}
                     height={550}
                     className="mx-auto"

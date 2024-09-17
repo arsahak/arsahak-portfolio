@@ -157,8 +157,8 @@ const HeroSection = () => {
               <Image
                 width={800}
                 height={450}
-                src="/assets/home/home-image.png"
-                alt="Available For All Devices"
+                src="/assets/home/heropic.png"
+                alt="AR Sahak"
                 className="w-full h-auto"
                 priority
               />

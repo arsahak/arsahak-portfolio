@@ -14,7 +14,7 @@ const AboutMePage = () => {
           <div className="w-[100%] md:w-[40%]">
             <ScrollMotionEffect effect="fade-right" duration="2000">
               <Image
-                src={"/assets/about/aboutimg.png"}
+                src={"/assets/home/aboutpic.png"}
                 alt=""
                 width={700}
                 height={140}
@@ -55,7 +55,7 @@ const AboutMePage = () => {
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-xl font-extrabold text-white truncate md:text-4xl">
-                            <CountUp start={1} end={4} duration={3} delay={0} />
+                            <CountUp start={1} end={3} duration={3} delay={0} />
                           </p>
                           <p className="text-xs text-white truncate md:text-lg">
                             Years of experience
