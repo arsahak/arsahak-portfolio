@@ -65,10 +65,10 @@ export const SITECONFIG = {
     footer_logo: "/assets/site-logo/footer-logo.svg",
 
     quick_links: [
-      {
-        title: "Blog",
-        slug: "/blog",
-      },
+      // {
+      //   title: "Blog",
+      //   slug: "/blog",
+      // },
       {
         title: "Faq",
         slug: "/faq",
