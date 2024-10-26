@@ -23,7 +23,7 @@ const Footer = () => {
   );
 
   return (
-    <footer className="bg-[#181818]">
+    <footer className="">
       <div className="container">
         <div className="py-6 md:py-10">
           <div className="flex flex-col items-center justify-center gap-x-8 sm:gap-6 md:justify-between">
@@ -32,7 +32,7 @@ const Footer = () => {
             >
               AR Sahak.
             </h2>
-            {/* <div className="flex justify-center flex-1">
+            <div className="flex justify-center flex-1 my-8 md:my-2">
               <ul className="flex flex-col items-center justify-center ml-0 font-normal text-center text-white list-none md:flex-row">
                 {quickLinks.map((el, index) => (
                   <li
@@ -48,8 +48,8 @@ const Footer = () => {
                   </li>
                 ))}
               </ul>
-            </div> */}
-            <div className="flex items-center gap-x-4 mt-4">
+            </div>
+            <div className="flex items-center justify-center gap-x-4">
               <SocialIcon
                 icon={FaFacebook}
                 url={"https://www.facebook.com/arsahak1"}
@@ -62,15 +62,15 @@ const Footer = () => {
                 icon={IoLogoLinkedin}
                 url={"https://www.linkedin.com/in/arsahak/"}
               />
-              {/* <SocialIcon
+              <SocialIcon
                 icon={FaInstagram}
                 url={"https://www.facebook.com/arsahak1"}
-              /> */}
+              />
             </div>
           </div>
         </div>
       </div>
-      <div className="bg-[#212121]">
+      <div className="bg-[#181818]">
         <div className="container flex items-center justify-center py-3 md:py-6">
           <p className="mb-4 text-center text-white text-[14px] md:text-[18px] md:mb-0">
             © 2024 AR Sahak. All Rights Reserved , Inc.

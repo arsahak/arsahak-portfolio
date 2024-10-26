@@ -4,6 +4,7 @@ import LetsTalk from "@/components/home/LetsTalk";
 import MyPortfolio from "@/components/home/MyPortfolio";
 import MySkills from "@/components/home/MySkills";
 import MySpecialties from "@/components/home/MySpecialties";
+import NewsSection from "@/components/home/NewsSection";
 
 import ClinetLogoList from "@/components/shared/ClientLogoList";
 
@@ -16,7 +17,7 @@ export default function Home() {
       <MySkills />
       <MyPortfolio />
       {/* <ClinetLogoList /> */}
-
+      <NewsSection />
       <LetsTalk />
     </div>
   );

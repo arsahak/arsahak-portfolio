@@ -8,19 +8,23 @@ const orbitron = Orbitron({ subsets: ["latin"] });
 
 const AboutMePage = () => {
   return (
-    <section className="pt-10 pb-6 bg-black md:pt-20 md:pb-10">
+    <section className="pt-10 pb-6  md:pt-20 md:pb-10">
       <div className="container">
         <div className="flex flex-col items-center justify-between md:flex-row gap-x-10">
           <div className="w-[100%] md:w-[40%]">
             <ScrollMotionEffect effect="fade-right" duration="2000">
-              <Image
-                src={"/assets/home/aboutpic.png"}
-                alt=""
-                width={700}
-                height={140}
-                className="w-[700px] h-auto"
-                priority
-              />
+              <div className=" flex items-center justify-center relative">
+                <div className="gradient-circle-about absolute mt-36">
+                  <Image
+                    width={800}
+                    height={1050}
+                    src="/assets/home/Component 19 (1).png"
+                    alt="AR Sahak"
+                    className="w-[380px] h-auto mx-auto absolute inset-0 top-[20%] left-0 right-0"
+                    priority
+                  />
+                </div>
+              </div>
             </ScrollMotionEffect>
           </div>
           <div className="w-[100%] md:w-[60%] md:mt-0 mt-10">

@@ -271,26 +271,28 @@ const MyPortfolio = () => {
           </ScrollMotionEffect>
           <div className="flex justify-center mx-0 mt-16">
             <ScrollMotionEffect effect="fade-up" duration="2000">
-              <Link
-                href={"/portfolio"}
-                className="flex items-center justify-center px-2 py-2.5 mb-2 text-sm font-medium text-white border border-white bg-none hover:bg-primary hover:border-primary md:text-lg md:px-8 me-0 md:me-6 rounded-md w-56"
-              >
-                View All Works
-                <span>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    className="ml-2 text-white size-5"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M8.25 3.75H19.5a.75.75 0 0 1 .75.75v11.25a.75.75 0 0 1-1.5 0V6.31L5.03 20.03a.75.75 0 0 1-1.06-1.06L17.69 5.25H8.25a.75.75 0 0 1 0-1.5Z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </span>
-              </Link>
+              <div className="p-[2px] bg-gradient-to-r from-[#8750f7] to-[#2a1454] rounded-md">
+                <Link
+                  href={"/portfolio"}
+                  className="flex items-center justify-center h-[54px] md:h-[56px] w-44 md:w-48 mb-2 md:mb-0 text-sm md:text-lg font-medium text-white bg-black rounded-md  hover:bg-gradient-to-r from-[#8750f7] to-[#2a1454]"
+                >
+                  View All Works
+                  <span className="ml-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      className="size-5"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M8.25 3.75H19.5a.75.75 0 0 1 .75.75v11.25a.75.75 0 0 1-1.5 0V6.31L5.03 20.03a.75.75 0 0 1-1.06-1.06L17.69 5.25H8.25a.75.75 0 0 1 0-1.5Z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </span>
+                </Link>
+              </div>
             </ScrollMotionEffect>
           </div>
         </div>

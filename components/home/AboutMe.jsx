@@ -8,19 +8,23 @@ const orbitron = Orbitron({ subsets: ["latin"] });
 
 const AboutMe = () => {
   return (
-    <section className="py-10 bg-black md:py-20">
+    <section className="py-1 md:py-20">
       <div className="container">
         <div className="flex flex-col items-center justify-between md:flex-row gap-x-10">
           <div className="w-[100%] md:w-[40%]">
             <ScrollMotionEffect effect="fade-right" duration="2000">
-              <Image
-                src={"/assets/home/aboutpic.png"}
-                alt="AR Sahak"
-                width={700}
-                height={140}
-                className="w-[700px] h-auto"
-                priority
-              />
+              <div className=" flex items-center justify-center relative">
+                <div className="gradient-circle-about absolute mt-36">
+                  <Image
+                    width={800}
+                    height={1050}
+                    src="/assets/home/Component 19 (1).png"
+                    alt="AR Sahak"
+                    className="w-[380px] h-auto mx-auto absolute inset-0 top-[20%] left-0 right-0"
+                    priority
+                  />
+                </div>
+              </div>
             </ScrollMotionEffect>
           </div>
           <div className="w-[100%] md:w-[60%] md:mt-0 mt-10">
@@ -39,7 +43,7 @@ const AboutMe = () => {
               <div className="flex justify-center md:justify-start">
                 <Link
                   href={"/assets/arsahak-resume.pdf"}
-                  className="flex items-center justify-center px-2 py-2.5 mb-2 text-sm font-medium text-black bg-white border border-white bg-none hover:bg-primary hover:border-primary md:text-lg md:px-8 me-0 md:me-6 rounded-md max-w-56 mt-8"
+                  className="flex items-center justify-center px-2 py-2.5 mb-2 text-sm font-medium text-white md:text-lg md:px-8 me-0 md:me-6 rounded-md max-w-56 mt-8 primary-gradient"
                 >
                   View Resume
                   <span>
@@ -47,7 +51,7 @@ const AboutMe = () => {
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"
                       fill="currentColor"
-                      className="ml-2 text-black size-4 md:size-5"
+                      className="ml-2 text-white size-4 md:size-5"
                     >
                       <path
                         fillRule="evenodd"

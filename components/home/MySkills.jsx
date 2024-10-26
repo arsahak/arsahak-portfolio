@@ -132,7 +132,7 @@ const skillsInfo = [
 
 const MySkills = () => {
   return (
-    <section className="bg-black">
+    <section className="">
       <div className="container py-6 md:py-20">
         <div className="flex flex-col justify-center text-white md:flex-row md:justify-between md:items-start gap-y-4 md:gap-y-0">
           <div className="w-[100%] md:w-[35%]">

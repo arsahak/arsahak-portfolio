@@ -41,21 +41,21 @@ const skillsInfo = [
 
 const LetsTalk = () => {
   return (
-    <section className="bg-black overflow-hidden">
+    <section className="overflow-hidden">
       <div className="container py-10 md:py-20">
         <ScrollMotionEffect effect="fade-up" duration="2000">
-          <div className="p-10 text-black rounded-xl bg-secondary">
+          <div className="p-10 text-black rounded-xl bg-[#181818]">
             <h2
-              className={`text-5xl font-bold text-center ${orbitron.className}`}
+              className={`text-5xl font-bold text-center text-white ${orbitron.className}`}
             >
               Start Your Project
             </h2>
-            <p className="mt-2 text-lg text-center">
+            <p className="my-8 text-lg text-center text-white font-light">
               Transform Your Ideas into Stunning Interfaces
             </p>
-            <div className="flex items-center justify-center mt-6">
+            <div className="flex items-center justify-center">
               <Link
-                className="flex items-center justify-center px-2 !py-3 mb-2 text-sm font-medium text-white uppercase bg-black hover:bg-primary md:text-lg md:px-8 me-3 md:me-6 rounded-md w-52"
+                className="flex items-center justify-center px-2 !py-3 mb-2 text-sm font-medium text-white uppercase hover:bg-primary md:text-lg md:px-8 me-3 md:me-6 rounded-md w-52 primary-gradient"
                 href="/contact"
               >
                 {`Let’s Talk`}

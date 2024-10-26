@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-  background: black;
+  background: #0a0a0a;
 }
 
 html {
@@ -21,16 +21,16 @@ h1 {
 ::-webkit-scrollbar {
   height: 12px;
   width: 6px;
-  background: rgb(199, 199, 199);
+  background: rgb(174, 174, 200);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #130D0D;
+  background: #8850f7bb;
   -webkit-border-radius: 1ex;
 }
 
 ::-webkit-scrollbar-corner {
-  background: rgb(199, 199, 199);
+  background: rgb(174, 174, 200);
 }
 
 /* .overflow-hidden::-webkit-scrollbar {
@@ -42,7 +42,6 @@ video::-webkit-media-controls-enclosure,
 video::-webkit-media-controls-panel {
   display: none !important;
 }
-
 
 .map-iframe {
   filter: grayscale(100%) invert(92%) contrast(83%);
@@ -145,7 +144,7 @@ video::-webkit-media-controls-panel {
 .nav-item {
   position: relative;
   display: inline-block;
-  color: #0f172a;
+  color: #ffffff;
   font-weight: 600;
   font-size: 1.125rem; /* text-lg */
   cursor: pointer;
@@ -153,13 +152,13 @@ video::-webkit-media-controls-panel {
 }
 
 .nav-item::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: 0;
   width: 100%;
   height: 2px;
-  background-color: #EFC243;
+  background-color: #8750f7;
   transform: scaleX(0);
   transform-origin: bottom right;
   transition: transform 0.3s ease-out;
@@ -178,18 +177,71 @@ video::-webkit-media-controls-panel {
 /* bg top gradient */
 
 .gradient-circle-top {
-  background-image:
-  radial-gradient(at 47% 43%, #d1a2f856 0px, transparent 50%),
-  radial-gradient(at 86% 42%, hsla(231,0%,100%,1) 0px, transparent 50%);
+  background-image: radial-gradient(at 47% 43%, #d1a2f856 0px, transparent 50%),
+    radial-gradient(at 86% 42%, hsla(231, 0%, 100%, 1) 0px, transparent 50%);
 }
 
-.gradient-circle-left {
-
-  background-image:
-  radial-gradient(at 47% 43%, #d6ffd86d 0px, transparent 50%),
-  radial-gradient(at 86% 42%, hsla(231,0%,100%,1) 0px, transparent 50%);
+.gradient-circle {
+  width: 100%;
+  height: 100vh; /* Adjust to control height */
+  background-image: radial-gradient(
+      circle at 47% 43%,
+      #6c17ff46,
+      transparent 50%
+    ),
+    radial-gradient(circle at 86% 42%, rgba(157, 89, 251, 0), transparent 20%);
+  background-size: cover;
+  background-repeat: no-repeat;
 }
+
+.gradient-circle-about {
+  width: 100%;
+  height: 100vh; /* Adjust to control height */
+  background-image: radial-gradient(
+      circle at 47% 43%,
+      #6c17ff46,
+      transparent 40%
+    ),
+    radial-gradient(circle at 86% 42%, rgba(157, 89, 251, 0), transparent 20%);
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
 .custom-gradient {
-  background: linear-gradient(to bottom, #FFEAD9 30%, black 70%);
+  background: linear-gradient(to bottom, #ffead9 30%, black 70%);
 }
 
+.primary-gradient {
+  background: linear-gradient(90deg, #8750f7, #2a1454);
+}
+
+.border-gradient {
+  border: 1px solid transparent;
+  border-image: linear-gradient(90deg, #8750f7, #2a1454) 1;
+}
+
+.circle-background {
+  background: rgb(63, 94, 251);
+  background: radial-gradient(
+    circle,
+    rgba(63, 94, 251, 1) 0%,
+    rgba(252, 70, 107, 0) 100%
+  );
+}
+.gradient-image {
+  width: 100%; /* w-100 equivalent */
+  height: 100%; /* h-100 equivalent */
+  background-image: radial-gradient(
+      circle at 50% 50%,
+      #8850f74b 50px,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 86% 86%,
+      rgba(255, 255, 255, 0) 0px,
+      transparent 50%
+    );
+  background-size: cover; /* Ensure the gradient covers the element */
+  background-repeat: no-repeat; /* Prevent repetition */
+  border-radius: 50%; /* Make the element circular */
+}

@@ -75,7 +75,7 @@ const MySpecialties = () => {
   const ref = React.useRef(null);
   const isInView = useInView(ref, { once: true });
   return (
-    <section className="bg-black">
+    <section className="">
       <div className="container py-8 md:py-14">
         <div className="flex flex-col justify-center text-white md:flex-row md:justify-between md:items-start gap-y-4 md:gap-y-0">
           <div className="w-[100%] md:w-[35%]">
@@ -108,7 +108,7 @@ const MySpecialties = () => {
           >
             {specialties.map((el, index) => (
               <motion.div
-                className={`border rounded-lg w-full h-[200px] p-6 flex flex-col item`}
+                className={`bg-[#181818] rounded-lg w-full h-[200px] p-6 flex flex-col item ${index === 2 ? "primary-gradient" : ""}`}
                 key={index}
                 variants={item}
               >
@@ -131,15 +131,15 @@ const MySpecialties = () => {
           <div className="w-[100%] md:w-[30%] mt-6 md:mt-0">
             <ScrollMotionEffect effect="fade-up" duration="2000">
               <div
-                className={`border rounded-lg w-full h-[415px] p-6 flex flex-col bg-gradient-to-br from-[#91857cdf] to-black mt-[-1px]`}
+                className={`rounded-lg w-full h-[415px] p-6 flex flex-col bg-gradient-to-br bg-[#181818] mt-[-1px]`}
               >
-                <div className="flex items-center justify-center">
+                <div className="flex items-center rounded-full">
                   <Image
-                    src="/assets/home/roundpic.png"
+                    src="/assets/home/Component 20.png"
                     alt="AR Sahak"
                     width={250}
-                    height={550}
-                    className="mx-auto"
+                    height={250}
+                    className="w-[200px] h-auto rounded-full"
                     priority
                   />
                 </div>

@@ -14,10 +14,14 @@ import { LuUser2 } from "react-icons/lu";
 import { IoCall } from "react-icons/io5";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Orbitron } from "next/font/google";
+import { Lato } from "next/font/google";
 import { FaGithub } from "react-icons/fa";
 
-const orbitron = Orbitron({ subsets: ["latin"] });
+const lato = Lato({
+  subsets: ["latin"],
+  variable: "--font-lato",
+  weight: ["100", "300", "400", "700", "900"], // Specify the weights you need
+});
 
 // Debounce function to limit the rate of calling the handleScroll function
 const debounce = (func, wait) => {
@@ -38,7 +42,7 @@ const MainNavbar = () => {
       { title: "Home", slug: "/" },
       { title: "About", slug: "/about" },
       { title: "Portfolio", slug: "/portfolio" },
-      // { title: "Blog", slug: "/blog" },
+      { title: "Blog", slug: "/blog" },
       { title: "Contact", slug: "/contact" },
     ],
     []
@@ -60,13 +64,15 @@ const MainNavbar = () => {
 
   return (
     <section
-      className={`fixed top-0 left-0 right-0 py-4 z-50 ${navbarColor || pathname !== "/" ? "!bg-secondary shadow-small duration-1000" : "bg-transparent"}`}
+      className={`fixed top-0 left-0 right-0 py-4 z-50  border-b-1 border-gray-800 ${navbarColor || pathname !== "/" ? "!bg-bgPrimary shadow-small duration-1000" : "bg-transparent"}`}
     >
       <div className="container hidden md:block">
         <div className="flex items-center justify-between">
           <Link href={"/"}>
-            <h2 className={`font-semibold text-[40px] ${orbitron.className}`}>
-              AR Sahak.
+            <h2
+              className={`font-semibold text-[40px] text-white ${lato.className}`}
+            >
+              @arsahak
             </h2>
           </Link>
           <div className="flex items-center justify-end gap-x-8">
@@ -84,7 +90,7 @@ const MainNavbar = () => {
             {/* <MdOutlineLightMode className="text-black size-7 cursor-pointer hover:text-primary" /> */}
             <Link
               target="_blank"
-              className="flex items-center justify-center px-2 !py-2 mb-2 text-sm font-medium text-white bg-black hover:bg-primary md:text-lg md:px-4 rounded-md"
+              className="flex items-center justify-center px-2 !py-2 mb-2 text-sm font-medium text-white  hover:bg-primary md:text-lg md:px-4 rounded-md primary-gradient"
               href="https://www.upwork.com/freelancers/~01ee4ec811fe032f23"
             >
               {`Hire Me!`}
@@ -117,15 +123,15 @@ const MainNavbar = () => {
             <NavbarBrand>
               <Link href="/">
                 <h2
-                  className={`font-semibold text-[30px] ${orbitron.className}`}
+                  className={`font-semibold text-[30px] text-white ${lato.className}`}
                 >
-                  AR Sahak.
+                  @arsahak
                 </h2>
               </Link>
             </NavbarBrand>
             <NavbarMenuToggle
               aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-              className="md:hidden"
+              className="md:hidden text-white"
             />
           </NavbarContent>
 
