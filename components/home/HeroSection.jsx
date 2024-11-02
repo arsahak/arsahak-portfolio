@@ -69,7 +69,7 @@ const HeroSection = () => {
               >
                 <Link
                   href="/contact"
-                  className="flex items-center justify-center h-[60px] w-36 md:w-48 mb-2 md:mb-0 text-sm md:text-lg font-medium text-white uppercase bg-black border border-black rounded-md hover:bg-primary md:px-8 me-3 md:me-6"
+                  className="flex items-center justify-center h-[60px] w-36 md:w-48 mb-2 md:mb-0 text-sm md:text-lg font-medium text-white uppercase bg-black border border-black rounded-md hover:bg-primary md:px-8 me-3 md:me-6 primary-gradient"
                 >
                   Let’s Talk
                   <span className="ml-2">
@@ -89,7 +89,7 @@ const HeroSection = () => {
                 </Link>
                 <Link
                   href="/portfolio"
-                  className="flex items-center justify-center h-[54px] md:h-[56px] w-36 md:w-48 mb-2 md:mb-0 text-sm md:text-lg font-medium text-white bg-black rounded-md hover:bg-gradient-to-r from-[#8750f7] to-[#2a1454]"
+                  className="flex items-center justify-center h-[54px] md:h-[56px] w-36 md:w-48 mb-2 md:mb-0 text-sm md:text-lg font-medium text-white bg-black hover:bg-gradient-to-r from-[#8750f7] to-[#2a1454] border-gradient rounded-full"
                 >
                   My Work
                   <span className="ml-2">

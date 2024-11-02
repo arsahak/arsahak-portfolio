@@ -13,16 +13,18 @@ const AboutMePage = () => {
         <div className="flex flex-col items-center justify-between md:flex-row gap-x-10">
           <div className="w-[100%] md:w-[40%]">
             <ScrollMotionEffect effect="fade-right" duration="2000">
-              <div className=" flex items-center justify-center relative">
-                <div className="gradient-circle-about absolute mt-36">
-                  <Image
-                    width={800}
-                    height={1050}
-                    src="/assets/home/Component 19 (1).png"
-                    alt="AR Sahak"
-                    className="w-[380px] h-auto mx-auto absolute inset-0 top-[20%] left-0 right-0"
-                    priority
-                  />
+              <div className="hidden md:block">
+                <div className=" flex items-center justify-center relative">
+                  <div className="gradient-circle-about absolute mt-36">
+                    <Image
+                      width={800}
+                      height={1050}
+                      src="/assets/home/Component 19 (1).png"
+                      alt="AR Sahak"
+                      className="w-[380px] h-auto mx-auto absolute inset-0 top-[20%] left-0 right-0"
+                      priority
+                    />
+                  </div>
                 </div>
               </div>
             </ScrollMotionEffect>

@@ -216,8 +216,9 @@ video::-webkit-media-controls-panel {
 }
 
 .border-gradient {
-  border: 1px solid transparent;
-  border-image: linear-gradient(90deg, #8750f7, #2a1454) 1;
+  border: 2px solid transparent; /* Sets up the border width */
+  border-image: linear-gradient(90deg, #8750f7, #2a1454) 1; /* Creates the gradient border */
+  border-radius: 5px; /* Rounds the corners of the border */
 }
 
 .circle-background {

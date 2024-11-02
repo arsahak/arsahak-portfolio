@@ -55,9 +55,9 @@ const MyEducation = () => {
         <div className="mt-10 md:mt-16">
           {workExperience?.map((el, index) => (
             <div
-              className={` p-5 flex items-center justify-between my-4 rounded-md ${index === 0 ? "primary-gradient" : "bg-[#0A0A0A]"}`}
+              className={` p-5 flex md:flex-row flex-col items-center justify-between my-4 rounded-md ${index === 0 ? "primary-gradient" : "bg-[#0A0A0A]"}`}
             >
-              <div className="w-[15%]  mx-0">
+              <div className="w-full md:w-[15%]  mx-0 mt-3 md:mt-0">
                 <Image
                   src={el?.imgUrl}
                   alt={el?.companyName}
@@ -67,19 +67,19 @@ const MyEducation = () => {
                   priority
                 />
               </div>
-              <div className="w-[25%]">
+              <div className="w-full md:w-[25%] mt-3 md:mt-0">
                 <h2 className="text-2xl font-semibold text-white mb-2">
                   {el?.degree}
                 </h2>
                 <p className="text-gray-300"> {el?.instituteName}</p>
               </div>
-              <div className="w-[25%]">
+              <div className="w-full md:w-[25%] mt-3 md:mt-0">
                 <h2 className="text-2xl font-semibold text-white mb-2">
                   {el?.CGPA}
                 </h2>
                 <p className="text-gray-300"> {el?.session}</p>
               </div>
-              <div className="w-[40%]">
+              <div className="w-full md:w-[40%] mt-3 md:mt-0">
                 <p className="text-gray-300">{el?.description}</p>
               </div>
             </div>
