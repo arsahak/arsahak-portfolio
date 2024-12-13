@@ -3,7 +3,7 @@ User-agent: *
 Allow: /
 
 # Host
-Host: https://trip-law.com
+Host: https://arsahak.com
 
 # Sitemaps
-Sitemap: https://trip-law.com/sitemap.xml
+Sitemap: https://arsahak.com/sitemap.xml
