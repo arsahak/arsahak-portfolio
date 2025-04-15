@@ -1,13 +1,12 @@
-import React, { useMemo } from "react";
 import { Orbitron } from "next/font/google";
+import React, { useMemo } from "react";
 
 import Link from "next/link";
 
 import { SITECONFIG } from "@/config/site";
-import { FaInstagram } from "react-icons/fa";
-import { FaFacebook } from "react-icons/fa";
-import { RiTwitterXLine } from "react-icons/ri";
+import { FaFacebook, FaInstagram } from "react-icons/fa";
 import { IoLogoLinkedin } from "react-icons/io5";
+import { RiTwitterXLine } from "react-icons/ri";
 
 const orbitron = Orbitron({ subsets: ["latin"] });
 
@@ -73,7 +72,7 @@ const Footer = () => {
       <div className="bg-[#181818]">
         <div className="container flex items-center justify-center py-3 md:py-6">
           <p className="mb-4 text-center text-white text-[14px] md:text-[18px] md:mb-0">
-            © 2024 AR Sahak. All Rights Reserved , Inc.
+            © 2025 AR Sahak. All Rights Reserved , Inc.
           </p>
         </div>
       </div>

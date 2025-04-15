@@ -1,17 +1,14 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import SectionLayout from "../shared/SectionLayout";
 import { Button } from "@nextui-org/react";
 import { send } from "emailjs-com";
+import { useState } from "react";
 import Swal from "sweetalert2";
 
 import { Orbitron } from "next/font/google";
 
-import Image from "next/image";
-import ScrollMotionEffect from "../motion/ScrollMotionEffect";
-import { IoLocationSharp } from "react-icons/io5";
 import { FaPhoneAlt } from "react-icons/fa";
-import { MdMarkEmailUnread } from "react-icons/md";
+import { IoLocationSharp } from "react-icons/io5";
+import ScrollMotionEffect from "../motion/ScrollMotionEffect";
 import GoogleMap from "../shared/GoogleMap";
 
 const orbitron = Orbitron({ subsets: ["latin"] });
@@ -134,7 +131,7 @@ const ContactSection = () => {
                 <li className="py-6 border-gray-600 border-b-1">
                   <div className="flex items-center gap-x-2">
                     <span>
-                      <IoLocationSharp className="text-[#BFA46B] size-7" />
+                      <IoLocationSharp className="text-primary size-7" />
                     </span>
                     <h5 className="text-2xl font-semibold text-white">Email</h5>
                   </div>
@@ -145,7 +142,7 @@ const ContactSection = () => {
                 <li className="py-6 border-gray-600 border-b-1">
                   <div className="flex items-center gap-x-2">
                     <span>
-                      <FaPhoneAlt className="text-[#BFA46B] size-6" />
+                      <FaPhoneAlt className="text-primary size-6" />
                     </span>
                     <h5 className="text-2xl font-semibold text-white">
                       Contact
@@ -153,13 +150,13 @@ const ContactSection = () => {
                   </div>
                   <h5 className="mt-5 text-xl font-normal text-white">
                     01792843207,{"   "}
-                    <span className="text-[#BFA46B] ml-1">01575318540</span>
+                    <span className="text-primary ml-1">01575318540</span>
                   </h5>
                 </li>
                 <li className="py-6 border-gray-600 border-b-1">
                   <div className="flex items-center gap-x-2">
                     <span>
-                      <IoLocationSharp className="text-[#BFA46B] size-7" />
+                      <IoLocationSharp className="text-primary size-7" />
                     </span>
                     <h5 className="text-2xl font-semibold text-white">
                       Location
