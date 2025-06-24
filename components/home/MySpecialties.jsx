@@ -1,26 +1,16 @@
 "use client";
-import React from "react";
-import { Orbitron } from "next/font/google";
-import Image from "next/image";
-import ScrollMotionEffect from "../motion/ScrollMotionEffect";
 import { motion, useInView } from "framer-motion";
+import { Orbitron } from "next/font/google";
+import React from "react";
+import ScrollMotionEffect from "../motion/ScrollMotionEffect";
 
-import { TbScanEye } from "react-icons/tb";
 import { MdOutlineDesignServices } from "react-icons/md";
-import { PiFrameCornersThin } from "react-icons/pi";
-import { FaRegUser } from "react-icons/fa";
-import { GrContactInfo } from "react-icons/gr";
-import { PiUserFocus } from "react-icons/pi";
-import { TiFlowMerge } from "react-icons/ti";
-
-import { SiMaterialdesignicons } from "react-icons/si";
-import { RiGuideLine } from "react-icons/ri";
 
 import { CgWebsite } from "react-icons/cg";
-import { TbApi } from "react-icons/tb";
-import { LuDatabase } from "react-icons/lu";
-import { LuCloudCog } from "react-icons/lu";
+import { FiMail } from "react-icons/fi";
+import { LuCloudCog, LuDatabase } from "react-icons/lu";
 import { MdOutlineAppShortcut } from "react-icons/md";
+import { TbApi } from "react-icons/tb";
 
 const orbitron = Orbitron({ subsets: ["latin"] });
 
@@ -133,14 +123,10 @@ const MySpecialties = () => {
               <div
                 className={`rounded-lg w-full h-[415px] p-6 flex flex-col bg-gradient-to-br bg-[#181818] mt-[-1px]`}
               >
-                <div className="flex items-center rounded-full">
-                  <Image
-                    src="/assets/home/Component 20.png"
-                    alt="AR Sahak"
-                    width={250}
-                    height={250}
-                    className="w-[200px] h-auto rounded-full"
-                    priority
+                <div className="flex items-center justify-center rounded-full bg-white/90 shadow-lg w-20 h-20 mx-auto mb-4 mt-2">
+                  <FiMail
+                    className="text-primary text-4xl"
+                    aria-label="Contact"
                   />
                 </div>
 

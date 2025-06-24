@@ -1,17 +1,16 @@
 "use client";
-import { memo } from "react";
 import { motion } from "framer-motion";
 import { Orbitron } from "next/font/google";
+import { memo } from "react";
 
 import Image from "next/image";
 import Link from "next/link";
-import { FaBehance, FaDribbble, FaFigma } from "react-icons/fa";
-import { FaGithub } from "react-icons/fa";
 import { FaStackOverflow } from "react-icons/fa";
 import { SiLeetcode } from "react-icons/si";
 import { VscGithub } from "react-icons/vsc";
 
 import CountUp from "../shared/CountUp";
+import BubbleBackground from "./BubbleBackground";
 
 const orbitron = Orbitron({ subsets: ["latin"] });
 
@@ -39,7 +38,7 @@ const HeroSection = () => {
                 className="flex items-center justify-center md:justify-start text-xl md:text-3xl font-black text-white text-center md:text-left"
               >
                 <hr className="w-8 h-[2px] bg-black my-2 mr-2" />
-                Hello, I’m 👋
+                Hello, I'm 👋
               </motion.h2>
               <h1
                 className={`mt-4 md:mt-10 text-[50px] md:text-[99px] font-extrabold text-white text-center md:text-left leading-tight tracking-normal ${orbitron.className}`}
@@ -71,7 +70,7 @@ const HeroSection = () => {
                   href="/contact"
                   className="flex items-center justify-center h-[60px] w-36 md:w-48 mb-2 md:mb-0 text-sm md:text-lg font-medium text-white uppercase bg-black border border-black rounded-md hover:bg-primary md:px-8 me-3 md:me-6 primary-gradient"
                 >
-                  Let’s Talk
+                  Let's Talk
                   <span className="ml-2">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -136,18 +135,21 @@ const HeroSection = () => {
               </motion.div>
             </div>
 
-            <div className="hidden md:block w-full md:w-[50%]">
-              <div className=" flex items-center justify-center relative">
-                <div className="gradient-circle absolute mt-36">
-                  <Image
-                    width={1000}
-                    height={1050}
-                    src="/assets/home/Component 19.png"
-                    alt="AR Sahak"
-                    className="w-[400px] h-auto mx-auto absolute inset-0 top-[18%] left-0 right-0"
-                    priority
-                  />
-                </div>
+            <div className="w-full md:w-[50%] flex items-center justify-center md:justify-end relative min-h-[300px] md:min-h-[500px] lg:min-h-[600px] mb-10 md:mb-0">
+              <div
+                className="w-full flex items-center justify-center relative"
+                style={{ minHeight: "300px" }}
+              >
+                <BubbleBackground />
+                <div className="hero-animated-circle"></div>
+                <Image
+                  width={400}
+                  height={400}
+                  src="/assets/home/homepic.png"
+                  alt="AR Sahak"
+                  className="w-[70vw] max-w-[400px] h-auto mx-auto relative z-10 rounded-full shadow-lg object-cover"
+                  priority
+                />
               </div>
             </div>
           </div>
