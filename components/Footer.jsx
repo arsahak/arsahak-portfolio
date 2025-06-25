@@ -15,64 +15,70 @@ const Footer = () => {
     return SITECONFIG?.footer?.quick_links || [];
   }, []);
 
-  const SocialIcon = ({ icon: Icon, url }) => (
-    <Link href={url} target="_blank">
-      <Icon className="size-6 text-white hover:text-primary" />
+  const SocialIcon = ({ icon: Icon, url, label }) => (
+    <Link href={url} target="_blank" aria-label={label}>
+      <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/10 backdrop-blur-md shadow-md hover:bg-primary/80 transition-all border border-white/10 group">
+        <Icon className="size-6 text-white group-hover:text-white" />
+      </span>
     </Link>
   );
 
   return (
-    <footer className="">
+    <footer className="pt-12 border-t border-white/10 bg-gradient-to-b from-[#181818] via-[#181818]/90 to-black">
       <div className="container">
-        <div className="py-6 md:py-10">
-          <div className="flex flex-col items-center justify-center gap-x-8 sm:gap-6 md:justify-between">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-8 pb-8">
+          {/* Brand */}
+          <div className="flex flex-col items-center md:items-start">
             <h2
-              className={`font-semibold text-[35px] md:text-[45px] text-white ${orbitron.className}`}
+              className={`font-extrabold text-[32px] md:text-[44px] text-white tracking-tight ${orbitron.className}`}
             >
               AR Sahak.
             </h2>
-            <div className="flex justify-center flex-1 my-8 md:my-2">
-              <ul className="flex flex-col items-center justify-center ml-0 font-normal text-center text-white list-none md:flex-row">
-                {quickLinks.map((el, index) => (
-                  <li
-                    className="mb-4 flex items-center text-md md:text-[18px] font-semibold"
-                    key={index}
-                  >
-                    <Link href={el.slug} className="hover:underline">
-                      {el.title}
-                    </Link>
-                    {index < quickLinks.length - 1 && (
-                      <span className="hidden mx-4 md:block">|</span>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="flex items-center justify-center gap-x-4">
-              <SocialIcon
-                icon={FaFacebook}
-                url={"https://www.facebook.com/arsahak1"}
-              />
-              <SocialIcon
-                icon={RiTwitterXLine}
-                url={"https://www.x.com/ar_sahak"}
-              />
-              <SocialIcon
-                icon={IoLogoLinkedin}
-                url={"https://www.linkedin.com/in/arsahak/"}
-              />
-              <SocialIcon
-                icon={FaInstagram}
-                url={"https://www.facebook.com/arsahak1"}
-              />
-            </div>
+            <span className="block w-12 h-1 mt-2 rounded-full bg-gradient-to-r from-primary to-[#8750f7]" />
+          </div>
+
+          {/* Quick Links */}
+          <nav className="flex flex-wrap justify-center gap-2 md:gap-4">
+            {quickLinks.map((el, index) => (
+              <Link
+                key={index}
+                href={el.slug}
+                className="px-4 py-2 rounded-full bg-white/5 hover:bg-primary/80 text-white font-medium text-sm md:text-base transition-all shadow-sm"
+              >
+                {el.title}
+              </Link>
+            ))}
+          </nav>
+
+          {/* Social Icons */}
+          <div className="flex items-center justify-center gap-3 md:gap-4 mt-2 md:mt-0">
+            <SocialIcon
+              icon={FaFacebook}
+              url={"https://www.facebook.com/arsahak1"}
+              label="Facebook"
+            />
+            <SocialIcon
+              icon={RiTwitterXLine}
+              url={"https://www.x.com/ar_sahak"}
+              label="Twitter"
+            />
+            <SocialIcon
+              icon={IoLogoLinkedin}
+              url={"https://www.linkedin.com/in/arsahak/"}
+              label="LinkedIn"
+            />
+            <SocialIcon
+              icon={FaInstagram}
+              url={"https://www.facebook.com/arsahak1"}
+              label="Instagram"
+            />
           </div>
         </div>
       </div>
-      <div className="bg-[#181818]">
-        <div className="container flex items-center justify-center py-3 md:py-6">
-          <p className="mb-4 text-center text-white text-[14px] md:text-[18px] md:mb-0">
-            © 2025 AR Sahak. All Rights Reserved , Inc.
+      <div className="bg-[#181818] border-t border-white/10">
+        <div className="container flex items-center justify-center py-4">
+          <p className="text-center text-white/60 text-xs md:text-sm">
+            © 2025 AR Sahak. All Rights Reserved.
           </p>
         </div>
       </div>

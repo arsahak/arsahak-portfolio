@@ -1,21 +1,17 @@
 "use client";
-import React, { useState, useEffect, useCallback, useMemo } from "react";
 import {
   Navbar,
   NavbarBrand,
   NavbarContent,
-  NavbarMenuToggle,
   NavbarMenu,
   NavbarMenuItem,
+  NavbarMenuToggle,
 } from "@nextui-org/react";
-import { MdOutlineLightMode } from "react-icons/md";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 
-import { LuUser2 } from "react-icons/lu";
-import { IoCall } from "react-icons/io5";
+import { Lato } from "next/font/google";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Lato } from "next/font/google";
-import { FaGithub } from "react-icons/fa";
 
 const lato = Lato({
   subsets: ["latin"],
@@ -70,7 +66,7 @@ const MainNavbar = () => {
         <div className="flex items-center justify-between">
           <Link href={"/"}>
             <h2
-              className={`font-semibold text-[40px] text-white ${lato.className}`}
+              className={`font-semibold text-[40px] text-white ${lato.className} logo-water-effect`}
             >
               @arsahak
             </h2>
@@ -90,11 +86,10 @@ const MainNavbar = () => {
             {/* <MdOutlineLightMode className="text-black size-7 cursor-pointer hover:text-primary" /> */}
             <Link
               target="_blank"
-              className="flex items-center justify-center px-2 !py-2 mb-2 text-sm font-medium text-white  hover:bg-primary md:text-lg md:px-4 rounded-md primary-gradient"
+              className="flex items-center justify-center px-2 !py-2 mb-2 text-sm font-medium text-white hover:bg-primary md:text-lg md:px-4 rounded-md primary-gradient shadow-lg focus:outline-none focus:ring-2 focus:ring-primary/60 transition-all duration-200 hover:scale-105 hover:shadow-[0_0_16px_4px_rgba(135,80,247,0.4)]"
               href="https://www.upwork.com/freelancers/~01ee4ec811fe032f23"
             >
               {`Hire Me!`}
-
               <span>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

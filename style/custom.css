@@ -428,3 +428,39 @@ body {
   justify-content: center;
   align-items: center;
 }
+
+/* Water ripple/wave effect for logo */
+.logo-water-effect {
+  display: inline-block;
+  transition: filter 0.3s;
+}
+.logo-water-effect:hover {
+  animation: waterWave 0.7s linear;
+  filter: url("#wavy"); /* fallback for browsers with SVG filter support */
+}
+@keyframes waterWave {
+  0% {
+    filter: none;
+    transform: none;
+  }
+  20% {
+    filter: blur(1px) brightness(1.1);
+    transform: skewX(-2deg) scaleY(1.04);
+  }
+  40% {
+    filter: blur(2px) brightness(1.15);
+    transform: skewX(2deg) scaleY(0.98);
+  }
+  60% {
+    filter: blur(1px) brightness(1.1);
+    transform: skewX(-1deg) scaleY(1.02);
+  }
+  100% {
+    filter: none;
+    transform: none;
+  }
+}
+/* Optional: SVG filter for more advanced browsers */
+.logo-water-effect-svg {
+  filter: url("#wavy");
+}
