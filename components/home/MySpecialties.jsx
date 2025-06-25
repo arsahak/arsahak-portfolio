@@ -7,7 +7,7 @@ import ScrollMotionEffect from "../motion/ScrollMotionEffect";
 import { MdOutlineDesignServices } from "react-icons/md";
 
 import { CgWebsite } from "react-icons/cg";
-import { FiMail } from "react-icons/fi";
+import { FiCopy, FiMail } from "react-icons/fi";
 import { LuCloudCog, LuDatabase } from "react-icons/lu";
 import { MdOutlineAppShortcut } from "react-icons/md";
 import { TbApi } from "react-icons/tb";
@@ -64,6 +64,15 @@ const specialties = [
 const MySpecialties = () => {
   const ref = React.useRef(null);
   const isInView = useInView(ref, { once: true });
+  const [copied, setCopied] = React.useState(false);
+  const email = "arsahakbd@gmail.com";
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(email);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1200);
+  };
+
   return (
     <section className="">
       <div className="container py-8 md:py-14">
@@ -120,26 +129,45 @@ const MySpecialties = () => {
           </motion.div>
           <div className="w-[100%] md:w-[30%] mt-6 md:mt-0">
             <ScrollMotionEffect effect="fade-up" duration="2000">
-              <div
-                className={`rounded-lg w-full h-[415px] p-6 flex flex-col bg-gradient-to-br bg-[#181818] mt-[-1px]`}
-              >
-                <div className="flex items-center justify-center rounded-full bg-white/90 shadow-lg w-20 h-20 mx-auto mb-4 mt-2">
-                  <FiMail
-                    className="text-primary text-4xl"
-                    aria-label="Contact"
-                  />
-                </div>
-
-                <div className="mt-auto">
-                  <p className="py-3 text-white">Let's Contact</p>
-                  <div className="flex items-center justify-between text-white">
-                    <h2
-                      className={`text-[22px] font-semibold text-primary ${orbitron.className}`}
-                    >
-                      arsahakbd@gmail.com
-                    </h2>
+              <div className="rounded-2xl w-full h-[415px] p-6 flex flex-col items-center justify-center bg-white/10 border border-white/20 shadow-2xl backdrop-blur-lg relative overflow-hidden">
+                {/* Glowing icon */}
+                <div className="flex items-center justify-center mb-4 mt-2">
+                  <div className="bg-gradient-to-br from-primary to-[#8750f7] rounded-full w-20 h-20 flex items-center justify-center shadow-lg animate-pulse-slow">
+                    <FiMail
+                      className="text-white text-4xl drop-shadow-lg"
+                      aria-label="Contact"
+                    />
                   </div>
                 </div>
+                {/* Heading */}
+                <h3
+                  className={`text-2xl font-extrabold text-white mb-2 ${orbitron.className}`}
+                >
+                  Let's Contact
+                </h3>
+                {/* Subtitle */}
+                <p className="text-sm text-white/80 mb-4 text-center">
+                  Available for freelance & collaboration
+                </p>
+                {/* Email with copy button */}
+                <div className="flex items-center bg-white/20 border border-white/30 rounded-full px-4 py-2 mb-2 w-full max-w-[260px] mx-auto">
+                  <span className="text-white text-base select-all flex-1">
+                    {email}
+                  </span>
+                  <button
+                    onClick={handleCopy}
+                    className="ml-2 p-1 rounded-full hover:bg-primary/30 transition"
+                    title="Copy Email"
+                    type="button"
+                  >
+                    <FiCopy
+                      className={`text-white text-lg ${copied ? "text-primary" : ""}`}
+                    />
+                  </button>
+                </div>
+                {copied && (
+                  <span className="text-primary text-xs mt-1">Copied!</span>
+                )}
               </div>
             </ScrollMotionEffect>
           </div>

@@ -30,7 +30,7 @@ const AboutMe = () => {
                         aria-label="Trophy"
                       />
 
-                      <span className="text-black">4+</span>
+                      <span className="text-black">3+</span>
 
                       <span className="text-black">Years Experience</span>
                     </div>

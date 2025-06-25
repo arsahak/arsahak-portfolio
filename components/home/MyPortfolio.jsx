@@ -1,18 +1,18 @@
 "use client";
-import React, { useState } from "react";
-import { Orbitron } from "next/font/google";
 import {
+  Button,
   Card,
   CardHeader,
   Image,
   Modal,
-  ModalContent,
-  ModalHeader,
   ModalBody,
+  ModalContent,
   ModalFooter,
-  Button,
+  ModalHeader,
   useDisclosure,
 } from "@nextui-org/react";
+import { Orbitron } from "next/font/google";
+import { useState } from "react";
 
 import Link from "next/link";
 import ScrollMotionEffect from "../motion/ScrollMotionEffect";

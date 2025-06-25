@@ -1,4 +1,3 @@
-import React from "react";
 import { Orbitron } from "next/font/google";
 import Image from "next/image";
 import ScrollMotionEffect from "../motion/ScrollMotionEffect";
@@ -18,7 +17,7 @@ const workExperience = [
   {
     imgUrl: "/assets/about/itbangla.jpeg",
     companyName: "IT Bangla Ltd",
-    position: "Software Engineer",
+    position: "Junior Software Engineer",
     jobType: "Full-Time",
     jobDuration: "Jun 2022 - Dec 2023",
     description:
