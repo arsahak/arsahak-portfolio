@@ -1,7 +1,7 @@
 import LetsTalk from "@/components/home/LetsTalk";
 import PortfolioBar from "@/components/shared/PortfolioBar";
 import ClinetLogoList from "@/components/shared/ClientLogoList";
-import PortfolioPage from "@/components/portfolio.jsx/PortfolioPage";
+import PortfolioPage from "@/components/portfolio/PortfolioPage";
 
 const page = () => {
   return (

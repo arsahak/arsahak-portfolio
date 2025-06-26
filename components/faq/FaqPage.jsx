@@ -1,110 +1,98 @@
 "use client";
-import React from "react";
-import parse from "html-react-parser";
 import { Accordion, AccordionItem } from "@nextui-org/react";
+import parse from "html-react-parser";
+import React from "react";
 import ScrollMotionEffect from "../motion/ScrollMotionEffect";
 
 const generalInfo = [
   {
     id: 1,
-    jobTitle: "Not working on iPhone?",
-    jobDesc: `<p>Absolutely! Email us at b2b@SWOPME.co to start a conversation with us! 📈</p>
-    <p>No! The other person does not need a SWOP or app to receive your SWOP profile. That's the beauty of SWOP ⚡</p>
-    <p>If their phone is on this list of compatible devices you can pop to their phone. If it is not, just use your SWOP 
-    QR code on your profile to share!</p>`,
+    jobTitle: "What services do you offer?",
+    jobDesc: `<p>I offer full-stack web development, UI/UX design, API integration, and performance optimization. I specialize in React, Next.js, Node.js, and modern web technologies.</p>`,
   },
   {
     id: 2,
-    jobTitle: "Not working on Android?",
-    jobDesc: `<p>Absolutely! Email us at b2b@SWOPME.co to start a conversation with us! 📈</p>
-    <p>No! The other person does not need a SWOP or app to receive your SWOP profile. That's the beauty of SWOP ⚡</p>
-    <p>If their phone is on this list of compatible devices you can pop to their phone. If it is not, just use your SWOP 
-    QR code on your profile to share!</p>`,
+    jobTitle: "What is your development process?",
+    jobDesc: `<p>My process includes requirements gathering, wireframing, design, agile development, testing, and deployment. I keep clients updated at every stage for transparency and quality.</p>`,
   },
   {
     id: 3,
-    jobTitle: "What is SWOP?",
-    jobDesc: `<p>Absolutely! Email us at b2b@SWOPME.co to start a conversation with us! 📈</p>
-    <p>No! The other person does not need a SWOP or app to receive your SWOP profile. That's the beauty of SWOP ⚡</p>
-    <p>If their phone is on this list of compatible devices you can pop to their phone. If it is not, just use your SWOP 
-    QR code on your profile to share!</p>`,
+    jobTitle: "How do you ensure code quality?",
+    jobDesc: `<p>I use code reviews, automated testing, and best practices for maintainable, scalable, and secure code. I also provide documentation and post-launch support.</p>`,
   },
   {
     id: 4,
-    jobTitle: "Can i order custom SWOP?",
-    jobDesc: `<p>Absolutely! Email us at b2b@SWOPME.co to start a conversation with us! 📈</p>
-    <p>No! The other person does not need a SWOP or app to receive your SWOP profile. That's the beauty of SWOP ⚡</p>
-    <p>If their phone is on this list of compatible devices you can pop to their phone. If it is not, just use your SWOP 
-    QR code on your profile to share!</p>
-`,
+    jobTitle: "Can you work with existing projects or teams?",
+    jobDesc: `<p>Absolutely! I can join ongoing projects, refactor legacy code, or collaborate with your in-house team to deliver results efficiently.</p>`,
   },
 ];
 
 const compatibilityInfo = [
   {
     id: 1,
-    jobTitle: "Compatibility Phones",
-    jobDesc: `<p>Absolutely! Email us at b2b@SWOPME.co to start a conversation with us! 📈</p>
-    <p>No! The other person does not need a SWOP or app to receive your SWOP profile. That's the beauty of SWOP ⚡</p>
-    <p>If their phone is on this list of compatible devices you can pop to their phone. If it is not, just use your SWOP 
-    QR code on your profile to share!</p>`,
+    jobTitle: "What technologies do you use?",
+    jobDesc: `<p>I work with React, Next.js, Node.js, Express, MongoDB, PostgreSQL, Tailwind CSS, and more. I choose the best stack for your project's needs.</p>`,
   },
   {
     id: 2,
-    jobTitle: "Will my SWOP work under my phone case?",
-    jobDesc: `<p>Absolutely! Email us at b2b@SWOPME.co to start a conversation with us! 📈</p>
-    <p>No! The other person does not need a SWOP or app to receive your SWOP profile. That's the beauty of SWOP ⚡</p>
-    <p>If their phone is on this list of compatible devices you can pop to their phone. If it is not, just use your SWOP 
-    QR code on your profile to share!</p>`,
+    jobTitle: "Do you build responsive/mobile-friendly websites?",
+    jobDesc: `<p>Yes! All my projects are fully responsive and optimized for all devices, ensuring a seamless user experience everywhere.</p>`,
   },
   {
     id: 3,
-    jobTitle: "How to turn NFC on for an Android? ",
-    jobDesc: `<p>Yes! SWOP will work through 99.9% of phone cases, including ones that hold credit cards. The only exception would be if your case has a layer of metal.</p>
-   `,
+    jobTitle: "Can you integrate third-party APIs or services?",
+    jobDesc: `<p>Yes, I have experience integrating payment gateways, social logins, analytics, and other third-party APIs to extend your site's functionality.</p>`,
   },
   {
     id: 4,
-    jobTitle: "How can i get verified on SWOP? ",
-    jobDesc: `<p>Absolutely! Email us at b2b@SWOPME.co to start a conversation with us! 📈</p>
-    <p>No! The other person does not need a SWOP or app to receive your SWOP profile. That's the beauty of SWOP ⚡</p>
-    <p>If their phone is on this list of compatible devices you can pop to their phone. If it is not, just use your SWOP 
-    QR code on your profile to share!</p>
-`,
+    jobTitle: "Do you provide SEO optimization?",
+    jobDesc: `<p>Yes, I follow SEO best practices for structure, performance, and accessibility to help your site rank better in search engines.</p>`,
   },
 ];
 
 const sahippingInfo = [
   {
     id: 1,
-    jobTitle: "Do you ship worldwide?",
-    jobDesc: `<p>Absolutely! Email us at b2b@SWOPME.co to start a conversation with us! 📈</p>
-    <p>No! The other person does not need a SWOP or app to receive your SWOP profile. That's the beauty of SWOP ⚡</p>
-    <p>If their phone is on this list of compatible devices you can pop to their phone. If it is not, just use your SWOP 
-    QR code on your profile to share!</p>`,
+    jobTitle: "How do you handle project delivery?",
+    jobDesc: `<p>I deliver projects via GitHub, GitLab, or your preferred platform. I also provide deployment support and handover documentation.</p>`,
   },
   {
     id: 2,
-    jobTitle: "Will my SWOP work under my phone case?",
-    jobDesc: `<p>Absolutely! Email us at b2b@SWOPME.co to start a conversation with us! 📈</p>
-    <p>No! The other person does not need a SWOP or app to receive your SWOP profile. That's the beauty of SWOP ⚡</p>
-    <p>If their phone is on this list of compatible devices you can pop to their phone. If it is not, just use your SWOP 
-    QR code on your profile to share!</p>`,
+    jobTitle: "What is your support policy after launch?",
+    jobDesc: `<p>I offer free bug fixes for an agreed period after launch and am available for ongoing maintenance or feature updates as needed.</p>`,
   },
   {
     id: 3,
-    jobTitle: "How to turn NFC on for an Android? ",
-    jobDesc: `<p>Yes! SWOP will work through 99.9% of phone cases, including ones that hold credit cards. The only exception would be if your case has a layer of metal.</p>
-   `,
+    jobTitle: "How can I contact you for support or new work?",
+    jobDesc: `<p>You can reach me via email, LinkedIn, or the contact form on my website. I respond promptly to all client inquiries.</p>`,
   },
   {
     id: 4,
-    jobTitle: "How can i get verified on SWOP? ",
-    jobDesc: `<p>Absolutely! Email us at b2b@SWOPME.co to start a conversation with us! 📈</p>
-    <p>No! The other person does not need a SWOP or app to receive your SWOP profile. That's the beauty of SWOP ⚡</p>
-    <p>If their phone is on this list of compatible devices you can pop to their phone. If it is not, just use your SWOP 
-    QR code on your profile to share!</p>
-`,
+    jobTitle: "What are your payment terms?",
+    jobDesc: `<p>Typically, I require a deposit to start, with the balance due upon completion. For larger projects, milestone payments can be arranged.</p>`,
+  },
+];
+
+const accountInfo = [
+  {
+    id: 1,
+    jobTitle: "How do I create an account?",
+    jobDesc: `<p>You can create an account by clicking the Sign Up button on the homepage and filling out the registration form with your details.</p>`,
+  },
+  {
+    id: 2,
+    jobTitle: "How do I reset my password?",
+    jobDesc: `<p>Click on 'Forgot Password' on the login page and follow the instructions to reset your password via email.</p>`,
+  },
+  {
+    id: 3,
+    jobTitle: "Can I update my profile information?",
+    jobDesc: `<p>Yes, you can update your profile information anytime from your account dashboard after logging in.</p>`,
+  },
+  {
+    id: 4,
+    jobTitle: "How do I delete my account?",
+    jobDesc: `<p>If you wish to delete your account, please contact me directly and I will assist you with the process.</p>`,
   },
 ];
 
@@ -120,145 +108,131 @@ const FaqPage = () => {
     new Set(["0"])
   );
   return (
-    <div className="container py-20">
-      <ScrollMotionEffect effect="fade-up" duration="2000">
-        <div className="bg-[#F3F3F3] flex flex-col md:flex-row items-center justify-center gap-4 p-4 rounded-md mx-auto md:w-[750px] text-md md:text-lg font-semibold ">
-          <p>{`Sign up for text and support`}</p>
-          <span className="hidden md:block">|</span>
-          <p>{`Text ‘SWOP’ to 67839`}</p>
-          <span className="hidden md:block">|</span>
-          <p>{`Email us: support@swopme.co`}</p>
-        </div>
-      </ScrollMotionEffect>
-
-      <ScrollMotionEffect effect="fade-up" duration="2000">
-        <h2
-          className={`text-white font-normal text-xl md:text-4xl text-center !leading-none mt-6`}
-        >
-          <strong>How Can We Help?</strong>
-        </h2>
-      </ScrollMotionEffect>
-
-      <ScrollMotionEffect effect="fade-up" duration="2000">
-        <p className="text-lg text-white text-center mt-4 max-w-[620px] mx-auto px-6 md:px-0">
-          Discover rewarding career paths, innovative work environments, and the
-          chance to grow with us. Find your perfect job and start making an
-          impact today.
-        </p>
-      </ScrollMotionEffect>
-
-      <ScrollMotionEffect effect="fade-up" duration="2000">
-        <div className="mx-6 md:mx-32 mt-8 md:mt-16 bg-white overflow-x-hidden">
-          <Accordion
-            className="border-2 shadow-lg !p-5 !md:p-10 rounded-lg text-2xl py-5 overflow-x-hidden"
-            // style={{ border: '1px solid red' }}
+    <div className="min-h-screen bg-[#181818] py-20 mt-16">
+      <div className="container  mx-auto px-4">
+        <ScrollMotionEffect effect="fade-up" duration="2000">
+          <h2
+            className={`text-white font-normal text-xl md:text-4xl text-center !leading-none mt-6`}
           >
-            <AccordionItem
-              aria-label="Accordion 1"
-              title={
-                <strong className="text-white text-xl md:text-2xl font-bold">
-                  Troubleshooting SWOP
-                </strong>
-              }
-              className="text-[18px] md:text-lg "
+            <strong>Frequently Asked Questions</strong>
+          </h2>
+        </ScrollMotionEffect>
+        <ScrollMotionEffect effect="fade-up" duration="2000">
+          <p className="text-lg text-white text-center mt-4 max-w-[620px] mx-auto px-6 md:px-0">
+            Answers to common questions about my web development services,
+            process, and support. If you have more questions, feel free to
+            contact me directly.
+          </p>
+        </ScrollMotionEffect>
+
+        <ScrollMotionEffect effect="fade-up" duration="2000">
+          <div className="mx-6 md:mx-32 mt-8 md:mt-16 border-2 shadow-lg rounded-lg bg-white">
+            <h1 className="text-2xl font-bold ml-1 !px-5 !md:px-10 mt-6">
+              General <span>💎</span>
+            </h1>
+            <Accordion
+              selectedKeys={generalSlectedKeys}
+              onSelectionChange={setGeneralSelectedKeys}
+              className="shadow-lg !p-5 !md:p-10 rounded-lg text-2xl py-5"
+              // style={{ border: '1px solid red' }}
             >
-              {`We warmly welcome you to SWOP, when you come to SWOP, For Near-field
-            Communication Related Process and functions, we collect your
-            information. We value your trust, we own our responsibility to
-            retain, preserve and protect your data as per Cyber Laws
-            recommendations and we know how to safeguard our valued customer's
-            (“USERS”) information.`}
-            </AccordionItem>
-          </Accordion>
-        </div>
-      </ScrollMotionEffect>
-
-      <ScrollMotionEffect effect="fade-up" duration="2000">
-        <div className="mx-6 md:mx-32 mt-8 md:mt-16 border-2 shadow-lg rounded-lg bg-white">
-          <h1 className="text-2xl font-bold ml-1 !px-5 !md:px-10 mt-6">
-            General <span>💎</span>
-          </h1>
-          <Accordion
-            selectedKeys={generalSlectedKeys}
-            onSelectionChange={setGeneralSelectedKeys}
-            className="shadow-lg !p-5 !md:p-10 rounded-lg text-2xl py-5"
-            // style={{ border: '1px solid red' }}
-          >
-            {generalInfo?.map((el, index) => (
-              <AccordionItem
-                key={el.id}
-                aria-label="Accordion 1"
-                title={
-                  <div className="text-xl md:text-[22px] font-medium">
-                    {el.jobTitle}
-                  </div>
-                }
-                className="text-[18px] md:text-lg "
-              >
-                {parse(el.jobDesc)}
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </div>
-      </ScrollMotionEffect>
-
-      <ScrollMotionEffect effect="fade-up" duration="2000">
-        <div className="mx-6 md:mx-32 mt-8 md:mt-16 border-2 shadow-lg rounded-lg bg-white">
-          <h1 className="text-2xl font-bold ml-1 !px-5 !md:px-10 mt-6">
-            Compatibility <span>🤝</span>
-          </h1>
-          <Accordion
-            selectedKeys={compatibilitySelectedKeys}
-            onSelectionChange={setCompatibilitySelectedKeys}
-            className="shadow-lg !p-5 !md:p-10 rounded-lg text-2xl py-5"
-            // style={{ border: '1px solid red' }}
-          >
-            {compatibilityInfo?.map((el, index) => (
-              <AccordionItem
-                key={el.id}
-                aria-label="Accordion 1"
-                title={
-                  <div className="text-xl md:text-[22px] font-medium">
-                    {el.jobTitle}
-                  </div>
-                }
-                className="text-[18px] md:text-lg "
-              >
-                {parse(el.jobDesc)}
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </div>
-      </ScrollMotionEffect>
-
-      <ScrollMotionEffect effect="fade-up" duration="2000">
-        <div className="mx-6 md:mx-32 mt-8 md:mt-16 border-2 shadow-lg rounded-lg bg-white">
-          <h1 className="text-2xl font-bold ml-1 !px-5 !md:px-10 mt-6">
-            Shipping <span>🚚</span>
-          </h1>
-          <Accordion
-            selectedKeys={sahippingSlectedKeys}
-            onSelectionChange={setShippingSelectedKeys}
-            className="shadow-lg !p-5 !md:p-10 rounded-lg text-2xl py-5"
-            // style={{ border: '1px solid red' }}
-          >
-            {sahippingInfo?.map((el, index) => (
-              <AccordionItem
-                key={el.id}
-                aria-label="Accordion 1"
-                title={
-                  <div className="text-xl md:text-[22px] font-medium">
-                    {el.jobTitle}
-                  </div>
-                }
-                className="text-[18px] md:text-lg "
-              >
-                {parse(el.jobDesc)}
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </div>
-      </ScrollMotionEffect>
+              {generalInfo?.map((el, index) => (
+                <AccordionItem
+                  key={el.id}
+                  aria-label="Accordion 1"
+                  title={
+                    <div className="text-xl md:text-[22px] font-medium">
+                      {el.jobTitle}
+                    </div>
+                  }
+                  className="text-[18px] md:text-lg "
+                >
+                  {parse(el.jobDesc)}
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </div>
+        </ScrollMotionEffect>
+        <ScrollMotionEffect effect="fade-up" duration="2000">
+          <div className="mx-6 md:mx-32 mt-8 md:mt-16 border-2 shadow-lg rounded-lg bg-white">
+            <h1 className="text-2xl font-bold ml-1 !px-5 !md:px-10 mt-6">
+              Compatibility <span>🤝</span>
+            </h1>
+            <Accordion
+              selectedKeys={compatibilitySelectedKeys}
+              onSelectionChange={setCompatibilitySelectedKeys}
+              className="shadow-lg !p-5 !md:p-10 rounded-lg text-2xl py-5"
+              // style={{ border: '1px solid red' }}
+            >
+              {compatibilityInfo?.map((el, index) => (
+                <AccordionItem
+                  key={el.id}
+                  aria-label="Accordion 1"
+                  title={
+                    <div className="text-xl md:text-[22px] font-medium">
+                      {el.jobTitle}
+                    </div>
+                  }
+                  className="text-[18px] md:text-lg "
+                >
+                  {parse(el.jobDesc)}
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </div>
+        </ScrollMotionEffect>
+        <ScrollMotionEffect effect="fade-up" duration="2000">
+          <div className="mx-6 md:mx-32 mt-8 md:mt-16 border-2 shadow-lg rounded-lg bg-white">
+            <h1 className="text-2xl font-bold ml-1 !px-5 !md:px-10 mt-6">
+              Shipping <span>🚚</span>
+            </h1>
+            <Accordion
+              selectedKeys={sahippingSlectedKeys}
+              onSelectionChange={setShippingSelectedKeys}
+              className="shadow-lg !p-5 !md:p-10 rounded-lg text-2xl py-5"
+              // style={{ border: '1px solid red' }}
+            >
+              {sahippingInfo?.map((el, index) => (
+                <AccordionItem
+                  key={el.id}
+                  aria-label="Accordion 1"
+                  title={
+                    <div className="text-xl md:text-[22px] font-medium">
+                      {el.jobTitle}
+                    </div>
+                  }
+                  className="text-[18px] md:text-lg "
+                >
+                  {parse(el.jobDesc)}
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </div>
+        </ScrollMotionEffect>
+        <ScrollMotionEffect effect="fade-up" duration="2000">
+          <div className="mx-6 md:mx-32 mt-8 md:mt-16 border-2 shadow-lg rounded-lg bg-white">
+            <h1 className="text-2xl font-bold ml-1 !px-5 !md:px-10 mt-6">
+              Account <span>👤</span>
+            </h1>
+            <Accordion className="shadow-lg !p-5 !md:p-10 rounded-lg text-2xl py-5">
+              {accountInfo?.map((el, index) => (
+                <AccordionItem
+                  key={el.id}
+                  aria-label="Accordion 1"
+                  title={
+                    <div className="text-xl md:text-[22px] font-medium">
+                      {el.jobTitle}
+                    </div>
+                  }
+                  className="text-[18px] md:text-lg"
+                >
+                  {parse(el.jobDesc)}
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </div>
+        </ScrollMotionEffect>
+      </div>
     </div>
   );
 };

@@ -25,6 +25,7 @@ const portfolioInfo = [
     cardImage: "assets/portfolio-item/swop-app.png",
     fullImage: "assets/portfolio-item/swop-app-full.jpg",
     title: "Swop App",
+    slug: "swop-app",
   },
   {
     id: 2,
@@ -87,8 +88,7 @@ const MyPortfolio = () => {
               <Card className="col-span-12 sm:col-span-4 h-[300px] cursor-pointer">
                 <div
                   onClick={() => {
-                    onOpen();
-                    setPortfolioId(1);
+                    window.location.href = `/portfolio/${"swop-app"}`;
                   }}
                 >
                   <CardHeader className="absolute z-10 flex-col !items-center bg-[#75757595] rounded-full top-2 right-2 max-w-32 !p-1 !m-0">
@@ -123,8 +123,7 @@ const MyPortfolio = () => {
               <Card className="col-span-12 sm:col-span-4 h-[300px] cursor-pointer">
                 <div
                   onClick={() => {
-                    onOpen();
-                    setPortfolioId(2);
+                    window.location.href = `/portfolio/${"epharma-web"}`;
                   }}
                 >
                   <CardHeader className="absolute z-10 flex-col !items-center bg-[#75757595] rounded-full top-2 right-2 max-w-32 !p-1 !m-0">
@@ -158,8 +157,7 @@ const MyPortfolio = () => {
               <Card className="col-span-12 sm:col-span-4 h-[300px] cursor-pointer">
                 <div
                   onClick={() => {
-                    onOpen();
-                    setPortfolioId(3);
+                    window.location.href = `/portfolio/${"nazara"}`;
                   }}
                 >
                   <CardHeader className="absolute z-10 flex-col !items-center bg-[#75757595] rounded-full top-2 right-2 max-w-32 !p-1 !m-0">
@@ -196,8 +194,7 @@ const MyPortfolio = () => {
               >
                 <div
                   onClick={() => {
-                    onOpen();
-                    setPortfolioId(4);
+                    window.location.href = `/portfolio/${"butterfly-app"}`;
                   }}
                 >
                   <CardHeader className="absolute z-10 flex-col !items-center bg-[#75757595] rounded-full top-2 right-2 max-w-32 !p-1 !m-0">
@@ -234,8 +231,7 @@ const MyPortfolio = () => {
               >
                 <div
                   onClick={() => {
-                    onOpen();
-                    setPortfolioId(5);
+                    window.location.href = `/portfolio/${"epharma-app"}`;
                   }}
                 >
                   <CardHeader className="absolute z-10 flex-col !items-center bg-[#75757595] rounded-full top-2 right-2 max-w-32 !p-1 !m-0 ">

@@ -38,7 +38,7 @@ const MainNavbar = () => {
       { title: "Home", slug: "/" },
       { title: "About", slug: "/about" },
       { title: "Portfolio", slug: "/portfolio" },
-      // { title: "Blog", slug: "/blog" },
+      { title: "Blog", slug: "/blog" },
       { title: "Contact", slug: "/contact" },
     ],
     []

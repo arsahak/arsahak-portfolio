@@ -118,7 +118,7 @@ const BlogPage = () => {
   return (
     <div className="min-h-screen bg-black">
       {/* Hero Section */}
-      <section className="py-20 md:py-32">
+      <section className="pt-20 md:pt-32">
         <div className="container">
           <div className="text-center max-w-4xl mx-auto">
             <motion.h1

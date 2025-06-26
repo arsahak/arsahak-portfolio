@@ -193,7 +193,7 @@ const BlogDetailsPage = ({ params }) => {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
-                className="lg:sticky lg:top-8"
+                className="lg:sticky lg:top-32"
               >
                 <div className="bg-gradient-to-br from-[#181818] to-[#1a1a1a] rounded-2xl p-6 border border-white/10 h-fit">
                   <h3

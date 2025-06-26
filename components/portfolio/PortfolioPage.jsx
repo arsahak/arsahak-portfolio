@@ -1,20 +1,19 @@
 "use client";
-import React, { useState } from "react";
-import { Orbitron } from "next/font/google";
 import {
+  Button,
   Card,
   CardHeader,
   Image,
   Modal,
-  ModalContent,
-  ModalHeader,
   ModalBody,
+  ModalContent,
   ModalFooter,
-  Button,
+  ModalHeader,
   useDisclosure,
 } from "@nextui-org/react";
+import { Orbitron } from "next/font/google";
+import { useState } from "react";
 
-import LetsTalk from "@/components/home/LetsTalk";
 import ScrollMotionEffect from "@/components/motion/ScrollMotionEffect";
 
 const orbitron = Orbitron({ subsets: ["latin"] });
@@ -22,130 +21,87 @@ const orbitron = Orbitron({ subsets: ["latin"] });
 const portfolioInfo = [
   {
     id: 1,
-    cardImage: "assets/portfolio-item/swop-app.png",
-    fullImage: "assets/portfolio-item/swop-app-full.jpg",
+    cardImage: "/assets/portfolio-item/swop-app.png",
+    fullImage: "/assets/portfolio-item/swop-app-full.jpg",
     title: "Swop App",
+    slug: "swop-app",
+    gallery: [
+      "/assets/portfolio-item/swop-app.png",
+      "/assets/portfolio-item/swop-app-full.jpg",
+    ],
+    timeline: "Jan 2023 - May 2023",
+    budget: "$12,000",
+    description:
+      "A modern app for swapping goods and services with a seamless user experience.",
+    liveLink: "https://swopapp.com",
+    githubLink: "https://github.com/arsahak/swop-app",
   },
   {
     id: 2,
-    cardImage: "assets/portfolio-item/epharma-web.png",
-    fullImage: "assets/portfolio-item/epharma-web-full.jpg",
+    cardImage: "/assets/portfolio-item/epharma-web.png",
+    fullImage: "/assets/portfolio-item/epharma-web-full.jpg",
     title: "ePharma Web",
+    slug: "epharma-web",
+    gallery: [
+      "/assets/portfolio-item/epharma-web.png",
+      "/assets/portfolio-item/epharma-web-full.jpg",
+    ],
+    timeline: "Mar 2022 - Aug 2022",
+    budget: "$8,500",
+    description:
+      "A comprehensive online pharmacy platform with e-commerce and prescription management.",
+    liveLink: "https://epharma.com",
+    githubLink: "https://github.com/arsahak/epharma-web",
   },
   {
     id: 3,
-    cardImage: "assets/portfolio-item/nazara-web.png",
-    fullImage: "assets/portfolio-item/nazara-web-full.jpg",
+    cardImage: "/assets/portfolio-item/nazara-web.png",
+    fullImage: "/assets/portfolio-item/nazara-web-full.jpg",
     title: "Nazara",
+    slug: "nazara",
+    gallery: [
+      "/assets/portfolio-item/nazara-web.png",
+      "/assets/portfolio-item/nazara-web-full.jpg",
+    ],
+    timeline: "Jul 2021 - Dec 2021",
+    budget: "$6,000",
+    description:
+      "A gaming platform with real-time multiplayer features and leaderboards.",
+    liveLink: "https://nazara.com",
+    githubLink: "https://github.com/arsahak/nazara",
   },
   {
     id: 4,
-    cardImage: "assets/portfolio-item/butterfly-app.png",
-    fullImage: "assets/portfolio-item/butterfly-app-full.jpg",
+    cardImage: "/assets/portfolio-item/butterfly-app.png",
+    fullImage: "/assets/portfolio-item/butterfly-app-full.jpg",
     title: "Butterfly App",
+    slug: "butterfly-app",
+    gallery: [
+      "/assets/portfolio-item/butterfly-app.png",
+      "/assets/portfolio-item/butterfly-app-full.jpg",
+    ],
+    timeline: "Feb 2021 - Jun 2021",
+    budget: "$7,200",
+    description: "A productivity app for task management and collaboration.",
+    liveLink: "https://butterflyapp.com",
+    githubLink: "https://github.com/arsahak/butterfly-app",
   },
   {
     id: 5,
-    cardImage: "assets/portfolio-item/epharma-app.png",
-    fullImage: "assets/portfolio-item/epharma-app-full.jpg",
+    cardImage: "/assets/portfolio-item/epharma-app.png",
+    fullImage: "/assets/portfolio-item/epharma-app-full.jpg",
     title: "ePharma App",
-  },
-  {
-    id: 6,
-    cardImage: "assets/portfolio-item/swop-web.png",
-    fullImage: "assets/portfolio-item/swop-web-full.jpg",
-    title: "Swop Web",
-  },
-  {
-    id: 7,
-    cardImage: "assets/portfolio-item/dxg-web.png",
-    fullImage: "assets/portfolio-item/dxg-web-full.jpg",
-    title: "DXG",
-  },
-  {
-    id: 8,
-    cardImage: "assets/portfolio-item/migrate-law-web.png",
-    fullImage: "assets/portfolio-item/migrate-law-web-full.jpg",
-    title: "Migrate Law",
-  },
-  {
-    id: 9,
-    cardImage: "assets/portfolio-item/butterfly-lighthouse-web.png",
-    fullImage: "assets/portfolio-item/butterfly-lighthouse-web-full.jpg",
-    title: "Butterfly",
-  },
-  {
-    id: 10,
-    cardImage: "assets/portfolio-item/tax-pro-dashboard.png",
-    fullImage: "assets/portfolio-item/tax-pro-dashboard-full.jpg",
-    title: "10x Tax Pro",
-  },
-  {
-    id: 11,
-    cardImage: "assets/portfolio-item/trip-law.png",
-    fullImage: "assets/portfolio-item/trip-law-full.jpg",
-    title: "Trip Law",
-  },
-  {
-    id: 12,
-    cardImage: "assets/portfolio-item/apex-advisor.png",
-    fullImage: "assets/portfolio-item/apex-advisor-full.jpg",
-    title: "Apex Advisor",
-  },
-  {
-    id: 13,
-    cardImage: "assets/portfolio-item/turnabroad.png",
-    fullImage: "assets/portfolio-item/turnabroad-full.jpg",
-    title: "Turn Abroad",
-  },
-  {
-    id: 14,
-    cardImage: "assets/portfolio-item/logicsoft.png",
-    fullImage: "assets/portfolio-item/logicsoft-full.jpg",
-    title: "Logicsoft",
-  },
-  {
-    id: 15,
-    cardImage: "assets/portfolio-item/shannonit.png",
-    fullImage: "assets/portfolio-item/shannonit-full.jpg",
-    title: "Shannonit",
-  },
-  {
-    id: 16,
-    cardImage: "assets/portfolio-item/shannonit.png",
-    fullImage: "assets/portfolio-item/shannonit-full.jpg",
-    title: "Shannonit",
-  },
-  {
-    id: 17,
-    cardImage: "assets/portfolio-item/simplestate-web.png",
-    fullImage: "assets/portfolio-item/simplestate-web-full.jpg",
-    title: "SimpleState",
-  },
-  {
-    id: 18,
-    cardImage: "assets/portfolio-item/travler.png",
-    fullImage: "assets/portfolio-item/travler-full.jpg",
-    title: "Travler",
-  },
-  {
-    id: 19,
-    cardImage: "assets/portfolio-item/credit-life.png",
-    fullImage: "assets/portfolio-item/credit-life-full.jpg",
-    title: "Credit Life",
-  },
-
-  {
-    id: 21,
-    cardImage: "assets/portfolio-item/ticket-2.png",
-    fullImage: "assets/portfolio-item/ticket-2-full.jpg",
-    title: "Ticket Web",
-  },
-  {
-    id: 22,
-    cardImage: "assets/portfolio-item/ticket-1.png",
-    fullImage: "assets/portfolio-item/ticket-1-full.jpg",
-    title: "Ticket App",
+    slug: "epharma-app",
+    gallery: [
+      "/assets/portfolio-item/epharma-app.png",
+      "/assets/portfolio-item/epharma-app-full.jpg",
+    ],
+    timeline: "Sep 2022 - Jan 2023",
+    budget: "$9,000",
+    description:
+      "A mobile app for ePharma with prescription uploads and order tracking.",
+    liveLink: "https://epharma.com/app",
+    githubLink: "https://github.com/arsahak/epharma-app",
   },
 ];
 
@@ -185,8 +141,7 @@ const PortfolioPage = () => {
                 >
                   <div
                     onClick={() => {
-                      onOpen();
-                      setPortfolioId(el?.id);
+                      window.location.href = `/portfolio/${el.slug}`;
                     }}
                   >
                     <CardHeader className="absolute z-10 flex-col !items-center bg-[#75757595] rounded-full top-2 right-2 max-w-32 !p-1 !m-0">
