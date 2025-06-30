@@ -3,10 +3,10 @@ import React, { useMemo } from "react";
 
 import Link from "next/link";
 
-import { SITECONFIG } from "@/config/site";
 import { FaFacebook, FaInstagram } from "react-icons/fa";
 import { IoLogoLinkedin } from "react-icons/io5";
 import { RiTwitterXLine } from "react-icons/ri";
+import { SITECONFIG } from "../config/site";
 
 const orbitron = Orbitron({ subsets: ["latin"] });
 

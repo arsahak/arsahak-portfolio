@@ -1,6 +1,9 @@
+
 import { Lato, Orbitron } from "next/font/google";
-import "./globals.css";
-import { Providers } from "./providers";
+import Footer from "../../components/Footer";
+import MainNavbar from "../../components/MainNavbar";
+import "../globals.css";
+import { Providers } from "../providers";
 
 // Load the fonts with proper configuration
 const orbitron = Orbitron({ subsets: ["latin"], variable: "--font-orbitron" });
@@ -30,7 +33,12 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${orbitron.variable} ${lato.variable}`}>
       <body className={`${lato.className} overflow-x-hidden text-black`}>
-        <Providers>{children}</Providers>
+        <Providers>
+          <MainNavbar />
+          <div className="">{children}</div>
+ 
+          <Footer />
+        </Providers>
       </body>
     </html>
   );
