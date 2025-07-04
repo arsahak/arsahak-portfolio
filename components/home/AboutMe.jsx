@@ -44,7 +44,7 @@ const AboutMe = () => {
                       priority
                     />
                     <div
-                      className="absolute left-1/2 bottom-[-28px] md:bottom-[-36px] -translate-x-1/2 flex gap-4 bg-white/80 border border-primary/30 shadow-lg px-5 py-2 rounded-full z-20 backdrop-blur-md"
+                      className="absolute left-1/2 bottom-[-28px] md:bottom-[-36px] -translate-x-1/2 flex gap-4 bg-gray-500/80 border border-primary/30 shadow-lg px-5 py-2 rounded-full z-20 backdrop-blur-md"
                       style={{ backdropFilter: "blur(8px)" }}
                     >
                       <a

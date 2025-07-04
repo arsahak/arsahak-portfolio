@@ -36,7 +36,6 @@ export default function RootLayout({ children }) {
         <Providers>
           <MainNavbar />
           <div className="">{children}</div>
- 
           <Footer />
         </Providers>
       </body>

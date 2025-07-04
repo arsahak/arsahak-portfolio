@@ -1,6 +1,4 @@
-import React from "react";
 import { Orbitron } from "next/font/google";
-import Image from "next/image";
 import Link from "next/link";
 import ScrollMotionEffect from "../motion/ScrollMotionEffect";
 

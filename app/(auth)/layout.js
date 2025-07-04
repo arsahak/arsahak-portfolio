@@ -1,5 +1,4 @@
 import { Lato, Orbitron } from "next/font/google";
-import DashboardLayout from "../../components/dashboard/layout/DashboardLayout";
 import "../globals.css";
 import { Providers } from "../providers";
 
@@ -10,15 +9,16 @@ const lato = Lato({
   weight: ["100", "300", "400", "700", "900"],
 });
 
+export const metadata = {
+  title: "Dashboard | AR Sahak",
+};
 
-export default function RootDashboardLayout({ children }) {
+export default function DashboardLayout({ children }) {
   return (
     <html lang="en" className={`${orbitron.variable} ${lato.variable}`}>
       <body className={`${lato.className} overflow-x-hidden text-black`}>
         <Providers>
-          <DashboardLayout>
-            {children}
-          </DashboardLayout>
+          {children}
         </Providers>
       </body>
     </html>

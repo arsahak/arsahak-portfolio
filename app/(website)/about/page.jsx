@@ -1,11 +1,9 @@
-import React from "react";
-import AboutMePage from "@/components/about/AboutMePage";
-import LetsTalk from "@/components/home/LetsTalk";
-import MySkills from "@/components/home/MySkills";
-import ClinetLogoList from "@/components/shared/ClientLogoList";
-import MyVison from "@/components/about/MyVison";
-import MyWorkExperience from "@/components/about/MyWorkExperience";
-import MyEducation from "@/components/about/MyEducation";
+import AboutMePage from "../../components/about/AboutMePage";
+import MyEducation from "../../components/about/MyEducation";
+import MyVison from "../../components/about/MyVison";
+import MyWorkExperience from "../../components/about/MyWorkExperience";
+import LetsTalk from "../../components/home/LetsTalk";
+import MySkills from "../../components/home/MySkills";
 
 const page = () => {
   return (
