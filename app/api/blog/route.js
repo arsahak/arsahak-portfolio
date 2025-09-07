@@ -1,29 +1,17 @@
-import { connect, connection, model, models, Schema } from 'mongoose';
+import connectDB from '@/lib/prisma';
 import { NextResponse } from 'next/server';
 
-const MONGODB_URI = process.env.DATABASE_URL || process.env.MONGODB_URI;
-
 async function dbConnect() {
-  if (!MONGODB_URI) {
-    throw new Error('DATABASE_URL or MONGODB_URI is not configured. Please set it in .env.local');
+  try {
+    const prisma = await connectDB();
+    return prisma;
+  } catch (error) {
+    console.error('Database connection error:', error);
+    throw new Error('Failed to connect to database');
   }
-  if (connection.readyState >= 1) return;
-  await connect(MONGODB_URI);
 }
 
-const BlogSchema = new Schema({
-  title: { type: String, required: true },
-  slug: { type: String, required: true, unique: true, index: true },
-  author: { type: String, default: '' },
-  category: { type: String, default: '' },
-  featureImage: { type: String, default: '' },
-  description: { type: String, default: '' },
-  content: { type: String, default: '' },
-  published: { type: Boolean, default: false },
-  createdAt: { type: Date, default: Date.now },
-});
-
-const Blog = models.Blog || model('Blog', BlogSchema);
+// Remove Mongoose schema - using Prisma instead
 
 const generateSlug = (text = '') =>
   text
@@ -35,45 +23,83 @@ const generateSlug = (text = '') =>
 
 export async function GET(request) {
   try {
-    await dbConnect();
+    const prisma = await dbConnect();
     const { searchParams } = new URL(request.url);
     const slug = searchParams.get('slug');
     const published = searchParams.get('published');
+    const page = parseInt(searchParams.get('page')) || 1;
+    const limit = parseInt(searchParams.get('limit')) || 10;
 
     if (slug) {
-      const doc = await Blog.findOne({ slug });
-      if (!doc) return NextResponse.json({ error: 'Not found' }, { status: 404 });
-      return NextResponse.json(doc, { status: 200 });
+      const blog = await prisma.blog.findUnique({ 
+        where: { slug },
+        include: {
+          user: {
+            select: {
+              name: true,
+              email: true
+            }
+          }
+        }
+      });
+      if (!blog) return NextResponse.json({ error: 'Blog not found' }, { status: 404 });
+      return NextResponse.json(blog, { status: 200 });
     }
 
-    const filter = {};
-    if (published === 'true') filter.published = true;
-    if (published === 'false') filter.published = false;
+    // Build where clause
+    const where = {};
+    if (published === 'true') where.published = true;
+    if (published === 'false') where.published = false;
 
-    const blogs = await Blog.find(filter).sort({ createdAt: -1 });
-    return NextResponse.json(blogs, { status: 200 });
+    // Get total count for pagination
+    const total = await prisma.blog.count({ where });
+
+    // Get blogs with pagination
+    const blogs = await prisma.blog.findMany({
+      where,
+      include: {
+        user: {
+          select: {
+            name: true,
+            email: true
+          }
+        }
+      },
+      orderBy: { createdAt: 'desc' },
+      skip: (page - 1) * limit,
+      take: limit,
+    });
+
+    return NextResponse.json({
+      blogs,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit),
+      hasNext: page < Math.ceil(total / limit),
+      hasPrev: page > 1
+    }, { status: 200 });
   } catch (err) {
+    console.error('GET /api/blog error:', err);
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
 
 export async function POST(request) {
   try {
-    await dbConnect();
+    const prisma = await dbConnect();
     const body = await request.json();
 
-    // Normalize/Map incoming payload to schema fields
+    // Normalize/Map incoming payload to Prisma schema fields
     const normalizedSlug = body.slug ? generateSlug(body.slug) : generateSlug(body.title || '');
     const mapped = {
       title: (body.title || '').trim(),
       slug: normalizedSlug,
       author: (body.author || '').trim(),
-      // Store category array as comma-separated string for current schema
-      category: Array.isArray(body.category) ? body.category.join(', ') : (body.category || ''),
-      featureImage: body?.featuredImage?.image?.url || body?.featureImage || '',
-      description: (body.metaDescription || body.description || '').trim(),
-      content: body.body || body.content || '',
+      body: body.body || body.content || '',
+      metaDescription: (body.metaDescription || body.description || '').trim(),
       published: body.published === true || body.published === 'true',
+      category: Array.isArray(body.category) ? body.category : [body.category || ''],
+      featuredImage: body?.featuredImage || null,
     };
 
     // Validate required fields
@@ -81,8 +107,7 @@ export async function POST(request) {
     if (!mapped.title) missing.push('title');
     if (!mapped.slug) missing.push('slug');
     if (!mapped.author) missing.push('author');
-    if (!mapped.content) missing.push('content');
-    if (!mapped.category) missing.push('category');
+    if (!mapped.body) missing.push('body');
 
     if (missing.length > 0) {
       return NextResponse.json(
@@ -91,45 +116,75 @@ export async function POST(request) {
       );
     }
 
-    const blog = await Blog.create(mapped);
+    const blog = await prisma.blog.create({
+      data: mapped,
+      include: {
+        user: {
+          select: {
+            name: true,
+            email: true
+          }
+        }
+      }
+    });
     return NextResponse.json(blog, { status: 201 });
   } catch (err) {
-    const status = err?.code === 11000 ? 409 : 400;
+    console.error('POST /api/blog error:', err);
+    const status = err?.code === 'P2002' ? 409 : 400; // Prisma unique constraint error
     return NextResponse.json({ error: err.message }, { status });
   }
 }
 
 export async function PUT(request) {
   try {
-    await dbConnect();
+    const prisma = await dbConnect();
     const body = await request.json();
     const { id, ...update } = body;
     if (!id) return NextResponse.json({ error: 'No blog ID provided' }, { status: 400 });
 
-    // If client sends new-style fields, map selectively
+    // Map fields to Prisma schema
     const mappedUpdate = { ...update };
     if (update.slug) mappedUpdate.slug = generateSlug(update.slug);
-    if (Array.isArray(update.category)) mappedUpdate.category = update.category.join(', ');
-    if (update.featuredImage?.image?.url) mappedUpdate.featureImage = update.featuredImage.image.url;
-    if (update.metaDescription) mappedUpdate.description = update.metaDescription;
-    if (update.body) mappedUpdate.content = update.body;
+    if (update.category) {
+      mappedUpdate.category = Array.isArray(update.category) ? update.category : [update.category];
+    }
+    if (update.featuredImage) mappedUpdate.featuredImage = update.featuredImage;
+    if (update.metaDescription) mappedUpdate.metaDescription = update.metaDescription;
+    if (update.body) mappedUpdate.body = update.body;
+    if (update.content) mappedUpdate.body = update.content; // Map content to body
 
-    const blog = await Blog.findByIdAndUpdate(id, mappedUpdate, { new: true });
+    const blog = await prisma.blog.update({
+      where: { id },
+      data: mappedUpdate,
+      include: {
+        user: {
+          select: {
+            name: true,
+            email: true
+          }
+        }
+      }
+    });
     return NextResponse.json(blog, { status: 200 });
   } catch (err) {
+    console.error('PUT /api/blog error:', err);
     return NextResponse.json({ error: err.message }, { status: 400 });
   }
 }
 
 export async function DELETE(request) {
   try {
-    await dbConnect();
+    const prisma = await dbConnect();
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
     if (!id) return NextResponse.json({ error: 'No blog ID provided' }, { status: 400 });
-    await Blog.findByIdAndDelete(id);
+    
+    await prisma.blog.delete({
+      where: { id }
+    });
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (err) {
+    console.error('DELETE /api/blog error:', err);
     return NextResponse.json({ error: err.message }, { status: 400 });
   }
 }
