@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   FiChevronLeft,
   FiChevronRight,
@@ -25,11 +25,7 @@ const BlogListPage = () => {
   const [totalBlogs, setTotalBlogs] = useState(0);
   const blogsPerPage = 10;
 
-  useEffect(() => {
-    fetchBlogs();
-  }, [currentPage, fetchBlogs]);
-
-  const fetchBlogs = async () => {
+  const fetchBlogs = useCallback(async () => {
     try {
       setLoading(true);
       console.log("Fetching blogs for page:", currentPage);
@@ -68,7 +64,11 @@ const BlogListPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentPage]);
+
+  useEffect(() => {
+    fetchBlogs();
+  }, [fetchBlogs]);
 
   const handleDelete = async (id) => {
     if (!confirm("Are you sure you want to delete this blog?")) {

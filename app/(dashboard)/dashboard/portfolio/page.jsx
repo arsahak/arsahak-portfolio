@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   FiCalendar,
   FiDollarSign,
@@ -24,11 +24,7 @@ const PortfolioPage = () => {
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState(null);
 
-  useEffect(() => {
-    fetchPortfolios();
-  }, []);
-
-  const fetchPortfolios = async () => {
+  const fetchPortfolios = useCallback(async () => {
     try {
       setLoading(true);
       const data = await getAllPortfolios();
@@ -38,7 +34,11 @@ const PortfolioPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchPortfolios();
+  }, [fetchPortfolios]);
 
   const handleDelete = async (id) => {
     try {

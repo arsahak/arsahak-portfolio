@@ -1,6 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   FaArrowDown,
   FaArrowUp,
@@ -100,11 +100,7 @@ export default function DashboardPage() {
     loading: true,
   });
 
-  useEffect(() => {
-    fetchDashboardData();
-  }, [fetchDashboardData]);
-
-  const fetchDashboardData = async () => {
+  const fetchDashboardData = useCallback(async () => {
     try {
       setDashboardData((prev) => ({ ...prev, loading: true }));
 
@@ -157,7 +153,11 @@ export default function DashboardPage() {
       console.error("Error fetching dashboard data:", error);
       setDashboardData((prev) => ({ ...prev, loading: false }));
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchDashboardData();
+  }, [fetchDashboardData]);
 
   const generateMonthlyData = (blogs, portfolios, notes) => {
     const months = [];

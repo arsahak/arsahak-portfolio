@@ -1,26 +1,38 @@
 import { v2 as cloudinary } from 'cloudinary';
-import { Schema, model, models } from 'mongoose';
 import { NextResponse } from 'next/server';
-import connectDB from '../../../lib/prisma';
 
-// Define Media Schema
-const MediaSchema = new Schema({
-  title: { type: String, required: true },
-  alt: { type: String, required: true },
-  url: { type: String, required: true },
-  publicId: { type: String, required: true, unique: true },
-  folder: { type: String, default: 'dashboard-blogs' },
-  format: { type: String, required: true },
-  width: { type: Number, required: true },
-  height: { type: Number, required: true },
-  bytes: { type: Number, required: true },
-  resourceType: { type: String, default: 'image' },
-  tags: [{ type: String }],
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now }
-});
+// Lazy-load database dependencies to avoid build-time connection issues
+let connectDB;
+let Media;
+let Schema, model, models;
 
-const Media = models.Media || model('Media', MediaSchema);
+const initializeDB = async () => {
+  if (!connectDB) {
+    ({ default: connectDB } = await import('../../../lib/prisma'));
+    ({ Schema, model, models } = await import('mongoose'));
+    
+    // Define Media Schema
+    const MediaSchema = new Schema({
+      title: { type: String, required: true },
+      alt: { type: String, required: true },
+      url: { type: String, required: true },
+      publicId: { type: String, required: true, unique: true },
+      folder: { type: String, default: 'dashboard-blogs' },
+      format: { type: String, required: true },
+      width: { type: Number, required: true },
+      height: { type: Number, required: true },
+      bytes: { type: Number, required: true },
+      resourceType: { type: String, default: 'image' },
+      tags: [{ type: String }],
+      createdAt: { type: Date, default: Date.now },
+      updatedAt: { type: Date, default: Date.now }
+    });
+
+    Media = models.Media || model('Media', MediaSchema);
+  }
+  
+  return { connectDB, Media };
+};
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -37,6 +49,8 @@ export async function GET(request) {
         { status: 503 }
       );
     }
+    
+    const { connectDB, Media } = await initializeDB();
     await connectDB();
     
     const { searchParams } = new URL(request.url);
@@ -115,6 +129,8 @@ export async function DELETE(request) {
         { status: 503 }
       );
     }
+    
+    const { connectDB, Media } = await initializeDB();
     await connectDB();
     
     const { publicId } = await request.json();
@@ -170,6 +186,8 @@ export async function POST(request) {
         { status: 503 }
       );
     }
+    
+    const { connectDB, Media } = await initializeDB();
     await connectDB();
     
     const mediaData = await request.json();
