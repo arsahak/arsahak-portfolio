@@ -60,7 +60,7 @@ const EditBlogPage = () => {
     if (params.slug) {
       fetchBlogData();
     }
-  }, [params.slug]);
+  }, [params.slug, fetchBlogData]);
 
   // Cleanup effect for TinyMCE editor and search timeout when component unmounts
   useEffect(() => {

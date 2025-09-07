@@ -32,7 +32,7 @@ const ViewPortfolioPage = () => {
     if (params.id) {
       fetchPortfolioData();
     }
-  }, [params.id]);
+  }, [params.id, fetchPortfolioData]);
 
   const fetchPortfolioData = async () => {
     try {
@@ -102,7 +102,7 @@ const ViewPortfolioPage = () => {
               Portfolio not found
             </h3>
             <p className="text-gray-600 mb-6">
-              The portfolio item you're looking for doesn't exist
+              The portfolio item you&apos;re looking for doesn&apos;t exist
             </p>
             <button
               onClick={() => router.push("/dashboard/portfolio")}

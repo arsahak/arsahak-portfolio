@@ -27,7 +27,7 @@ const BlogListPage = () => {
 
   useEffect(() => {
     fetchBlogs();
-  }, [currentPage]);
+  }, [currentPage, fetchBlogs]);
 
   const fetchBlogs = async () => {
     try {

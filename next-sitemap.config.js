@@ -3,6 +3,10 @@ module.exports = {
   siteUrl: process.env.SITE_URL || 'https://arsahak.com',
   generateRobotsTxt: true,
   generateIndexSitemap: false,
+  // Ensure compatibility with Next.js App Router
+  useAppDir: true,
+  sourceDir: '.next',
+  outDir: 'public',
   exclude: [
     '/dashboard/*',
     '/api/*',

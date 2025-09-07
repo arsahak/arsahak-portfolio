@@ -38,7 +38,7 @@ const HeroSection = () => {
                 className="flex items-center justify-center md:justify-start text-xl md:text-3xl font-black text-white text-center md:text-left"
               >
                 <hr className="w-8 h-[2px] bg-black my-2 mr-2" />
-                Hello, I'm 👋
+                Hello, I&apos;m 👋
               </motion.h2>
               <h1
                 className={`mt-4 md:mt-10 text-[50px] md:text-[99px] font-extrabold text-white text-center md:text-left leading-tight tracking-normal ${orbitron.className}`}
@@ -70,7 +70,7 @@ const HeroSection = () => {
                   href="/contact"
                   className="flex items-center justify-center h-[60px] w-36 md:w-48 mb-2 md:mb-0 text-sm md:text-lg font-medium text-white uppercase bg-black border border-black rounded-md hover:bg-primary md:px-8 me-3 md:me-6 primary-gradient"
                 >
-                  Let's Talk
+                  Let&apos;s Talk
                   <span className="ml-2">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"

@@ -183,13 +183,14 @@ const ConectMobileSection = () => {
 
   // Cleanup effect for video ref when component unmounts
   useEffect(() => {
+    const currentVideoRef = videoRef.current;
     return () => {
-      if (videoRef.current) {
+      if (currentVideoRef) {
         try {
-          videoRef.current.pause();
-          videoRef.current.currentTime = 0;
-          videoRef.current.src = "";
-          videoRef.current.load();
+          currentVideoRef.pause();
+          currentVideoRef.currentTime = 0;
+          currentVideoRef.src = "";
+          currentVideoRef.load();
         } catch (error) {
           console.warn("Error cleaning up video ref:", error);
         }

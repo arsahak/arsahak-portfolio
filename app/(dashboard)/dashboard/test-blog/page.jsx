@@ -297,11 +297,11 @@ const TestBlogPage = () => {
               <ol className="text-sm text-red-700 space-y-1 list-decimal list-inside">
                 <li>Check your .env.local file has DATABASE_URL set correctly</li>
                 <li>Ensure your database is running and accessible</li>
-                <li>Run "npx prisma db push" to create database tables</li>
+                <li>Run &quot;npx prisma db push&quot; to create database tables</li>
                 <li>Verify Cloudinary credentials are correct</li>
                 <li>Check browser console for detailed error messages</li>
                 <li>Restart your development server if needed</li>
-                <li>Run "Run All Tests" to check each component</li>
+                <li>Run &quot;Run All Tests&quot; to check each component</li>
               </ol>
             </div>
           </div>

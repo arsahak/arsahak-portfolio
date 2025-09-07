@@ -102,7 +102,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     fetchDashboardData();
-  }, []);
+  }, [fetchDashboardData]);
 
   const fetchDashboardData = async () => {
     try {
@@ -335,7 +335,7 @@ export default function DashboardPage() {
             Dashboard Overview
           </h1>
           <p className="text-gray-600 mt-2 text-lg">
-            Welcome back! Here's what's happening with your content.
+            Welcome back! Here&apos;s what&apos;s happening with your content.
           </p>
         </div>
         <div className="flex gap-3">

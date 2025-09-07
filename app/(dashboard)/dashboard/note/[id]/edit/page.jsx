@@ -48,7 +48,7 @@ const EditNotePage = () => {
     if (params.id) {
       fetchNoteData();
     }
-  }, [params.id]);
+  }, [params.id, fetchNoteData]);
 
   // Cleanup TinyMCE editor on unmount
   useEffect(() => {

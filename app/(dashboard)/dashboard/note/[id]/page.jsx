@@ -33,7 +33,7 @@ const ViewNotePage = () => {
     if (params.id) {
       fetchNoteData();
     }
-  }, [params.id]);
+  }, [params.id, fetchNoteData]);
 
   const fetchNoteData = async () => {
     try {
@@ -119,7 +119,7 @@ const ViewNotePage = () => {
               Note not found
             </h3>
             <p className="text-gray-600 mb-6">
-              The note you're looking for doesn't exist
+              The note you&apos;re looking for doesn&apos;t exist
             </p>
             <button
               onClick={() => router.push("/dashboard/note")}

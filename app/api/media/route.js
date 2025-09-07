@@ -1,8 +1,26 @@
-import { PrismaClient } from '@prisma/client';
 import { v2 as cloudinary } from 'cloudinary';
+import { Schema, model, models } from 'mongoose';
 import { NextResponse } from 'next/server';
+import connectDB from '../../../lib/prisma';
 
-const prisma = new PrismaClient();
+// Define Media Schema
+const MediaSchema = new Schema({
+  title: { type: String, required: true },
+  alt: { type: String, required: true },
+  url: { type: String, required: true },
+  publicId: { type: String, required: true, unique: true },
+  folder: { type: String, default: 'dashboard-blogs' },
+  format: { type: String, required: true },
+  width: { type: Number, required: true },
+  height: { type: Number, required: true },
+  bytes: { type: Number, required: true },
+  resourceType: { type: String, default: 'image' },
+  tags: [{ type: String }],
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
+});
+
+const Media = models.Media || model('Media', MediaSchema);
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -12,6 +30,15 @@ cloudinary.config({
 
 export async function GET(request) {
   try {
+    // Skip DB access if MONGODB_URI is not available (e.g., during build)
+    if (!process.env.MONGODB_URI) {
+      return NextResponse.json(
+        { success: false, message: 'Database not available during build' },
+        { status: 503 }
+      );
+    }
+    await connectDB();
+    
     const { searchParams } = new URL(request.url);
     const folder = searchParams.get('folder') || 'dashboard-blogs';
     const maxResults = parseInt(searchParams.get('max_results')) || 50;
@@ -20,42 +47,24 @@ export async function GET(request) {
     console.log('Fetching media from database - folder:', folder, 'maxResults:', maxResults, 'search:', search);
 
     // Build the query filter
-    let whereClause = {
-      folder: folder,
-    };
+    let query = { folder: folder };
 
     // Add search functionality if search term provided
     if (search.trim()) {
-      whereClause.OR = [
-        { title: { contains: search, mode: 'insensitive' } },
-        { alt: { contains: search, mode: 'insensitive' } },
-        { publicId: { contains: search, mode: 'insensitive' } },
+      query.$or = [
+        { title: { $regex: search, $options: 'i' } },
+        { alt: { $regex: search, $options: 'i' } },
+        { publicId: { $regex: search, $options: 'i' } },
       ];
     }
 
     // Fetch images from database
     const [images, total] = await Promise.all([
-      prisma.media.findMany({
-        where: whereClause,
-        orderBy: { createdAt: 'desc' },
-        take: maxResults,
-        select: {
-          id: true,
-          title: true,
-          alt: true,
-          url: true,
-          publicId: true,
-          folder: true,
-          format: true,
-          width: true,
-          height: true,
-          bytes: true,
-          tags: true,
-          createdAt: true,
-          updatedAt: true,
-        },
-      }),
-      prisma.media.count({ where: whereClause }),
+      Media.find(query)
+        .sort({ createdAt: -1 })
+        .limit(maxResults)
+        .select('_id title alt url publicId folder format width height bytes tags createdAt updatedAt'),
+      Media.countDocuments(query),
     ]);
 
     console.log('Database query result:', {
@@ -65,7 +74,7 @@ export async function GET(request) {
 
     // Transform the results to match expected frontend format
     const transformedImages = images.map((image) => ({
-      id: image.id,
+      id: image._id.toString(),
       url: image.url,
       title: image.title,
       alt: image.alt,
@@ -95,13 +104,19 @@ export async function GET(request) {
       },
       { status: 500 }
     );
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
 export async function DELETE(request) {
   try {
+    if (!process.env.MONGODB_URI) {
+      return NextResponse.json(
+        { success: false, message: 'Database not available during build' },
+        { status: 503 }
+      );
+    }
+    await connectDB();
+    
     const { publicId } = await request.json();
 
     if (!publicId) {
@@ -114,9 +129,7 @@ export async function DELETE(request) {
     console.log('Deleting media with publicId:', publicId);
 
     // Find the media record in database first
-    const mediaRecord = await prisma.media.findUnique({
-      where: { publicId: publicId },
-    });
+    const mediaRecord = await Media.findOne({ publicId: publicId });
 
     if (!mediaRecord) {
       return NextResponse.json(
@@ -131,9 +144,7 @@ export async function DELETE(request) {
 
     // Delete from database regardless of Cloudinary result
     // (in case the image was already deleted from Cloudinary but still in DB)
-    await prisma.media.delete({
-      where: { publicId: publicId },
-    });
+    await Media.deleteOne({ publicId: publicId });
 
     return NextResponse.json({
       success: true,
@@ -142,27 +153,25 @@ export async function DELETE(request) {
     });
   } catch (error) {
     console.error('Delete media error:', error);
-    
-    // If it's a Prisma "Record not found" error, handle gracefully
-    if (error.code === 'P2025') {
-      return NextResponse.json(
-        { error: 'Media record not found' },
-        { status: 404 }
-      );
-    }
 
     return NextResponse.json(
       { error: error.message || 'Failed to delete image' },
       { status: 500 }
     );
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
 // POST function to create/save media metadata when images are uploaded
 export async function POST(request) {
   try {
+    if (!process.env.MONGODB_URI) {
+      return NextResponse.json(
+        { success: false, message: 'Database not available during build' },
+        { status: 503 }
+      );
+    }
+    await connectDB();
+    
     const mediaData = await request.json();
 
     // Validate required fields
@@ -179,9 +188,7 @@ export async function POST(request) {
     console.log('Saving media metadata to database:', mediaData.publicId);
 
     // Check if media already exists
-    const existingMedia = await prisma.media.findUnique({
-      where: { publicId: mediaData.publicId },
-    });
+    const existingMedia = await Media.findOne({ publicId: mediaData.publicId });
 
     if (existingMedia) {
       return NextResponse.json(
@@ -191,27 +198,27 @@ export async function POST(request) {
     }
 
     // Create new media record
-    const newMedia = await prisma.media.create({
-      data: {
-        title: mediaData.title,
-        alt: mediaData.alt,
-        url: mediaData.url,
-        publicId: mediaData.publicId,
-        folder: mediaData.folder || 'dashboard-blogs',
-        format: mediaData.format,
-        width: parseInt(mediaData.width),
-        height: parseInt(mediaData.height),
-        bytes: parseInt(mediaData.bytes),
-        resourceType: mediaData.resourceType || 'image',
-        tags: mediaData.tags || [],
-      },
+    const newMedia = new Media({
+      title: mediaData.title,
+      alt: mediaData.alt,
+      url: mediaData.url,
+      publicId: mediaData.publicId,
+      folder: mediaData.folder || 'dashboard-blogs',
+      format: mediaData.format,
+      width: parseInt(mediaData.width),
+      height: parseInt(mediaData.height),
+      bytes: parseInt(mediaData.bytes),
+      resourceType: mediaData.resourceType || 'image',
+      tags: mediaData.tags || [],
     });
+
+    await newMedia.save();
 
     return NextResponse.json({
       success: true,
       message: 'Media metadata saved successfully',
       data: {
-        id: newMedia.id,
+        id: newMedia._id.toString(),
         publicId: newMedia.publicId,
         url: newMedia.url,
         title: newMedia.title,
@@ -222,7 +229,7 @@ export async function POST(request) {
     console.error('Save media metadata error:', error);
     
     // Handle duplicate key error
-    if (error.code === 'P2002') {
+    if (error.code === 11000) {
       return NextResponse.json(
         { error: 'Media with this public ID already exists' },
         { status: 409 }
@@ -233,7 +240,5 @@ export async function POST(request) {
       { error: error.message || 'Failed to save media metadata' },
       { status: 500 }
     );
-  } finally {
-    await prisma.$disconnect();
   }
 }

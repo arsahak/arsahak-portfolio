@@ -143,7 +143,7 @@ const MySpecialties = () => {
                 <h3
                   className={`text-2xl font-extrabold text-white mb-2 ${orbitron.className}`}
                 >
-                  Let's Contact
+                  Let&apos;s Contact
                 </h3>
                 {/* Subtitle */}
                 <p className="text-sm text-white/80 mb-4 text-center">

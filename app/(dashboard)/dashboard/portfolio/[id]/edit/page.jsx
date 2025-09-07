@@ -105,7 +105,7 @@ const EditPortfolioPage = () => {
     if (params.id) {
       fetchPortfolioData();
     }
-  }, [params.id]);
+  }, [params.id, fetchPortfolioData]);
 
   // Cleanup TinyMCE editor on unmount
   useEffect(() => {

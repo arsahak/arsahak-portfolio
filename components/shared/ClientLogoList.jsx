@@ -33,7 +33,7 @@ const ClinetLogoList = () => {
     <div className="">
       <div className="container grid grid-cols-3 md:grid-cols-6 items-center gap-x-20 py-6 md:py-12">
         {clientLogoList?.map((el, index) => (
-          <div className="">
+          <div key={index} className="">
             <Image
               src={el.url}
               alt="icon"
