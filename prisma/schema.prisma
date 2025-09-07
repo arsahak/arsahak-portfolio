@@ -1,0 +1,114 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String   @unique
+  name      String?
+  password  String
+  role      Role     @default(USER)
+  blogs     Blog[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+model Blog {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  title           String
+  body            String
+  slug            String   @unique
+  author          String
+  metaDescription String?
+  published       Boolean  @default(false)
+  featuredImage   Json?    // Store as JSON for complex image data
+  bodyImage       Json[]   // Array of JSON objects for body images
+  category        String[] // Array of categories
+  userId          String?  @db.ObjectId
+  user            User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("blogs")
+}
+
+model Media {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String   // Image title/name
+  alt         String   // Alt text for accessibility
+  url         String   // Cloudinary secure URL
+  publicId    String   @unique // Cloudinary public ID
+  folder      String   @default("dashboard-blogs") // Cloudinary folder
+  format      String   // Image format (jpg, png, etc.)
+  width       Int      // Image width in pixels
+  height      Int      // Image height in pixels
+  bytes       Int      // File size in bytes
+  resourceType String  @default("image") // Cloudinary resource type
+  tags        String[] @default([]) // Optional tags for organization
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("media")
+}
+
+model Portfolio {
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  title             String
+  slug              String   @unique
+  description       String
+  content           String?  // Detailed project description
+  featureImage      String?  // Main project image URL
+  category          String?
+  projectDuration   Json?    // { startDate, endDate }
+  projectBudget     Float?
+  clientName        String?
+  clientWebsite     String?
+  liveUrl           String?
+  githubUrl         String?
+  technologies      PortfolioTech[]
+  images            PortfolioImage[]
+  published         Boolean  @default(false)
+  featured          Boolean  @default(false)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@map("portfolios")
+}
+
+model PortfolioTech {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  portfolioId String    @db.ObjectId
+  portfolio   Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now())
+
+  @@map("portfolio_technologies")
+}
+
+model PortfolioImage {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  title       String?
+  alt         String?
+  url         String
+  publicId    String?   // Cloudinary public ID
+  portfolioId String    @db.ObjectId
+  portfolio   Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now())
+
+  @@map("portfolio_images")
+}
+
+enum Role {
+  USER
+  ADMIN
+}

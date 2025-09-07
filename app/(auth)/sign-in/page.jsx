@@ -39,7 +39,7 @@ export default function SignInPage() {
         {/* Logo */}
         <div className="mb-8 flex flex-col items-center">
           <img
-            src="/assets/home/homepic.png"
+            src="/assets/home/arsahak1.jpg"
             alt="AR Sahak Logo"
             className="w-16 h-16 rounded-full mb-2 border-4 border-[#8750f7] object-cover"
           />

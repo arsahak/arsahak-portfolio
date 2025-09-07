@@ -7,7 +7,7 @@ import {
   NavbarMenuItem,
   NavbarMenuToggle,
 } from "@nextui-org/react";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState, useRef } from "react";
 
 import { Lato } from "next/font/google";
 import Link from "next/link";
@@ -32,6 +32,7 @@ const MainNavbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
   const [navbarColor, setNavbarColor] = useState(false);
+  const debouncedHandleScrollRef = useRef(null);
 
   const menuItems = useMemo(
     () => [
@@ -44,18 +45,35 @@ const MainNavbar = () => {
     []
   );
 
-  const handleScroll = useCallback(
-    debounce(() => {
+  const handleScroll = useCallback(() => {
+    if (typeof window !== 'undefined') {
       setNavbarColor(window.scrollY >= 100);
-    }, 100),
-    []
-  );
+    }
+  }, []);
 
   useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
+    // Create the debounced function
+    debouncedHandleScrollRef.current = debounce(handleScroll, 100);
+
+    // Add event listener only if window exists (for SSR compatibility)
+    if (typeof window !== 'undefined') {
+      try {
+        window.addEventListener("scroll", debouncedHandleScrollRef.current);
+        
+        return () => {
+          // Clean up the event listener
+          if (debouncedHandleScrollRef.current) {
+            try {
+              window.removeEventListener("scroll", debouncedHandleScrollRef.current);
+            } catch (error) {
+              console.warn('Error removing scroll event listener:', error);
+            }
+          }
+        };
+      } catch (error) {
+        console.warn('Error adding scroll event listener:', error);
+      }
+    }
   }, [handleScroll]);
 
   return (

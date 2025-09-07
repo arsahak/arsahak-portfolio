@@ -32,7 +32,13 @@ export default function DashboardWrapper({ children }) {
   }
 
   if (!loggedIn) {
-    return null; // Will redirect to sign-in page
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#f7f8fa]">
+        <div className="text-center">
+          <p className="text-gray-600">Redirecting to sign-in...</p>
+        </div>
+      </div>
+    );
   }
 
   return (

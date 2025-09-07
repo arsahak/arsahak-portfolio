@@ -1,5 +1,6 @@
 "use client";
 import Cookies from "js-cookie";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -42,17 +43,19 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="w-64 bg-gradient-to-b from-white via-white to-gray-50 border-r border-gray-200 flex flex-col py-6 px-4 min-h-screen shadow-xl fixed left-0 top-0 bottom-0 z-30 backdrop-blur-sm">
+    <aside className="w-64 bg-gradient-to-b from-white via-white to-gray-50 border-r border-gray-200 flex flex-col py-6 px-4 min-h-screen shadow fixed left-0 top-0 bottom-0 z-30 backdrop-blur-sm">
       {/* Enhanced Logo */}
       <div className="mb-12 flex items-center justify-center group relative">
         <div className="flex flex-col items-center relative">
           <div className="relative mb-4">
             <div className="absolute inset-0 bg-gradient-to-r from-[#8750f7] via-[#6c3fc5] to-[#8750f7] rounded-full blur-lg opacity-20 group-hover:opacity-40 transition-all duration-500 animate-pulse"></div>
             <div className="absolute inset-2 bg-gradient-to-r from-[#8750f7] to-[#6c3fc5] rounded-full blur-sm opacity-40 group-hover:opacity-60 transition-all duration-300"></div>
-            <img
-              src="/assets/home/homepic.png"
+            <Image
+              src="/assets/home/arsahak1.jpg"
               alt="AR Sahak"
-              className="relative w-20 h-20 rounded-full border-4 border-white shadow-2xl transform group-hover:scale-110 transition-all duration-500 object-cover ring-4 ring-[#8750f7]/20 group-hover:ring-[#8750f7]/40"
+              width={300}
+              height={300}
+              className="relative w-20 h-20 rounded-full border-4 border-white shadow-2xl transform group-hover:scale-110 transition-all duration-500 object-cover ring-4 ring-[#8750f7]/20 group-hover:ring-[#8750f7]/40 image-cover image-center"
             />
             <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-white/20 to-transparent group-hover:from-white/30 transition-all duration-300"></div>
           </div>
@@ -110,22 +113,15 @@ export default function Sidebar() {
       </nav>
 
       {/* Enhanced Logout Button */}
-      <div className="mt-8 pt-6 border-t border-gradient-to-r from-transparent via-gray-300 to-transparent">
+      <div className="mt-8 pt-6 border-t border-gray-200">
         <button
           onClick={handleLogout}
-          className="group relative w-full flex items-center gap-4 px-4 py-2.5 rounded-2xl font-bold bg-gradient-to-br from-red-500 via-red-600 to-red-700 text-white hover:from-red-600 hover:via-red-700 hover:to-red-800 transition-all duration-500 transform hover:scale-105 shadow-xl hover:shadow-2xl overflow-hidden"
+          className="group w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 hover:bg-red-50 hover:text-red-600 transition-all duration-200 font-medium"
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-red-700 via-red-800 to-red-900 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
-          <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-          <div className="relative flex items-center gap-4 w-full justify-center">
-            <div className="relative p-2 rounded-xl bg-white/20 backdrop-blur-sm group-hover:bg-white/30 transition-all duration-300">
-              <span className="text-xl transition-all duration-500 group-hover:rotate-180 group-hover:scale-110">
-                <FaSignOutAlt />
-              </span>
-            </div>
-            <span className="font-black tracking-wider text-lg">Logout</span>
+          <div className="p-2 rounded-lg bg-gray-100 group-hover:bg-red-100 transition-colors duration-200">
+            <FaSignOutAlt className="text-lg group-hover:rotate-12 transition-transform duration-200" />
           </div>
-          <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-red-400 via-red-300 to-red-400 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 rounded-full"></div>
+          <span>Logout</span>
         </button>
       </div>
     </aside>

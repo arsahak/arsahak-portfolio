@@ -80,7 +80,7 @@ const NewsSection = () => {
               className="group h-full"
             >
               <Link href={`/blog/${blog.slug}`} className="block h-full">
-                <div className="bg-gradient-to-br from-[#181818] to-[#1a1a1a] rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 border border-white/10 group-hover:border-primary/30 h-full flex flex-col">
+                <div className="bg-gradient-to-br from-[#181818] to-[#1a1a1a] rounded-2xl overflow-hidden shadow hover:shadow-2xl transition-all duration-300 border border-white/10 group-hover:border-primary/30 h-full flex flex-col">
                   {/* Image Container */}
                   <div className="relative overflow-hidden h-64 flex-shrink-0">
                     <Image

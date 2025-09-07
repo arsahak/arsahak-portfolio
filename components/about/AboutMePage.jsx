@@ -22,7 +22,7 @@ const AboutMePage = () => {
                   >
                     {/* Experience badge */}
                     <div
-                      className="absolute top-5 left-5 z-20 flex items-center bg-white/90 border-2 border-primary shadow-xl px-3 py-2 rounded-full text-xs md:text-xl font-bold gap-2"
+                      className="absolute top-5 left-5 z-20 flex items-center bg-white/90 border-2 border-primary shadow px-3 py-2 rounded-full text-xs md:text-xl font-bold gap-2"
                       style={{ backdropFilter: "blur(6px)" }}
                     >
                       <FaTrophy

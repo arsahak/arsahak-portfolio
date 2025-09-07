@@ -3,7 +3,7 @@ import { FaBell, FaChevronDown, FaGlobe } from "react-icons/fa";
 
 export default function Topbar() {
   return (
-    <header className="w-full h-20 flex items-center justify-between px-8 bg-gradient-to-r from-white via-gray-50/50 to-white border-b border-gray-200/80 shadow-lg z-20 sticky top-0 backdrop-blur-md">
+    <header className="w-full h-20 flex items-center justify-between px-8 bg-gradient-to-r from-white via-gray-50/50 to-white border-b border-gray-200/80 shadow z-20 sticky top-0 backdrop-blur-md">
       {/* Left: Enhanced Dashboard title */}
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-3 group">
@@ -43,18 +43,6 @@ export default function Topbar() {
             EN
           </span>
           <FaChevronDown className="text-xs text-gray-400 group-hover:text-[#8750f7] group-hover:rotate-180 transition-all duration-300" />
-        </div>
-
-        {/* Enhanced User menu */}
-        <div className="flex items-center gap-3 px-4 py-2.5 rounded-2xl bg-gradient-to-br from-[#8750f7] via-[#6c3fc5] to-[#8750f7] text-white shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-          <div className="relative w-7 h-7 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/30 group-hover:scale-110 transition-transform duration-300">
-            <span className="text-sm font-black text-white">AS</span>
-          </div>
-          <span className="relative text-sm font-bold tracking-wide">
-            Admin
-          </span>
-          <FaChevronDown className="relative text-xs opacity-70 group-hover:opacity-100 group-hover:rotate-180 transition-all duration-300" />
         </div>
       </div>
     </header>

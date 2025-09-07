@@ -2,6 +2,71 @@
 @tailwind components;
 @tailwind utilities;
 
+@keyframes slide-in {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-in {
+  animation: slide-in 0.3s ease-out;
+}
+
+/* Blog Content Styling */
+.blog-content h2 {
+  @apply text-2xl font-bold text-white mt-8 mb-4 border-b border-gray-700 pb-2;
+}
+
+.blog-content h3 {
+  @apply text-xl font-semibold text-white mt-6 mb-3;
+}
+
+.blog-content p {
+  @apply mb-4 leading-relaxed text-gray-300;
+}
+
+.blog-content ul {
+  @apply mb-4 space-y-2;
+}
+
+.blog-content li {
+  @apply flex items-start;
+}
+
+.blog-content li::before {
+  content: "•";
+  @apply text-primary mr-3 mt-1 font-bold;
+}
+
+.blog-content strong {
+  @apply text-white font-semibold;
+}
+
+.blog-content em {
+  @apply text-gray-200 italic;
+}
+
+.blog-content blockquote {
+  @apply border-l-4 border-primary pl-4 my-6 italic text-gray-300;
+}
+
+.blog-content code {
+  @apply bg-gray-800 text-primary px-2 py-1 rounded text-sm;
+}
+
+.blog-content pre {
+  @apply bg-gray-800 p-4 rounded-lg overflow-x-auto my-4;
+}
+
+.blog-content pre code {
+  @apply bg-transparent p-0;
+}
+
 body {
   background: #0a0a0a;
 }

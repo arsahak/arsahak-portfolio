@@ -1,459 +1,478 @@
 "use client";
-import { useState } from "react";
+
+import Link from "next/link";
+import { useEffect, useState } from "react";
 import {
-  FaChevronDown,
-  FaChevronLeft,
-  FaChevronRight,
-  FaEdit,
-  FaPlus,
-  FaSearch,
-  FaTrash,
-} from "react-icons/fa";
+  FiChevronLeft,
+  FiChevronRight,
+  FiEdit,
+  FiEye,
+  FiLoader,
+  FiPlus,
+  FiTrash2,
+} from "react-icons/fi";
+import { toast } from "react-toastify";
+import { deleteBlog, getBlogs } from "../../../../lib/blogService";
 
-// Mock blog data
-const blogPosts = [
-  {
-    id: 1,
-    title:
-      "How Can Small Businesses Create High-Converting Blog Content Consistently?",
-    metaDescription:
-      "How Small Businesses Can Create High-Converting Blogs. Discover how to create high-converting blog content consistently for your small business. Learn proven strategies from Bayshore Communication.",
-    status: "Publish",
-    createdAt: "2024-01-15",
-    views: 1234,
-    category: "Business",
-  },
-  {
-    id: 2,
-    title: "Is It Even Worth Doing Long-form Content as a New Channel in 2025?",
-    metaDescription:
-      "Is It Even Worth Doing Long-form Content as a New Channel in 2025? Is it even worth doing long-form content in 2025? Explore how this format works as a new channel and why it continues to support strong results for brands.",
-    status: "Publish",
-    createdAt: "2024-01-12",
-    views: 987,
-    category: "Content Marketing",
-  },
-  {
-    id: 3,
-    title:
-      "What are the Best Strategies for Repurposing Blog Content for Social Media Marketing?",
-    metaDescription:
-      "Want more from your blog? Discover smart strategies to repurpose blog content into engaging social media posts that boost reach and achieve results.",
-    status: "Publish",
-    createdAt: "2024-01-10",
-    views: 756,
-    category: "Social Media",
-  },
-  {
-    id: 4,
-    title:
-      "Should Businesses Focus on Creating High-Quality Long Form Videos or Multiple Short Form Videos?",
-    metaDescription:
-      "Should Businesses Focus on Creating High-Quality Long Form Videos or Multiple Short Form Videos?Discover the difference between long-form and short-form video marketing. Learn what works best for your brand with expert insights from Bayshore Communications.",
-    status: "Publish",
-    createdAt: "2024-01-08",
-    views: 645,
-    category: "Video Marketing",
-  },
-  {
-    id: 5,
-    title:
-      "What is the Best Email Marketing Strategy for Small Businesses in 2025?",
-    metaDescription:
-      "What is the Best Email Marketing Strategy for Small Businesses in 2025?. Explore refined email marketing strategies for small businesses in 2025 to boost engagement, build trust, and drive consistent growth through every campaign.",
-    status: "Publish",
-    createdAt: "2024-01-05",
-    views: 532,
-    category: "Email Marketing",
-  },
-  {
-    id: 6,
-    title: "Enhancing Business Agility with Flexible Software Solutions",
-    metaDescription:
-      "Enhancing Business Agility with Flexible Software Solutions. Discover how flexible software systems can enhance your business agility. Explore how they reduce risk and help you stay ahead in a rapidly changing market.",
-    status: "Draft",
-    createdAt: "2024-01-03",
-    views: 0,
-    category: "Technology",
-  },
-  {
-    id: 7,
-    title: "The Evolution of Offshore Support in the Digital Age",
-    metaDescription:
-      "The Evolution of Offshore Support in the Digital Age. Discover how offshore support has evolved in this digital age from basic tasks to strategic, tech-driven partnerships to grow your business.",
-    status: "Draft",
-    createdAt: "2024-01-01",
-    views: 0,
-    category: "Business",
-  },
-  {
-    id: 8,
-    title: "How Emerging Technologies Are Transforming Business Operations",
-    metaDescription:
-      "Discover how emerging technologies & transforming business operations with automation, AI, cloud computing, and more. Learn how Bayshore Communication helps you lead with innovation. How Emerging Technologies Are Transforming Business Operations.",
-    status: "Publish",
-    createdAt: "2023-12-28",
-    views: 423,
-    category: "Technology",
-  },
-  {
-    id: 9,
-    title:
-      "How to Get Started with Digital Marketing for Your Business: A Beginner's Guide",
-    metaDescription:
-      "How to Get Started with Digital Marketing for Your Business: A Beginner's Guide. Get started with digital marketing for your business. This beginner's guide features essential strategies, tips, and insights to help you grow and succeed online.",
-    status: "Publish",
-    createdAt: "2023-12-25",
-    views: 678,
-    category: "Digital Marketing",
-  },
-  {
-    id: 10,
-    title:
-      "Creating Impactful Visual Content Best Practices for Digital Success",
-    metaDescription:
-      "Creating Impactful Visual Content: Best Practices for Digital Success. Learn to create impactful visual content with 2025's best practices.",
-    status: "Draft",
-    createdAt: "2023-12-22",
-    views: 0,
-    category: "Design",
-  },
-];
+const BlogListPage = () => {
+  const [blogs, setBlogs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [deletingId, setDeletingId] = useState(null);
 
-const ITEMS_PER_PAGE = 8;
-
-const BlogManagement = () => {
+  // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState("All");
-  const [posts, setPosts] = useState(blogPosts);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalBlogs, setTotalBlogs] = useState(0);
+  const blogsPerPage = 10;
 
-  // Filter posts based on search and status
-  const filteredPosts = posts.filter((post) => {
-    const matchesSearch =
-      post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      post.metaDescription.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus =
-      statusFilter === "All" || post.status === statusFilter;
-    return matchesSearch && matchesStatus;
-  });
+  useEffect(() => {
+    fetchBlogs();
+  }, [currentPage]);
 
-  // Pagination
-  const totalPages = Math.ceil(filteredPosts.length / ITEMS_PER_PAGE);
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const currentPosts = filteredPosts.slice(
-    startIndex,
-    startIndex + ITEMS_PER_PAGE
-  );
+  const fetchBlogs = async () => {
+    try {
+      setLoading(true);
+      console.log("Fetching blogs for page:", currentPage);
+      const result = await getBlogs({
+        page: currentPage,
+        limit: blogsPerPage,
+      });
+      console.log("Blogs fetched:", result);
 
-  // Handle status change
-  const handleStatusChange = (postId, newStatus) => {
-    setPosts(
-      posts.map((post) =>
-        post.id === postId ? { ...post, status: newStatus } : post
-      )
-    );
-  };
+      // Handle both possible response structures and normalize category data
+      const blogsData = result.data || result.blogs || result || [];
+      const total = result.total || result.count || blogsData.length;
 
-  // Handle delete
-  const handleDelete = (postId) => {
-    setPosts(posts.filter((post) => post.id !== postId));
-  };
+      const normalizedBlogs = Array.isArray(blogsData)
+        ? blogsData.map((blog) => ({
+            ...blog,
+            // Normalize category to always be an array
+            category: blog.category
+              ? Array.isArray(blog.category)
+                ? blog.category
+                : blog.category
+                    .split(",")
+                    .map((cat) => cat.trim())
+                    .filter((cat) => cat)
+              : [],
+          }))
+        : [];
 
-  const getStatusColor = (status) => {
-    switch (status.toLowerCase()) {
-      case "publish":
-        return "bg-green-100 text-green-800 border-green-200";
-      case "draft":
-        return "bg-yellow-100 text-yellow-800 border-yellow-200";
-      default:
-        return "bg-gray-100 text-gray-800 border-gray-200";
+      setBlogs(normalizedBlogs);
+      setTotalBlogs(total);
+      setTotalPages(Math.ceil(total / blogsPerPage));
+    } catch (error) {
+      console.error("Error fetching blogs:", error);
+      toast.error("Failed to fetch blogs: " + error.message);
+      setBlogs([]);
+    } finally {
+      setLoading(false);
     }
   };
 
+  const handleDelete = async (id) => {
+    if (!confirm("Are you sure you want to delete this blog?")) {
+      return;
+    }
+
+    try {
+      setDeletingId(id);
+      console.log("Deleting blog with ID:", id);
+      await deleteBlog(id);
+      toast.success("Blog deleted successfully!");
+
+      // If we're on a page that might be empty after deletion, go to previous page
+      if (blogs.length === 1 && currentPage > 1) {
+        setCurrentPage(currentPage - 1);
+      } else {
+        fetchBlogs(); // Refresh the current page
+      }
+    } catch (error) {
+      console.error("Error deleting blog:", error);
+      toast.error("Failed to delete blog: " + error.message);
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
+  // Pagination functions
+  const goToPage = (page) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
+  const goToPreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const goToNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  // Generate page numbers for pagination
+  const getPageNumbers = () => {
+    const pages = [];
+    const maxVisiblePages = 5;
+
+    if (totalPages <= maxVisiblePages) {
+      // Show all pages if total is less than max visible
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      // Show pages around current page
+      const startPage = Math.max(1, currentPage - 2);
+      const endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+      for (let i = startPage; i <= endPage; i++) {
+        pages.push(i);
+      }
+    }
+
+    return pages;
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+    try {
+      return new Date(dateString).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    } catch (error) {
+      return "Invalid Date";
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4">
+        <div className="w-full mx-auto">
+          <div className="flex items-center justify-center h-64">
+            <div className="text-center">
+              <FiLoader className="text-4xl text-purple-600 animate-spin mx-auto mb-4" />
+              <p className="text-gray-600">Loading blogs...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h1 className="text-4xl font-black bg-gradient-to-r from-[#2a1454] via-[#8750f7] to-[#6c3fc5] bg-clip-text text-transparent">
-            Blog Management
-          </h1>
-          <p className="text-gray-600 mt-2 text-lg">
-            Manage your blog posts, drafts, and published content.
-          </p>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4">
+      <div className="w-full mx-auto">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-8">
+          <div>
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent">
+              Blog Management
+            </h1>
+            <p className="text-gray-600 mt-2">Manage your blog posts</p>
+          </div>
+          <Link
+            href="/dashboard/create-post"
+            className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-xl hover:from-purple-700 hover:to-purple-800 transition-all duration-300 font-medium shadow-sm"
+          >
+            <FiPlus className="text-lg" />
+            Create New Blog
+          </Link>
         </div>
-        <button
-          onClick={() => (window.location.href = "/dashboard/create-post")}
-          className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#8750f7] to-[#6c3fc5]  text-white rounded-xl font-semibold hover:shadow-lg transition-all duration-300 hover:scale-105"
-        >
-          <FaPlus /> New Post
-        </button>
-      </div>
 
-      {/* Statistics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-6 shadow-lg border border-gray-100/50 hover:shadow-xl transition-all duration-300 group">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-500 text-sm font-medium uppercase tracking-wide">
-                Total Posts
-              </p>
-              <p className="text-3xl font-black bg-gradient-to-r from-[#8750f7] to-[#6c3fc5] bg-clip-text text-transparent mt-2">
-                {posts.length}
-              </p>
-              <p className="text-xs text-gray-400 mt-1">All blog content</p>
+        {/* Stats */}
+        <div className="mb-8 grid grid-cols-1 md:grid-cols-4 gap-6">
+          <div className="bg-white rounded-xl shadow-sm p-6 border border-purple-100">
+            <div className="flex items-center">
+              <div className="p-2 bg-purple-100 rounded-lg">
+                <FiPlus className="w-6 h-6 text-purple-600" />
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">Total Blogs</p>
+                <p className="text-2xl font-bold text-gray-900">{totalBlogs}</p>
+              </div>
             </div>
-            <div className="p-4 rounded-2xl bg-gradient-to-br from-[#8750f7] to-[#6c3fc5] text-white shadow-lg group-hover:scale-110 transition-transform duration-300">
-              <FaEdit className="w-6 h-6" />
+          </div>
+
+          <div className="bg-white rounded-xl shadow-sm p-6 border border-purple-100">
+            <div className="flex items-center">
+              <div className="p-2 bg-green-100 rounded-lg">
+                <FiEye className="w-6 h-6 text-green-600" />
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">Published</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {blogs.filter((blog) => blog.published).length}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl shadow-sm p-6 border border-purple-100">
+            <div className="flex items-center">
+              <div className="p-2 bg-yellow-100 rounded-lg">
+                <FiEdit className="w-6 h-6 text-yellow-600" />
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">Drafts</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {blogs.filter((blog) => !blog.published).length}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl shadow-sm p-6 border border-purple-100">
+            <div className="flex items-center">
+              <div className="p-2 bg-blue-100 rounded-lg">
+                <FiLoader className="w-6 h-6 text-blue-600" />
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">
+                  Current Page
+                </p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {currentPage} of {totalPages}
+                </p>
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-white to-green-50 rounded-2xl p-6 shadow-lg border border-gray-100/50 hover:shadow-xl transition-all duration-300 group">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-500 text-sm font-medium uppercase tracking-wide">
-                Published
+        {/* Blog List */}
+        <div className="bg-white rounded-xl shadow-sm border border-purple-100 overflow-hidden">
+          {blogs.length === 0 ? (
+            <div className="p-12 text-center">
+              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <FiPlus className="text-2xl text-purple-600" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                No blogs yet
+              </h3>
+              <p className="text-gray-500 mb-6">
+                Create your first blog post to get started
               </p>
-              <p className="text-3xl font-black bg-gradient-to-r from-green-600 to-green-500 bg-clip-text text-transparent mt-2">
-                {posts.filter((p) => p.status === "Publish").length}
-              </p>
-              <p className="text-xs text-gray-400 mt-1">Live content</p>
+              <Link
+                href="/dashboard/create-post"
+                className="inline-flex items-center gap-2 px-6 py-2.5 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-200"
+              >
+                <FiPlus />
+                Create Your First Blog
+              </Link>
             </div>
-            <div className="p-4 rounded-2xl bg-gradient-to-br from-green-500 to-green-600 text-white shadow-lg group-hover:scale-110 transition-transform duration-300">
-              <FaEdit className="w-6 h-6" />
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-gradient-to-br from-white to-yellow-50 rounded-2xl p-6 shadow-lg border border-gray-100/50 hover:shadow-xl transition-all duration-300 group">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-500 text-sm font-medium uppercase tracking-wide">
-                Drafts
-              </p>
-              <p className="text-3xl font-black bg-gradient-to-r from-yellow-600 to-yellow-500 bg-clip-text text-transparent mt-2">
-                {posts.filter((p) => p.status === "Draft").length}
-              </p>
-              <p className="text-xs text-gray-400 mt-1">Work in progress</p>
-            </div>
-            <div className="p-4 rounded-2xl bg-gradient-to-br from-yellow-500 to-yellow-600 text-white shadow-lg group-hover:scale-110 transition-transform duration-300">
-              <FaEdit className="w-6 h-6" />
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-gradient-to-br from-white to-blue-50 rounded-2xl p-6 shadow-lg border border-gray-100/50 hover:shadow-xl transition-all duration-300 group">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-500 text-sm font-medium uppercase tracking-wide">
-                Total Views
-              </p>
-              <p className="text-3xl font-black bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent mt-2">
-                {posts
-                  .reduce((sum, post) => sum + post.views, 0)
-                  .toLocaleString()}
-              </p>
-              <p className="text-xs text-gray-400 mt-1">All time views</p>
-            </div>
-            <div className="p-4 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-lg group-hover:scale-110 transition-transform duration-300">
-              <FaEdit className="w-6 h-6" />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Filters and Search */}
-      <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100/50 backdrop-blur-sm">
-        <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-          {/* Search */}
-          <div className="relative flex-1 max-w-md">
-            <FaSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm" />
-            <input
-              type="text"
-              placeholder="Search blog posts..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#8750f7]/20 focus:border-[#8750f7] transition-all duration-300 bg-gray-50/50 hover:bg-white"
-            />
-          </div>
-
-          {/* Status Filter */}
-          <div className="flex items-center gap-4">
-            <span className="text-sm font-semibold text-gray-600">Filter:</span>
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#8750f7]/20 focus:border-[#8750f7] transition-all duration-300 bg-gray-50/50 hover:bg-white font-medium text-gray-700"
-            >
-              <option value="All">All Status</option>
-              <option value="Publish">Published</option>
-              <option value="Draft">Draft</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      {/* Blog Posts Table */}
-      <div className="bg-white rounded-3xl shadow-2xl border border-gray-100/50 overflow-hidden backdrop-blur-sm">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gradient-to-r from-gray-50/80 via-white to-gray-50/80 backdrop-blur-sm">
-              <tr className="border-b border-gray-100">
-                <th className="px-8 py-5 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">
-                  #
-                </th>
-                <th className="px-8 py-5 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">
-                  Title
-                </th>
-                <th className="px-8 py-5 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">
-                  Meta Description
-                </th>
-                <th className="px-8 py-5 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="px-8 py-5 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">
-                  Action
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-50/80">
-              {currentPosts.map((post, index) => (
-                <tr
-                  key={post.id}
-                  className="hover:bg-gradient-to-r hover:from-[#8750f7]/5 hover:to-[#6c3fc5]/5 transition-all duration-300 group"
-                >
-                  <td className="px-8 py-6 whitespace-nowrap">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-r from-[#8750f7]/10 to-[#6c3fc5]/10 flex items-center justify-center text-sm font-bold text-gray-700 group-hover:from-[#8750f7]/20 group-hover:to-[#6c3fc5]/20 transition-all duration-300">
-                      {startIndex + index + 1}
-                    </div>
-                  </td>
-                  <td className="px-8 py-6">
-                    <div className="max-w-sm">
-                      <div className="text-sm font-bold text-gray-900 line-clamp-2 hover:text-[#8750f7] transition-colors duration-300 cursor-pointer leading-relaxed">
-                        {post.title}
-                      </div>
-                      <div className="flex items-center gap-3 mt-2">
-                        <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-[#8750f7]/10 text-[#8750f7]">
-                          {post.category}
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50 border-b border-gray-200">
+                  <tr>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-500 uppercase tracking-wider">
+                      Blog
+                    </th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-500 uppercase tracking-wider">
+                      Author
+                    </th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-500 uppercase tracking-wider">
+                      Category
+                    </th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-500 uppercase tracking-wider">
+                      Status
+                    </th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-500 uppercase tracking-wider">
+                      Created
+                    </th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-500 uppercase tracking-wider">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {blogs.map((blog) => (
+                    <tr
+                      key={blog._id}
+                      className="hover:bg-gray-50 transition-colors duration-200"
+                    >
+                      <td className="px-6 py-4">
+                        <div className="flex items-center space-x-3">
+                          {blog.featuredImage?.image?.url && (
+                            <img
+                              src={blog.featuredImage.image.url}
+                              alt={
+                                blog.featuredImage.imageTitle ||
+                                blog.title ||
+                                "Blog image"
+                              }
+                              className="w-12 h-12 object-cover rounded-lg"
+                              onError={(e) => {
+                                // Hide broken images
+                                e.target.style.display = "none";
+                              }}
+                            />
+                          )}
+                          <div>
+                            <h3 className="text-base font-medium text-gray-900 line-clamp-2">
+                              {blog.title || "Untitled"}
+                            </h3>
+                            <p className="text-sm text-gray-500">
+                              /blog/{blog.slug || "no-slug"}
+                            </p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="text-base font-medium text-gray-900">
+                          {blog.author || "Unknown"}
                         </span>
-                        <span className="text-xs text-gray-500 font-medium">
-                          {post.views.toLocaleString()} views
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex flex-wrap gap-1">
+                          {Array.isArray(blog.category) &&
+                          blog.category.length > 0 ? (
+                            <>
+                              {blog.category.slice(0, 2).map((cat, index) => (
+                                <span
+                                  key={index}
+                                  className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800"
+                                >
+                                  {cat}
+                                </span>
+                              ))}
+                              {blog.category.length > 2 && (
+                                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                  +{blog.category.length - 2}
+                                </span>
+                              )}
+                            </>
+                          ) : (
+                            <span className="text-xs text-gray-500">
+                              No categories
+                            </span>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span
+                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                            blog.published
+                              ? "bg-green-100 text-green-800"
+                              : "bg-yellow-100 text-yellow-800"
+                          }`}
+                        >
+                          {blog.published ? "Published" : "Draft"}
                         </span>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-8 py-6">
-                    <div className="max-w-lg">
-                      <p className="text-sm text-gray-600 line-clamp-2 leading-relaxed">
-                        {post.metaDescription}
-                      </p>
-                    </div>
-                  </td>
-                  <td className="px-8 py-6 whitespace-nowrap">
-                    <div className="relative">
-                      <select
-                        value={post.status}
-                        onChange={(e) =>
-                          handleStatusChange(post.id, e.target.value)
-                        }
-                        className={`appearance-none px-4 py-2.5 pr-10 rounded-xl text-sm font-bold border-2 transition-all duration-300 cursor-pointer hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#8750f7]/20 ${getStatusColor(post.status)}`}
-                      >
-                        <option value="Publish">Publish</option>
-                        <option value="Draft">Draft</option>
-                      </select>
-                      <FaChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-sm pointer-events-none opacity-60" />
-                    </div>
-                  </td>
-                  <td className="px-8 py-6 whitespace-nowrap">
-                    <div className="flex items-center gap-3">
-                      <button
-                        onClick={() =>
-                          (window.location.href = `/dashboard/blog/${post.id}`)
-                        }
-                        className="p-3 text-blue-600 hover:bg-blue-50 rounded-xl transition-all duration-300 hover:scale-110 hover:shadow-lg group/btn"
-                      >
-                        <FaEdit className="w-4 h-4 group-hover/btn:scale-110 transition-transform duration-200" />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(post.id)}
-                        className="p-3 text-red-600 hover:bg-red-50 rounded-xl transition-all duration-300 hover:scale-110 hover:shadow-lg group/btn"
-                      >
-                        <FaTrash className="w-4 h-4 group-hover/btn:scale-110 transition-transform duration-200" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="text-sm text-gray-500">
+                          {formatDate(blog.createdAt)}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center space-x-2">
+                          <Link
+                            href={`/blog/${blog.slug}`}
+                            target="_blank"
+                            className="p-2 text-gray-400 hover:text-green-600 transition-colors duration-200"
+                            title="View blog"
+                          >
+                            <FiEye className="w-4 h-4 text-green-400" />
+                          </Link>
+                          <Link
+                            href={`/dashboard/blog/${blog.slug}`}
+                            className="p-2 text-gray-400 hover:text-purple-600 transition-colors duration-200"
+                            title="Edit blog"
+                          >
+                            <FiEdit className="w-4 h-4 text-purple-400" />
+                          </Link>
+                          <button
+                            onClick={() => handleDelete(blog._id)}
+                            disabled={deletingId === blog._id}
+                            className="p-2 text-gray-400 hover:text-red-600 transition-colors duration-200 disabled:opacity-50"
+                            title="Delete blog"
+                          >
+                            {deletingId === blog._id ? (
+                              <FiLoader className="w-4 h-4 animate-spin" />
+                            ) : (
+                              <FiTrash2 className="w-4 h-4 text-red-400" />
+                            )}
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
 
         {/* Pagination */}
-        <div className="bg-gradient-to-r from-gray-50/50 via-white to-gray-50/50 px-8 py-6 border-t border-gray-100/50 backdrop-blur-sm">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="text-sm font-medium text-gray-600">
-              Showing{" "}
-              <span className="font-bold text-gray-900">{startIndex + 1}</span>{" "}
-              to{" "}
-              <span className="font-bold text-gray-900">
-                {Math.min(startIndex + ITEMS_PER_PAGE, filteredPosts.length)}
-              </span>{" "}
-              of{" "}
-              <span className="font-bold text-[#8750f7]">
-                {filteredPosts.length}
-              </span>{" "}
-              entries
-            </div>
-
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                disabled={currentPage === 1}
-                className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-gray-700 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-300 hover:shadow-md"
-              >
-                <FaChevronLeft className="w-3.5 h-3.5" />
-                Previous
-              </button>
-
-              <div className="flex gap-1">
-                {[...Array(totalPages)].map((_, index) => {
-                  const pageNumber = index + 1;
-                  const isCurrentPage = pageNumber === currentPage;
-
-                  return (
-                    <button
-                      key={pageNumber}
-                      onClick={() => setCurrentPage(pageNumber)}
-                      className={`w-10 h-10 text-sm font-bold rounded-xl transition-all duration-300 ${
-                        isCurrentPage
-                          ? "bg-gradient-to-r from-[#8750f7] to-[#6c3fc5] text-white shadow-lg scale-110"
-                          : "text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 hover:border-gray-300 hover:shadow-md"
-                      }`}
-                    >
-                      {pageNumber}
-                    </button>
-                  );
-                })}
+        {totalPages > 1 && (
+          <div className="mt-8 bg-white rounded-xl shadow-sm border border-purple-100 p-6">
+            <div className="flex items-center justify-between">
+              {/* Pagination Info */}
+              <div className="text-sm text-gray-700">
+                Showing{" "}
+                <span className="font-medium">
+                  {Math.min((currentPage - 1) * blogsPerPage + 1, totalBlogs)}
+                </span>{" "}
+                to{" "}
+                <span className="font-medium">
+                  {Math.min(currentPage * blogsPerPage, totalBlogs)}
+                </span>{" "}
+                of <span className="font-medium">{totalBlogs}</span> results
               </div>
 
-              <button
-                onClick={() =>
-                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-                }
-                disabled={currentPage === totalPages}
-                className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-gray-700 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-300 hover:shadow-md"
-              >
-                Next
-                <FaChevronRight className="w-3.5 h-3.5" />
-              </button>
+              {/* Pagination Controls */}
+              <div className="flex items-center space-x-2">
+                {/* Previous Button */}
+                <button
+                  onClick={goToPreviousPage}
+                  disabled={currentPage === 1}
+                  className="flex items-center px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                >
+                  <FiChevronLeft className="w-4 h-4 mr-1" />
+                  Previous
+                </button>
+
+                {/* Page Numbers */}
+                <div className="flex items-center space-x-1">
+                  {getPageNumbers().map((pageNum) => (
+                    <button
+                      key={pageNum}
+                      onClick={() => goToPage(pageNum)}
+                      className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors duration-200 ${
+                        currentPage === pageNum
+                          ? "bg-purple-600 text-white"
+                          : "text-gray-500 bg-white border border-gray-300 hover:bg-gray-50 hover:text-gray-700"
+                      }`}
+                    >
+                      {pageNum}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Next Button */}
+                <button
+                  onClick={goToNextPage}
+                  disabled={currentPage === totalPages}
+                  className="flex items-center px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                >
+                  Next
+                  <FiChevronRight className="w-4 h-4 ml-1" />
+                </button>
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
 };
 
-export default BlogManagement;
+export default BlogListPage;
