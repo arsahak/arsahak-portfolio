@@ -179,7 +179,8 @@ const BlogDetailsClient = ({ params }) => {
               Blog Post Not Found
             </h1>
             <p className="text-gray-400 mb-8 max-w-md mx-auto">
-              The blog post you&apos;re looking for doesn&apos;t exist or has been moved.
+              The blog post you&apos;re looking for doesn&apos;t exist or has
+              been moved.
             </p>
           </div>
           <Link
@@ -250,7 +251,7 @@ const BlogDetailsClient = ({ params }) => {
         <div className="container">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
             {/* Main Content */}
-            <div className="lg:col-span-2">
+            <div className="lg:col-span-2 text-white">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}

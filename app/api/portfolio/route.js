@@ -1,4 +1,5 @@
-import connectDB, { prisma } from '@/lib/prisma';
+import connectDB from '@/lib/prisma';
+import { MongoClient } from 'mongodb';
 import { NextResponse } from 'next/server';
 
 const generateSlug = (text = '') =>
@@ -17,38 +18,135 @@ export async function GET(request) {
     const slug = searchParams.get('slug');
     const published = searchParams.get('published');
 
+    // Use direct MongoDB connection like blog route
+    const client = new MongoClient(process.env.DATABASE_URL);
+    await client.connect();
+    
+    const db = client.db();
+    const collection = db.collection('portfolios');
+
     if (id) {
-      // Fetch single portfolio by ID
-      const portfolio = await prisma.portfolio.findUnique({
-        where: { id }
-      });
-      if (!portfolio) {
-        return NextResponse.json({ error: 'Portfolio not found' }, { status: 404 });
+      try {
+        const portfolio = await collection.findOne({ _id: new (await import('mongodb')).ObjectId(id) });
+        await client.close();
+        
+        if (!portfolio) {
+          return NextResponse.json({ error: 'Portfolio not found' }, { status: 404 });
+        }
+        
+        // Transform portfolio to match expected format
+        const transformedPortfolio = {
+          _id: portfolio._id.toString(),
+          id: portfolio._id.toString(),
+          title: portfolio.title || '',
+          slug: portfolio.slug || '',
+          description: portfolio.description || '',
+          content: portfolio.content || '',
+          featureImage: portfolio.featureImage || null,
+          category: portfolio.category || '',
+          projectDuration: portfolio.projectDuration || {},
+          projectBudget: portfolio.projectBudget || 0,
+          clientName: portfolio.clientName || '',
+          clientWebsite: portfolio.clientWebsite || '',
+          liveUrl: portfolio.liveUrl || '',
+          githubUrl: portfolio.githubUrl || '',
+          technologies: Array.isArray(portfolio.technologies) ? portfolio.technologies : [],
+          images: Array.isArray(portfolio.images) ? portfolio.images : [],
+          published: portfolio.published || false,
+          featured: portfolio.featured || false,
+          createdAt: portfolio.createdAt || new Date(),
+          updatedAt: portfolio.updatedAt || new Date()
+        };
+        
+        return NextResponse.json(transformedPortfolio, { status: 200 });
+      } catch (error) {
+        await client.close();
+        return NextResponse.json({ error: 'Failed to fetch portfolio' }, { status: 500 });
       }
-      return NextResponse.json(portfolio, { status: 200 });
     }
 
     if (slug) {
-      // Fetch single portfolio by slug
-      const portfolio = await prisma.portfolio.findUnique({
-        where: { slug }
-      });
-      if (!portfolio) {
-        return NextResponse.json({ error: 'Portfolio not found' }, { status: 404 });
+      try {
+        const portfolio = await collection.findOne({ slug });
+        await client.close();
+        
+        if (!portfolio) {
+          return NextResponse.json({ error: 'Portfolio not found' }, { status: 404 });
+        }
+        
+        // Transform portfolio to match expected format
+        const transformedPortfolio = {
+          _id: portfolio._id.toString(),
+          id: portfolio._id.toString(),
+          title: portfolio.title || '',
+          slug: portfolio.slug || '',
+          description: portfolio.description || '',
+          content: portfolio.content || '',
+          featureImage: portfolio.featureImage || null,
+          category: portfolio.category || '',
+          projectDuration: portfolio.projectDuration || {},
+          projectBudget: portfolio.projectBudget || 0,
+          clientName: portfolio.clientName || '',
+          clientWebsite: portfolio.clientWebsite || '',
+          liveUrl: portfolio.liveUrl || '',
+          githubUrl: portfolio.githubUrl || '',
+          technologies: Array.isArray(portfolio.technologies) ? portfolio.technologies : [],
+          images: Array.isArray(portfolio.images) ? portfolio.images : [],
+          published: portfolio.published || false,
+          featured: portfolio.featured || false,
+          createdAt: portfolio.createdAt || new Date(),
+          updatedAt: portfolio.updatedAt || new Date()
+        };
+        
+        return NextResponse.json(transformedPortfolio, { status: 200 });
+      } catch (error) {
+        await client.close();
+        return NextResponse.json({ error: 'Failed to fetch portfolio' }, { status: 500 });
       }
-      return NextResponse.json(portfolio, { status: 200 });
     }
 
     // Fetch all portfolios
-    const where = {};
-    if (published === 'true') where.published = true;
-    if (published === 'false') where.published = false;
+    try {
+      const filter = {};
+      if (published === 'true') filter.published = true;
+      if (published === 'false') filter.published = false;
 
-    const portfolios = await prisma.portfolio.findMany({
-      where,
-      orderBy: { createdAt: 'desc' }
-    });
-    return NextResponse.json(portfolios, { status: 200 });
+      const portfolios = await collection
+        .find(filter)
+        .sort({ createdAt: -1 })
+        .toArray();
+      
+      await client.close();
+
+      // Transform portfolios to match expected format
+      const transformedPortfolios = portfolios.map(portfolio => ({
+        _id: portfolio._id.toString(),
+        id: portfolio._id.toString(),
+        title: portfolio.title || '',
+        slug: portfolio.slug || '',
+        description: portfolio.description || '',
+        content: portfolio.content || '',
+        featureImage: portfolio.featureImage || null,
+        category: portfolio.category || '',
+        projectDuration: portfolio.projectDuration || {},
+        projectBudget: portfolio.projectBudget || 0,
+        clientName: portfolio.clientName || '',
+        clientWebsite: portfolio.clientWebsite || '',
+        liveUrl: portfolio.liveUrl || '',
+        githubUrl: portfolio.githubUrl || '',
+        technologies: Array.isArray(portfolio.technologies) ? portfolio.technologies : [],
+        images: Array.isArray(portfolio.images) ? portfolio.images : [],
+        published: portfolio.published || false,
+        featured: portfolio.featured || false,
+        createdAt: portfolio.createdAt || new Date(),
+        updatedAt: portfolio.updatedAt || new Date()
+      }));
+
+      return NextResponse.json(transformedPortfolios, { status: 200 });
+    } catch (error) {
+      await client.close();
+      return NextResponse.json({ error: 'Failed to fetch portfolios' }, { status: 500 });
+    }
   } catch (error) {
     console.error('Portfolio GET error:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
@@ -112,10 +210,28 @@ export async function POST(request) {
       );
     }
 
-    const portfolio = await prisma.portfolio.create({
-      data: mapped
-    });
-    return NextResponse.json(portfolio, { status: 201 });
+    // Use direct MongoDB connection
+    const client = new MongoClient(process.env.DATABASE_URL);
+    await client.connect();
+    
+    const db = client.db();
+    const collection = db.collection('portfolios');
+
+    // Add timestamps
+    mapped.createdAt = new Date();
+    mapped.updatedAt = new Date();
+
+    const result = await collection.insertOne(mapped);
+    await client.close();
+
+    // Transform response
+    const transformedPortfolio = {
+      _id: result.insertedId.toString(),
+      id: result.insertedId.toString(),
+      ...mapped
+    };
+
+    return NextResponse.json(transformedPortfolio, { status: 201 });
   } catch (error) {
     console.error('Portfolio POST error:', error);
     const status = error?.code === 'P2002' ? 409 : 400; // Prisma unique constraint error
@@ -160,12 +276,55 @@ export async function PUT(request) {
     if (Array.isArray(update.technologies)) mappedUpdate.technologies = update.technologies;
     if (Array.isArray(update.images)) mappedUpdate.images = update.images;
 
-    const portfolio = await prisma.portfolio.update({
-      where: { id },
-      data: mappedUpdate
-    });
+    // Use direct MongoDB connection
+    const client = new MongoClient(process.env.DATABASE_URL);
+    await client.connect();
     
-    return NextResponse.json(portfolio, { status: 200 });
+    const db = client.db();
+    const collection = db.collection('portfolios');
+
+    // Add updated timestamp
+    mappedUpdate.updatedAt = new Date();
+
+    const result = await collection.updateOne(
+      { _id: new (await import('mongodb')).ObjectId(id) },
+      { $set: mappedUpdate }
+    );
+
+    if (result.matchedCount === 0) {
+      await client.close();
+      return NextResponse.json({ error: 'Portfolio not found' }, { status: 404 });
+    }
+
+    // Get the updated portfolio
+    const updatedPortfolio = await collection.findOne({ _id: new (await import('mongodb')).ObjectId(id) });
+    await client.close();
+
+    // Transform response
+    const transformedPortfolio = {
+      _id: updatedPortfolio._id.toString(),
+      id: updatedPortfolio._id.toString(),
+      title: updatedPortfolio.title || '',
+      slug: updatedPortfolio.slug || '',
+      description: updatedPortfolio.description || '',
+      content: updatedPortfolio.content || '',
+      featureImage: updatedPortfolio.featureImage || null,
+      category: updatedPortfolio.category || '',
+      projectDuration: updatedPortfolio.projectDuration || {},
+      projectBudget: updatedPortfolio.projectBudget || 0,
+      clientName: updatedPortfolio.clientName || '',
+      clientWebsite: updatedPortfolio.clientWebsite || '',
+      liveUrl: updatedPortfolio.liveUrl || '',
+      githubUrl: updatedPortfolio.githubUrl || '',
+      technologies: Array.isArray(updatedPortfolio.technologies) ? updatedPortfolio.technologies : [],
+      images: Array.isArray(updatedPortfolio.images) ? updatedPortfolio.images : [],
+      published: updatedPortfolio.published || false,
+      featured: updatedPortfolio.featured || false,
+      createdAt: updatedPortfolio.createdAt || new Date(),
+      updatedAt: updatedPortfolio.updatedAt || new Date()
+    };
+    
+    return NextResponse.json(transformedPortfolio, { status: 200 });
   } catch (error) {
     console.error('Portfolio PUT error:', error);
     return NextResponse.json({ error: error.message }, { status: 400 });
@@ -182,11 +341,21 @@ export async function DELETE(request) {
       return NextResponse.json({ error: 'No portfolio ID provided' }, { status: 400 });
     }
     
-    await prisma.portfolio.delete({
-      where: { id }
-    });
+    // Use direct MongoDB connection
+    const client = new MongoClient(process.env.DATABASE_URL);
+    await client.connect();
     
-    return NextResponse.json({ success: true }, { status: 200 });
+    const db = client.db();
+    const collection = db.collection('portfolios');
+
+    const result = await collection.deleteOne({ _id: new (await import('mongodb')).ObjectId(id) });
+    await client.close();
+
+    if (result.deletedCount === 0) {
+      return NextResponse.json({ error: 'Portfolio not found' }, { status: 404 });
+    }
+    
+    return NextResponse.json({ success: true, message: 'Portfolio deleted successfully' }, { status: 200 });
   } catch (error) {
     console.error('Portfolio DELETE error:', error);
     return NextResponse.json({ error: error.message }, { status: 400 });
