@@ -1,38 +1,7 @@
+import connectDB from '@/lib/prisma';
 import { v2 as cloudinary } from 'cloudinary';
+import { MongoClient } from 'mongodb';
 import { NextResponse } from 'next/server';
-
-// Lazy-load database dependencies to avoid build-time connection issues
-let connectDB;
-let Media;
-let Schema, model, models;
-
-const initializeDB = async () => {
-  if (!connectDB) {
-    ({ default: connectDB } = await import('../../../lib/prisma'));
-    ({ Schema, model, models } = await import('mongoose'));
-    
-    // Define Media Schema
-    const MediaSchema = new Schema({
-      title: { type: String, required: true },
-      alt: { type: String, required: true },
-      url: { type: String, required: true },
-      publicId: { type: String, required: true, unique: true },
-      folder: { type: String, default: 'dashboard-blogs' },
-      format: { type: String, required: true },
-      width: { type: Number, required: true },
-      height: { type: Number, required: true },
-      bytes: { type: Number, required: true },
-      resourceType: { type: String, default: 'image' },
-      tags: [{ type: String }],
-      createdAt: { type: Date, default: Date.now },
-      updatedAt: { type: Date, default: Date.now }
-    });
-
-    Media = models.Media || model('Media', MediaSchema);
-  }
-  
-  return { connectDB, Media };
-};
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -42,24 +11,22 @@ cloudinary.config({
 
 export async function GET(request) {
   try {
-    // Skip DB access if MONGODB_URI is not available (e.g., during build)
-    if (!process.env.MONGODB_URI) {
-      return NextResponse.json(
-        { success: false, message: 'Database not available during build' },
-        { status: 503 }
-      );
-    }
-    
-    const { connectDB, Media } = await initializeDB();
-    await connectDB();
+    await connectDB(); // Ensure connection is established
     
     const { searchParams } = new URL(request.url);
     const folder = searchParams.get('folder') || 'dashboard-blogs';
     const maxResults = parseInt(searchParams.get('max_results')) || 50;
     const search = searchParams.get('search') || '';
 
-    console.log('Fetching media from database - folder:', folder, 'maxResults:', maxResults, 'search:', search);
+    // Fetching media from database
 
+    // Use direct MongoDB connection like in blog route
+    const client = new MongoClient(process.env.DATABASE_URL);
+    await client.connect();
+    
+    const db = client.db();
+    const collection = db.collection('media');
+    
     // Build the query filter
     let query = { folder: folder };
 
@@ -74,17 +41,17 @@ export async function GET(request) {
 
     // Fetch images from database
     const [images, total] = await Promise.all([
-      Media.find(query)
+      collection
+        .find(query)
         .sort({ createdAt: -1 })
         .limit(maxResults)
-        .select('_id title alt url publicId folder format width height bytes tags createdAt updatedAt'),
-      Media.countDocuments(query),
+        .toArray(),
+      collection.countDocuments(query),
     ]);
 
-    console.log('Database query result:', {
-      total_count: total,
-      images_count: images.length,
-    });
+    await client.close();
+
+    // Database query completed
 
     // Transform the results to match expected frontend format
     const transformedImages = images.map((image) => ({
@@ -92,13 +59,13 @@ export async function GET(request) {
       url: image.url,
       title: image.title,
       alt: image.alt,
-      uploadedAt: image.createdAt.toISOString(),
+      uploadedAt: image.createdAt ? new Date(image.createdAt).toISOString() : new Date().toISOString(),
       format: image.format,
       width: image.width,
       height: image.height,
       bytes: image.bytes,
       public_id: image.publicId,
-      tags: image.tags,
+      tags: image.tags || [],
       folder: image.folder,
     }));
 
@@ -123,15 +90,7 @@ export async function GET(request) {
 
 export async function DELETE(request) {
   try {
-    if (!process.env.MONGODB_URI) {
-      return NextResponse.json(
-        { success: false, message: 'Database not available during build' },
-        { status: 503 }
-      );
-    }
-    
-    const { connectDB, Media } = await initializeDB();
-    await connectDB();
+    await connectDB(); // Ensure connection is established
     
     const { publicId } = await request.json();
 
@@ -142,12 +101,20 @@ export async function DELETE(request) {
       );
     }
 
-    console.log('Deleting media with publicId:', publicId);
+    // Deleting media
+
+    // Use direct MongoDB connection
+    const client = new MongoClient(process.env.DATABASE_URL);
+    await client.connect();
+    
+    const db = client.db();
+    const collection = db.collection('media');
 
     // Find the media record in database first
-    const mediaRecord = await Media.findOne({ publicId: publicId });
+    const mediaRecord = await collection.findOne({ publicId: publicId });
 
     if (!mediaRecord) {
+      await client.close();
       return NextResponse.json(
         { error: 'Media record not found in database' },
         { status: 404 }
@@ -156,11 +123,12 @@ export async function DELETE(request) {
 
     // Delete from Cloudinary first
     const cloudinaryResult = await cloudinary.uploader.destroy(publicId);
-    console.log('Cloudinary deletion result:', cloudinaryResult);
+    // Cloudinary deletion completed
 
     // Delete from database regardless of Cloudinary result
     // (in case the image was already deleted from Cloudinary but still in DB)
-    await Media.deleteOne({ publicId: publicId });
+    await collection.deleteOne({ publicId: publicId });
+    await client.close();
 
     return NextResponse.json({
       success: true,
@@ -180,15 +148,7 @@ export async function DELETE(request) {
 // POST function to create/save media metadata when images are uploaded
 export async function POST(request) {
   try {
-    if (!process.env.MONGODB_URI) {
-      return NextResponse.json(
-        { success: false, message: 'Database not available during build' },
-        { status: 503 }
-      );
-    }
-    
-    const { connectDB, Media } = await initializeDB();
-    await connectDB();
+    await connectDB(); // Ensure connection is established
     
     const mediaData = await request.json();
 
@@ -203,12 +163,20 @@ export async function POST(request) {
       );
     }
 
-    console.log('Saving media metadata to database:', mediaData.publicId);
+    // Saving media metadata to database
+
+    // Use direct MongoDB connection
+    const client = new MongoClient(process.env.DATABASE_URL);
+    await client.connect();
+    
+    const db = client.db();
+    const collection = db.collection('media');
 
     // Check if media already exists
-    const existingMedia = await Media.findOne({ publicId: mediaData.publicId });
+    const existingMedia = await collection.findOne({ publicId: mediaData.publicId });
 
     if (existingMedia) {
+      await client.close();
       return NextResponse.json(
         { error: 'Media with this public ID already exists' },
         { status: 409 }
@@ -216,7 +184,7 @@ export async function POST(request) {
     }
 
     // Create new media record
-    const newMedia = new Media({
+    const newMediaDoc = {
       title: mediaData.title,
       alt: mediaData.alt,
       url: mediaData.url,
@@ -228,19 +196,22 @@ export async function POST(request) {
       bytes: parseInt(mediaData.bytes),
       resourceType: mediaData.resourceType || 'image',
       tags: mediaData.tags || [],
-    });
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
 
-    await newMedia.save();
+    const result = await collection.insertOne(newMediaDoc);
+    await client.close();
 
     return NextResponse.json({
       success: true,
       message: 'Media metadata saved successfully',
       data: {
-        id: newMedia._id.toString(),
-        publicId: newMedia.publicId,
-        url: newMedia.url,
-        title: newMedia.title,
-        alt: newMedia.alt,
+        id: result.insertedId.toString(),
+        publicId: newMediaDoc.publicId,
+        url: newMediaDoc.url,
+        title: newMediaDoc.title,
+        alt: newMediaDoc.alt,
       },
     });
   } catch (error) {

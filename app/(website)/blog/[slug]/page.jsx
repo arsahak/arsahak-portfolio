@@ -1,5 +1,5 @@
 import { Orbitron } from "next/font/google";
-import GetAllPostData from "../../../../lib/GetAllPostData";
+import { getBlogs } from "../../../../lib/blogService";
 import BlogDetailsClient from "./BlogDetailsClient";
 
 const orbitron = Orbitron({ subsets: ["latin"] });
@@ -7,10 +7,10 @@ const orbitron = Orbitron({ subsets: ["latin"] });
 // Generate metadata for SEO and social sharing
 export async function generateMetadata({ params }) {
   try {
-    const blogPostData = await GetAllPostData();
-    const blogDetails = blogPostData?.data?.find(
-      (blogs) => blogs.slug === params.slug
-    );
+    const blogPostData = await getBlogs({ published: true });
+    const blogDetails = Array.isArray(blogPostData)
+      ? blogPostData.find((blogs) => blogs.slug === params.slug)
+      : blogPostData?.blogs?.find((blogs) => blogs.slug === params.slug);
 
     if (!blogDetails) {
       return {

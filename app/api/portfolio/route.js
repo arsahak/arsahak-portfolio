@@ -1,46 +1,5 @@
-import { connect, connection, model, models, Schema } from 'mongoose';
+import connectDB, { prisma } from '@/lib/prisma';
 import { NextResponse } from 'next/server';
-
-const MONGODB_URI = process.env.DATABASE_URL || process.env.MONGODB_URI;
-
-async function dbConnect() {
-  if (!MONGODB_URI) {
-    throw new Error('DATABASE_URL or MONGODB_URI is not configured. Please set it in .env.local');
-  }
-  if (connection.readyState >= 1) return;
-  await connect(MONGODB_URI);
-}
-
-const PortfolioSchema = new Schema({
-  title: { type: String, required: true },
-  slug: { type: String, required: true, unique: true, index: true },
-  description: { type: String, required: true },
-  content: { type: String, default: '' },
-  featureImage: { type: String, default: '' },
-  category: { type: String, default: '' },
-  projectDuration: {
-    startDate: { type: String, default: '' },
-    endDate: { type: String, default: '' }
-  },
-  projectBudget: { type: Number, default: 0 },
-  clientName: { type: String, default: '' },
-  clientWebsite: { type: String, default: '' },
-  liveUrl: { type: String, default: '' },
-  githubUrl: { type: String, default: '' },
-  technologies: [{ type: String }],
-  images: [{ 
-    title: { type: String, default: '' },
-    alt: { type: String, default: '' },
-    url: { type: String, required: true },
-    publicId: { type: String, default: '' }
-  }],
-  published: { type: Boolean, default: false },
-  featured: { type: Boolean, default: false },
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now }
-});
-
-const Portfolio = models.Portfolio || model('Portfolio', PortfolioSchema);
 
 const generateSlug = (text = '') =>
   text
@@ -52,7 +11,7 @@ const generateSlug = (text = '') =>
 
 export async function GET(request) {
   try {
-    await dbConnect();
+    await connectDB(); // Ensure connection is established
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
     const slug = searchParams.get('slug');
@@ -60,7 +19,9 @@ export async function GET(request) {
 
     if (id) {
       // Fetch single portfolio by ID
-      const portfolio = await Portfolio.findById(id);
+      const portfolio = await prisma.portfolio.findUnique({
+        where: { id }
+      });
       if (!portfolio) {
         return NextResponse.json({ error: 'Portfolio not found' }, { status: 404 });
       }
@@ -69,7 +30,9 @@ export async function GET(request) {
 
     if (slug) {
       // Fetch single portfolio by slug
-      const portfolio = await Portfolio.findOne({ slug });
+      const portfolio = await prisma.portfolio.findUnique({
+        where: { slug }
+      });
       if (!portfolio) {
         return NextResponse.json({ error: 'Portfolio not found' }, { status: 404 });
       }
@@ -77,11 +40,14 @@ export async function GET(request) {
     }
 
     // Fetch all portfolios
-    const filter = {};
-    if (published === 'true') filter.published = true;
-    if (published === 'false') filter.published = false;
+    const where = {};
+    if (published === 'true') where.published = true;
+    if (published === 'false') where.published = false;
 
-    const portfolios = await Portfolio.find(filter).sort({ createdAt: -1 });
+    const portfolios = await prisma.portfolio.findMany({
+      where,
+      orderBy: { createdAt: 'desc' }
+    });
     return NextResponse.json(portfolios, { status: 200 });
   } catch (error) {
     console.error('Portfolio GET error:', error);
@@ -91,13 +57,12 @@ export async function GET(request) {
 
 export async function POST(request) {
   try {
-    await dbConnect();
+    await connectDB(); // Ensure connection is established
     const body = await request.json();
     
-    // Debug: Log the incoming data structure
-    console.log('Portfolio POST - Incoming data:', JSON.stringify(body, null, 2));
+    // Process incoming portfolio data
 
-    // Normalize/Map incoming payload to schema fields
+    // Normalize/Map incoming payload to Prisma schema fields
     const normalizedSlug = body.slug ? generateSlug(body.slug) : generateSlug(body.title || '');
     
     // Extract feature image URL from various possible structures
@@ -147,28 +112,30 @@ export async function POST(request) {
       );
     }
 
-    const portfolio = await Portfolio.create(mapped);
+    const portfolio = await prisma.portfolio.create({
+      data: mapped
+    });
     return NextResponse.json(portfolio, { status: 201 });
   } catch (error) {
-    const status = error?.code === 11000 ? 409 : 400;
+    console.error('Portfolio POST error:', error);
+    const status = error?.code === 'P2002' ? 409 : 400; // Prisma unique constraint error
     return NextResponse.json({ error: error.message }, { status });
   }
 }
 
 export async function PUT(request) {
   try {
-    await dbConnect();
+    await connectDB(); // Ensure connection is established
     const body = await request.json();
     const { id, ...update } = body;
     
-    // Debug: Log the incoming data structure
-    console.log('Portfolio PUT - Incoming data:', JSON.stringify(body, null, 2));
+    // Process portfolio update data
     
     if (!id) {
       return NextResponse.json({ error: 'No portfolio ID provided' }, { status: 400 });
     }
 
-    // If client sends new-style fields, map selectively
+    // Map fields to Prisma schema
     const mappedUpdate = { ...update };
     if (update.slug) mappedUpdate.slug = generateSlug(update.slug);
     
@@ -192,13 +159,11 @@ export async function PUT(request) {
     if (update.projectBudget) mappedUpdate.projectBudget = parseFloat(update.projectBudget) || 0;
     if (Array.isArray(update.technologies)) mappedUpdate.technologies = update.technologies;
     if (Array.isArray(update.images)) mappedUpdate.images = update.images;
-    
-    mappedUpdate.updatedAt = new Date();
 
-    const portfolio = await Portfolio.findByIdAndUpdate(id, mappedUpdate, { new: true });
-    if (!portfolio) {
-      return NextResponse.json({ error: 'Portfolio not found' }, { status: 404 });
-    }
+    const portfolio = await prisma.portfolio.update({
+      where: { id },
+      data: mappedUpdate
+    });
     
     return NextResponse.json(portfolio, { status: 200 });
   } catch (error) {
@@ -209,7 +174,7 @@ export async function PUT(request) {
 
 export async function DELETE(request) {
   try {
-    await dbConnect();
+    await connectDB(); // Ensure connection is established
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
     
@@ -217,10 +182,9 @@ export async function DELETE(request) {
       return NextResponse.json({ error: 'No portfolio ID provided' }, { status: 400 });
     }
     
-    const result = await Portfolio.findByIdAndDelete(id);
-    if (!result) {
-      return NextResponse.json({ error: 'Portfolio not found' }, { status: 404 });
-    }
+    await prisma.portfolio.delete({
+      where: { id }
+    });
     
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {

@@ -27,7 +27,15 @@ const BlogPage = () => {
         });
         if (!res.ok) throw new Error("Failed to load blogs");
         const data = await res.json();
-        setBlogs(Array.isArray(data) ? data : []);
+
+        // Handle both array and object responses
+        if (Array.isArray(data)) {
+          setBlogs(data);
+        } else if (data.blogs && Array.isArray(data.blogs)) {
+          setBlogs(data.blogs);
+        } else {
+          setBlogs([]);
+        }
       } catch (e) {
         setError(e.message || "Failed to load blogs");
       } finally {
@@ -39,7 +47,20 @@ const BlogPage = () => {
 
   const categories = useMemo(() => {
     const set = new Set(["All"]);
-    blogs.forEach((b) => b?.category && set.add(b.category));
+    blogs.forEach((blog) => {
+      if (blog?.category) {
+        // Handle both string and array categories
+        if (Array.isArray(blog.category)) {
+          blog.category.forEach((cat) => cat && set.add(cat));
+        } else {
+          set.add(blog.category);
+        }
+      }
+      // Also check categories field if it exists
+      if (blog?.categories && Array.isArray(blog.categories)) {
+        blog.categories.forEach((cat) => cat && set.add(cat));
+      }
+    });
     return Array.from(set);
   }, [blogs]);
 
@@ -49,9 +70,18 @@ const BlogPage = () => {
       const matchesSearch =
         blog.title?.toLowerCase().includes(term) ||
         blog.description?.toLowerCase().includes(term) ||
-        blog.content?.toLowerCase().includes(term);
+        blog.content?.toLowerCase().includes(term) ||
+        blog.body?.toLowerCase().includes(term) ||
+        blog.metaDescription?.toLowerCase().includes(term);
+
       const matchesCategory =
-        selectedCategory === "All" || blog.category === selectedCategory;
+        selectedCategory === "All" ||
+        blog.category === selectedCategory ||
+        (Array.isArray(blog.category) &&
+          blog.category.includes(selectedCategory)) ||
+        (Array.isArray(blog.categories) &&
+          blog.categories.includes(selectedCategory));
+
       return matchesSearch && matchesCategory;
     });
   }, [blogs, searchTerm, selectedCategory]);
@@ -201,6 +231,7 @@ const BlogPage = () => {
                           <Image
                             src={
                               blog.featureImage ||
+                              blog.featuredImage ||
                               "/assets/portfolio-item/epharma-web.png"
                             }
                             alt={blog.title}
@@ -212,7 +243,9 @@ const BlogPage = () => {
                           {/* Category Badge */}
                           <div className="absolute top-4 left-4">
                             <span className="bg-primary/90 text-white px-3 py-1 rounded-full text-xs font-medium backdrop-blur-sm">
-                              {blog.category || "General"}
+                              {Array.isArray(blog.category)
+                                ? blog.category[0] || "General"
+                                : blog.category || "General"}
                             </span>
                           </div>
                         </div>

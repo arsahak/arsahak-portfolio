@@ -1,42 +1,27 @@
-import { connect, connection, model, models, Schema } from 'mongoose';
+import connectDB, { prisma } from '@/lib/prisma';
 import { NextResponse } from 'next/server';
-
-const MONGODB_URI = process.env.DATABASE_URL || process.env.MONGODB_URI;
-
-async function dbConnect() {
-  if (!MONGODB_URI) {
-    throw new Error('DATABASE_URL or MONGODB_URI is not configured. Please set it in .env.local');
-  }
-  if (connection.readyState >= 1) return;
-  await connect(MONGODB_URI);
-}
-
-const NoteSchema = new Schema({
-  title: { type: String, required: true },
-  content: { type: String, required: true },
-  category: { type: String, default: 'General' },
-  tags: [{ type: String }],
-  isPinned: { type: Boolean, default: false },
-  isArchived: { type: Boolean, default: false },
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now }
-});
-
-const Note = models.Note || model('Note', NoteSchema);
 
 export async function GET(request) {
   try {
-    await dbConnect();
+    await connectDB(); // Ensure connection is established
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
 
     if (id) {
-      const note = await Note.findById(id);
+      const note = await prisma.note.findUnique({
+        where: { id }
+      });
       if (!note) return NextResponse.json({ error: 'Note not found' }, { status: 404 });
       return NextResponse.json(note, { status: 200 });
     }
 
-    const notes = await Note.find({ isArchived: false }).sort({ isPinned: -1, updatedAt: -1 });
+    const notes = await prisma.note.findMany({
+      where: { isArchived: false },
+      orderBy: [
+        { isPinned: 'desc' },
+        { updatedAt: 'desc' }
+      ]
+    });
     return NextResponse.json(notes, { status: 200 });
   } catch (err) {
     console.error('GET /api/note error:', err);
@@ -55,7 +40,7 @@ export async function POST(request) {
       );
     }
 
-    await dbConnect();
+    await connectDB(); // Ensure connection is established
     
     let body;
     try {
@@ -89,7 +74,9 @@ export async function POST(request) {
       isArchived: body.isArchived || false
     };
 
-    const note = await Note.create(noteData);
+    const note = await prisma.note.create({
+      data: noteData
+    });
     return NextResponse.json(note, { status: 201 });
   } catch (err) {
     console.error('POST /api/note error:', err);
@@ -108,7 +95,7 @@ export async function PUT(request) {
       );
     }
 
-    await dbConnect();
+    await connectDB(); // Ensure connection is established
     
     let body;
     try {
@@ -145,14 +132,13 @@ export async function PUT(request) {
       category: updateData.category?.trim() || 'General',
       tags: Array.isArray(updateData.tags) ? updateData.tags : [],
       isPinned: updateData.isPinned || false,
-      isArchived: updateData.isArchived || false,
-      updatedAt: new Date()
+      isArchived: updateData.isArchived || false
     };
 
-    const note = await Note.findByIdAndUpdate(id, noteData, { new: true });
-    if (!note) {
-      return NextResponse.json({ error: 'Note not found' }, { status: 404 });
-    }
+    const note = await prisma.note.update({
+      where: { id },
+      data: noteData
+    });
 
     return NextResponse.json(note, { status: 200 });
   } catch (err) {
@@ -163,7 +149,7 @@ export async function PUT(request) {
 
 export async function DELETE(request) {
   try {
-    await dbConnect();
+    await connectDB(); // Ensure connection is established
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
 
@@ -171,10 +157,9 @@ export async function DELETE(request) {
       return NextResponse.json({ error: 'Note ID is required' }, { status: 400 });
     }
 
-    const note = await Note.findByIdAndDelete(id);
-    if (!note) {
-      return NextResponse.json({ error: 'Note not found' }, { status: 404 });
-    }
+    await prisma.note.delete({
+      where: { id }
+    });
 
     return NextResponse.json({ message: 'Note deleted successfully' }, { status: 200 });
   } catch (err) {
