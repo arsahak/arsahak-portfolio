@@ -1,5 +1,4 @@
 import { Orbitron } from "next/font/google";
-import { getBlogs } from "../../../../lib/blogService";
 import BlogDetailsClient from "./BlogDetailsClient";
 
 const orbitron = Orbitron({ subsets: ["latin"] });
@@ -7,10 +6,20 @@ const orbitron = Orbitron({ subsets: ["latin"] });
 // Generate metadata for SEO and social sharing
 export async function generateMetadata({ params }) {
   try {
-    const blogPostData = await getBlogs({ published: true });
-    const blogDetails = Array.isArray(blogPostData)
-      ? blogPostData.find((blogs) => blogs.slug === params.slug)
-      : blogPostData?.blogs?.find((blogs) => blogs.slug === params.slug);
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+    const res = await fetch(
+      `${baseUrl}/api/blog?slug=${encodeURIComponent(params.slug)}`,
+      { cache: "no-store" }
+    );
+
+    if (!res.ok) {
+      return {
+        title: "Blog not found | AR Sahak",
+        description: "The requested blog post could not be found.",
+      };
+    }
+
+    const blogDetails = await res.json();
 
     if (!blogDetails) {
       return {
@@ -49,19 +58,22 @@ export async function generateMetadata({ params }) {
         },
       },
       openGraph: {
-        title: blogDetails.title,
+        title: `${blogDetails.title} | AR Sahak`,
         description: description,
-        images: blogDetails.featureImage
-          ? [
-              {
-                url: blogDetails.featureImage,
-                width: 1200,
-                height: 630,
-                alt: blogDetails.title,
-              },
-            ]
-          : [],
-        url: `https://arsahak.com/blog/${blogDetails.slug}`,
+        images: [
+          {
+            url: blogDetails.featureImage
+              ? blogDetails.featureImage.startsWith("http")
+                ? blogDetails.featureImage
+                : `${process.env.NEXT_PUBLIC_SITE_URL || "https://www.arsahak.com"}${blogDetails.featureImage}`
+              : `${process.env.NEXT_PUBLIC_SITE_URL || "https://www.arsahak.com"}/opengraph-image.png`,
+            width: 1200,
+            height: 630,
+            alt: blogDetails.title,
+            type: "image/png",
+          },
+        ],
+        url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://www.arsahak.com"}/blog/${blogDetails.slug}`,
         type: "article",
         siteName: "AR Sahak Portfolio",
         publishedTime: blogDetails.createdAt,
@@ -69,22 +81,61 @@ export async function generateMetadata({ params }) {
         authors: [blogDetails.author || "AR Sahak"],
         tags: blogDetails.tags || [],
         locale: "en_US",
+        section: blogDetails.category || "Technology",
       },
       twitter: {
         card: "summary_large_image",
-        title: blogDetails.title,
+        title: `${blogDetails.title} | AR Sahak`,
         description: description,
-        images: blogDetails.featureImage ? [blogDetails.featureImage] : [],
+        images: [
+          blogDetails.featureImage
+            ? blogDetails.featureImage.startsWith("http")
+              ? blogDetails.featureImage
+              : `${process.env.NEXT_PUBLIC_SITE_URL || "https://www.arsahak.com"}${blogDetails.featureImage}`
+            : `${process.env.NEXT_PUBLIC_SITE_URL || "https://www.arsahak.com"}/opengraph-image.png`,
+        ],
         creator: "@arsahak",
         site: "@arsahak",
       },
       alternates: {
-        canonical: `https://arsahak.com/blog/${blogDetails.slug}`,
+        canonical: `${process.env.NEXT_PUBLIC_SITE_URL || "https://www.arsahak.com"}/blog/${blogDetails.slug}`,
       },
       other: {
         "article:author": blogDetails.author || "AR Sahak",
         "article:section": blogDetails.category || "Technology",
         "article:tag":
+          blogDetails.tags?.join(", ") ||
+          "web development, programming, technology",
+        "og:image:width": "1200",
+        "og:image:height": "630",
+        "og:image:type": "image/png",
+        "article:published_time": blogDetails.createdAt,
+        "article:modified_time": blogDetails.updatedAt,
+        "og:image:secure_url": blogDetails.featureImage
+          ? blogDetails.featureImage.startsWith("http")
+            ? blogDetails.featureImage
+            : `${process.env.NEXT_PUBLIC_SITE_URL || "https://www.arsahak.com"}${blogDetails.featureImage}`
+          : `${process.env.NEXT_PUBLIC_SITE_URL || "https://www.arsahak.com"}/opengraph-image.png`,
+        "twitter:image:width": "1200",
+        "twitter:image:height": "630",
+        "twitter:image:alt": blogDetails.title,
+        "twitter:image:src": blogDetails.featureImage
+          ? blogDetails.featureImage.startsWith("http")
+            ? blogDetails.featureImage
+            : `${process.env.NEXT_PUBLIC_SITE_URL || "https://www.arsahak.com"}${blogDetails.featureImage}`
+          : `${process.env.NEXT_PUBLIC_SITE_URL || "https://www.arsahak.com"}/opengraph-image.png`,
+        "twitter:domain": "www.arsahak.com",
+        "twitter:url": `${process.env.NEXT_PUBLIC_SITE_URL || "https://www.arsahak.com"}/blog/${blogDetails.slug}`,
+        "twitter:label1": "Written by",
+        "twitter:data1": blogDetails.author || "AR Sahak",
+        "twitter:label2": "Published on",
+        "twitter:data2": blogDetails.createdAt
+          ? new Date(blogDetails.createdAt).toLocaleDateString()
+          : "",
+        "twitter:label3": "Category",
+        "twitter:data3": blogDetails.category || "Technology",
+        "twitter:label4": "Tags",
+        "twitter:data4":
           blogDetails.tags?.join(", ") ||
           "web development, programming, technology",
       },

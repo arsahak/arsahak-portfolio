@@ -83,6 +83,18 @@ const BlogDetailsClient = ({ params }) => {
     };
   }, [showShareMenu]);
 
+  // Cleanup JSON-LD on unmount
+  useEffect(() => {
+    return () => {
+      const existingJsonLd = document.querySelector(
+        'script[type="application/ld+json"]'
+      );
+      if (existingJsonLd) {
+        existingJsonLd.remove();
+      }
+    };
+  }, []);
+
   useEffect(() => {
     const load = async () => {
       try {
@@ -93,6 +105,57 @@ const BlogDetailsClient = ({ params }) => {
         if (!res.ok) throw new Error("Not found");
         const data = await res.json();
         setBlog(data);
+
+        // Add JSON-LD structured data for SEO
+        const jsonLd = {
+          "@context": "https://schema.org",
+          "@type": "BlogPosting",
+          headline: data.title,
+          description: data.metaDescription || data.description,
+          image: data.featureImage
+            ? data.featureImage.startsWith("http")
+              ? data.featureImage
+              : `${window.location.origin}${data.featureImage}`
+            : `${window.location.origin}/opengraph-image.png`,
+          author: {
+            "@type": "Person",
+            name: data.author || "AR Sahak",
+            url: "https://arsahak.com",
+          },
+          publisher: {
+            "@type": "Organization",
+            name: "AR Sahak Portfolio",
+            logo: {
+              "@type": "ImageObject",
+              url: `${window.location.origin}/opengraph-image.png`,
+            },
+          },
+          datePublished: data.createdAt,
+          dateModified: data.updatedAt || data.createdAt,
+          mainEntityOfPage: {
+            "@type": "WebPage",
+            "@id": `${window.location.origin}/blog/${data.slug}`,
+          },
+          url: `${window.location.origin}/blog/${data.slug}`,
+          keywords:
+            data.tags?.join(", ") || "web development, programming, technology",
+          articleSection: data.category || "Technology",
+        };
+
+        // Remove existing JSON-LD if any
+        const existingJsonLd = document.querySelector(
+          'script[type="application/ld+json"]'
+        );
+        if (existingJsonLd) {
+          existingJsonLd.remove();
+        }
+
+        // Add new JSON-LD
+        const script = document.createElement("script");
+        script.type = "application/ld+json";
+        script.text = JSON.stringify(jsonLd);
+        document.head.appendChild(script);
+
         // fetch some related posts
         const allRes = await fetch(`/api/blog?published=true`, {
           cache: "no-store",
