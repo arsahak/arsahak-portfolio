@@ -31,14 +31,7 @@ const BlogDetailsClient = ({ params }) => {
   const [showToast, setShowToast] = useState(false);
 
   const getImageUrl = (item) => {
-    return (
-      item?.featureImage ||
-      item?.featuredImage?.image?.url ||
-      item?.featuredImage?.url ||
-      item?.image?.url ||
-      item?.thumbnail ||
-      "/opengraph-image.png"
-    );
+    return item?.featureImage?.image?.url || "/opengraph-image.png";
   };
 
   const getSummary = (item, max = 220) => {
@@ -122,8 +115,14 @@ const BlogDetailsClient = ({ params }) => {
         const res = await fetch(`/api/blog?slug=${encodeURIComponent(slug)}`, {
           cache: "no-store",
         });
-        if (!res.ok) throw new Error("Not found");
+
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}`);
+        }
+
         const data = await res.json();
+        console.log("Blog API response:", data);
+
         setBlog(data);
 
         // Add JSON-LD structured data for SEO
@@ -131,12 +130,8 @@ const BlogDetailsClient = ({ params }) => {
           "@context": "https://schema.org",
           "@type": "BlogPosting",
           headline: data.title,
-          description: data.metaDescription || data.description,
-          image: data.featureImage
-            ? data.featureImage.startsWith("http")
-              ? data.featureImage
-              : `${window.location.origin}${data.featureImage}`
-            : `${window.location.origin}/opengraph-image.png`,
+          description: data.metaDescription,
+          image: getImageUrl(data),
           author: {
             "@type": "Person",
             name: data.author || "AR Sahak",
@@ -180,8 +175,9 @@ const BlogDetailsClient = ({ params }) => {
         const allRes = await fetch(`/api/blog?published=true`, {
           cache: "no-store",
         });
-        const all = allRes.ok ? await allRes.json() : [];
-        setRelated((all || []).filter((b) => b.slug !== data.slug).slice(0, 3));
+        const allJson = allRes.ok ? await allRes.json() : [];
+        const allBlogs = Array.isArray(allJson) ? allJson : [];
+        setRelated(allBlogs.filter((b) => b.slug !== data.slug).slice(0, 3));
       } catch (e) {
         setError(e.message || "Failed to load");
       } finally {
@@ -339,7 +335,7 @@ const BlogDetailsClient = ({ params }) => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
-                className="blog-content pt-6"
+                className="blog-content"
               >
                 <SafeHTML content={blog.content || ""} />
               </motion.div>

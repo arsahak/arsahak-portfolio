@@ -12,16 +12,19 @@ export async function generateMetadata({ params }) {
       { cache: "no-store" }
     );
 
-    if (!res.ok) {
-      return {
-        title: "Blog not found | AR Sahak",
-        description: "The requested blog post could not be found.",
-      };
-    }
+    const json = await res.json().catch(() => null);
 
-    const blogDetails = await res.json();
+    // Handle API response - when fetching by slug, it returns a single blog object directly
+    const blogDetails = json;
 
-    if (!blogDetails) {
+    const siteUrl =
+      process.env.NEXT_PUBLIC_SITE_URL || "https://www.arsahak.com";
+    const pickImage = (b) => {
+      return b?.featureImage?.image?.url || "/opengraph-image.png";
+    };
+    const ogImageUrl = pickImage(blogDetails);
+
+    if (!blogDetails || !blogDetails.slug) {
       return {
         title: "Blog not found | AR Sahak",
         description: "The requested blog post could not be found.",
@@ -62,18 +65,14 @@ export async function generateMetadata({ params }) {
         description: description,
         images: [
           {
-            url: blogDetails.featureImage
-              ? blogDetails.featureImage.startsWith("http")
-                ? blogDetails.featureImage
-                : `${process.env.NEXT_PUBLIC_SITE_URL || "https://www.arsahak.com"}${blogDetails.featureImage}`
-              : `${process.env.NEXT_PUBLIC_SITE_URL || "https://www.arsahak.com"}/opengraph-image.png`,
+            url: ogImageUrl,
             width: 1200,
             height: 630,
             alt: blogDetails.title,
             type: "image/png",
           },
         ],
-        url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://www.arsahak.com"}/blog/${blogDetails.slug}`,
+        url: `${siteUrl}/blog/${blogDetails.slug}`,
         type: "article",
         siteName: "AR Sahak Portfolio",
         publishedTime: blogDetails.createdAt,
@@ -87,18 +86,12 @@ export async function generateMetadata({ params }) {
         card: "summary_large_image",
         title: `${blogDetails.title} | AR Sahak`,
         description: description,
-        images: [
-          blogDetails.featureImage
-            ? blogDetails.featureImage.startsWith("http")
-              ? blogDetails.featureImage
-              : `${process.env.NEXT_PUBLIC_SITE_URL || "https://www.arsahak.com"}${blogDetails.featureImage}`
-            : `${process.env.NEXT_PUBLIC_SITE_URL || "https://www.arsahak.com"}/opengraph-image.png`,
-        ],
+        images: [ogImageUrl],
         creator: "@arsahak",
         site: "@arsahak",
       },
       alternates: {
-        canonical: `${process.env.NEXT_PUBLIC_SITE_URL || "https://www.arsahak.com"}/blog/${blogDetails.slug}`,
+        canonical: `${siteUrl}/blog/${blogDetails.slug}`,
       },
       other: {
         "article:author": blogDetails.author || "AR Sahak",
@@ -111,21 +104,13 @@ export async function generateMetadata({ params }) {
         "og:image:type": "image/png",
         "article:published_time": blogDetails.createdAt,
         "article:modified_time": blogDetails.updatedAt,
-        "og:image:secure_url": blogDetails.featureImage
-          ? blogDetails.featureImage.startsWith("http")
-            ? blogDetails.featureImage
-            : `${process.env.NEXT_PUBLIC_SITE_URL || "https://www.arsahak.com"}${blogDetails.featureImage}`
-          : `${process.env.NEXT_PUBLIC_SITE_URL || "https://www.arsahak.com"}/opengraph-image.png`,
+        "og:image:secure_url": ogImageUrl,
         "twitter:image:width": "1200",
         "twitter:image:height": "630",
         "twitter:image:alt": blogDetails.title,
-        "twitter:image:src": blogDetails.featureImage
-          ? blogDetails.featureImage.startsWith("http")
-            ? blogDetails.featureImage
-            : `${process.env.NEXT_PUBLIC_SITE_URL || "https://www.arsahak.com"}${blogDetails.featureImage}`
-          : `${process.env.NEXT_PUBLIC_SITE_URL || "https://www.arsahak.com"}/opengraph-image.png`,
-        "twitter:domain": "www.arsahak.com",
-        "twitter:url": `${process.env.NEXT_PUBLIC_SITE_URL || "https://www.arsahak.com"}/blog/${blogDetails.slug}`,
+        "twitter:image:src": ogImageUrl,
+        "twitter:domain": new URL(siteUrl).hostname,
+        "twitter:url": `${siteUrl}/blog/${blogDetails.slug}`,
         "twitter:label1": "Written by",
         "twitter:data1": blogDetails.author || "AR Sahak",
         "twitter:label2": "Published on",

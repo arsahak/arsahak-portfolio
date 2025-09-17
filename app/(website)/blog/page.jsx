@@ -17,6 +17,11 @@ const BlogPage = () => {
   const [error, setError] = useState("");
   const postsPerPage = 6;
 
+  // Simple image URL getter
+  const getImageUrl = (blog) => {
+    return blog?.featureImage?.image?.url || "/opengraph-image.png";
+  };
+
   useEffect(() => {
     const fetchBlogs = async () => {
       setLoading(true);
@@ -28,14 +33,8 @@ const BlogPage = () => {
         if (!res.ok) throw new Error("Failed to load blogs");
         const data = await res.json();
 
-        // Handle both array and object responses
-        if (Array.isArray(data)) {
-          setBlogs(data);
-        } else if (data.blogs && Array.isArray(data.blogs)) {
-          setBlogs(data.blogs);
-        } else {
-          setBlogs([]);
-        }
+        // Your API returns array directly
+        setBlogs(Array.isArray(data) ? data : []);
       } catch (e) {
         setError(e.message || "Failed to load blogs");
       } finally {
@@ -48,18 +47,7 @@ const BlogPage = () => {
   const categories = useMemo(() => {
     const set = new Set(["All"]);
     blogs.forEach((blog) => {
-      if (blog?.category) {
-        // Handle both string and array categories
-        if (Array.isArray(blog.category)) {
-          blog.category.forEach((cat) => cat && set.add(cat));
-        } else {
-          set.add(blog.category);
-        }
-      }
-      // Also check categories field if it exists
-      if (blog?.categories && Array.isArray(blog.categories)) {
-        blog.categories.forEach((cat) => cat && set.add(cat));
-      }
+      if (blog?.category) set.add(blog.category);
     });
     return Array.from(set);
   }, [blogs]);
@@ -69,18 +57,11 @@ const BlogPage = () => {
     return blogs.filter((blog) => {
       const matchesSearch =
         blog.title?.toLowerCase().includes(term) ||
-        blog.description?.toLowerCase().includes(term) ||
-        blog.content?.toLowerCase().includes(term) ||
-        blog.body?.toLowerCase().includes(term) ||
-        blog.metaDescription?.toLowerCase().includes(term);
+        blog.metaDescription?.toLowerCase().includes(term) ||
+        blog.content?.toLowerCase().includes(term);
 
       const matchesCategory =
-        selectedCategory === "All" ||
-        blog.category === selectedCategory ||
-        (Array.isArray(blog.category) &&
-          blog.category.includes(selectedCategory)) ||
-        (Array.isArray(blog.categories) &&
-          blog.categories.includes(selectedCategory));
+        selectedCategory === "All" || blog.category === selectedCategory;
 
       return matchesSearch && matchesCategory;
     });
@@ -229,11 +210,7 @@ const BlogPage = () => {
                         {/* Image Container */}
                         <div className="relative overflow-hidden h-64 flex-shrink-0">
                           <Image
-                            src={
-                              blog.featureImage ||
-                              blog.featuredImage ||
-                              "/assets/portfolio-item/epharma-web.png"
-                            }
+                            src={getImageUrl(blog)}
                             alt={blog.title}
                             fill
                             className="object-cover group-hover:scale-110 transition-transform duration-500"
@@ -243,9 +220,7 @@ const BlogPage = () => {
                           {/* Category Badge */}
                           <div className="absolute top-4 left-4">
                             <span className="bg-primary/90 text-white px-3 py-1 rounded-full text-xs font-medium backdrop-blur-sm">
-                              {Array.isArray(blog.category)
-                                ? blog.category[0] || "General"
-                                : blog.category || "General"}
+                              {blog.category || "General"}
                             </span>
                           </div>
                         </div>
@@ -268,7 +243,8 @@ const BlogPage = () => {
                           </h3>
 
                           <p className="text-gray-400 text-sm leading-relaxed line-clamp-3 mb-4 flex-1">
-                            {blog.description}
+                            {blog.metaDescription ||
+                              "Read this blog post by AR Sahak"}
                           </p>
 
                           <div className="flex items-center justify-between mt-auto">
