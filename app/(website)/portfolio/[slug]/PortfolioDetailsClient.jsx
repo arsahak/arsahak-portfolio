@@ -34,6 +34,22 @@ const PortfolioDetailsClient = ({ params }) => {
   const [showToast, setShowToast] = useState(false);
   const [lightbox, setLightbox] = useState({ open: false, img: null });
 
+  // Simple image URL getter for portfolio
+  const getImageUrl = (item) => {
+    return item?.featureImage || "/opengraph-image.png";
+  };
+
+  // Get 3-line description
+  const getDescription = (item) => {
+    if (!item?.description) return "View this portfolio project details.";
+    const text = item.description
+      .replace(/<[^>]*>/g, " ")
+      .trim()
+      .replace(/\s+/g, " ");
+    if (text.length <= 180) return text;
+    return text.slice(0, 180).replace(/[,;:.!?\s]*$/, "") + "...";
+  };
+
   // Social sharing functions
   const shareUrl = typeof window !== "undefined" ? window.location.href : "";
   const shareTitle = portfolio?.title || "";
@@ -99,6 +115,7 @@ const PortfolioDetailsClient = ({ params }) => {
         );
         if (!res.ok) throw new Error("Not found");
         const data = await res.json();
+        console.log("Portfolio API response:", data);
         setPortfolio(data);
 
         // fetch some related portfolios
@@ -188,8 +205,8 @@ const PortfolioDetailsClient = ({ params }) => {
               Portfolio Project Not Found
             </h1>
             <p className="text-gray-400 mb-8 max-w-md mx-auto">
-              The portfolio project you&apos;re looking for doesn&apos;t exist or has been
-              moved.
+              The portfolio project you&apos;re looking for doesn&apos;t exist
+              or has been moved.
             </p>
           </div>
           <Link
@@ -244,9 +261,7 @@ const PortfolioDetailsClient = ({ params }) => {
       {/* Hero Section */}
       <section className="relative h-96 md:h-[500px] overflow-hidden">
         <Image
-          src={
-            portfolio.featureImage || "/assets/portfolio-item/epharma-web.png"
-          }
+          src={getImageUrl(portfolio)}
           alt={portfolio.title}
           fill
           className="object-cover"
@@ -456,10 +471,7 @@ const PortfolioDetailsClient = ({ params }) => {
                             <div className="flex gap-3">
                               <div className="relative w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
                                 <Image
-                                  src={
-                                    relatedPortfolio.featureImage ||
-                                    "/assets/portfolio-item/epharma-web.png"
-                                  }
+                                  src={getImageUrl(relatedPortfolio)}
                                   alt={relatedPortfolio.title}
                                   fill
                                   className="object-cover group-hover:scale-110 transition-transform duration-300"
@@ -469,8 +481,8 @@ const PortfolioDetailsClient = ({ params }) => {
                                 <h4 className="text-white font-semibold text-sm line-clamp-2 group-hover:text-primary transition-colors">
                                   {relatedPortfolio.title}
                                 </h4>
-                                <p className="text-gray-400 text-xs mt-1">
-                                  {relatedPortfolio.category}
+                                <p className="text-gray-400 text-xs mt-1 line-clamp-3">
+                                  {getDescription(relatedPortfolio)}
                                 </p>
                               </div>
                             </div>
