@@ -30,6 +30,26 @@ const BlogDetailsClient = ({ params }) => {
   const [toastMessage, setToastMessage] = useState("");
   const [showToast, setShowToast] = useState(false);
 
+  const getImageUrl = (item) => {
+    return (
+      item?.featureImage ||
+      item?.featuredImage?.image?.url ||
+      item?.featuredImage?.url ||
+      item?.image?.url ||
+      item?.thumbnail ||
+      "/opengraph-image.png"
+    );
+  };
+
+  const getSummary = (item, max = 220) => {
+    const fromMeta = item?.metaDescription || item?.description;
+    const html = fromMeta || item?.content || "";
+    const text = typeof html === "string" ? html.replace(/<[^>]*>/g, " ") : "";
+    const trimmed = text.trim().replace(/\s+/g, " ");
+    if (trimmed.length <= max) return trimmed;
+    return trimmed.slice(0, max).replace(/[,;:.!?\s]*$/, "") + "...";
+  };
+
   // Social sharing functions
   const shareUrl = typeof window !== "undefined" ? window.location.href : "";
   const shareTitle = blog?.title || "";
@@ -263,7 +283,7 @@ const BlogDetailsClient = ({ params }) => {
       {/* Hero Section */}
       <section className="relative h-96 md:h-[500px] overflow-hidden">
         <Image
-          src={blog.featureImage || "/assets/portfolio-item/epharma-web.png"}
+          src={getImageUrl(blog)}
           alt={blog.title}
           fill
           className="object-cover"
@@ -353,10 +373,7 @@ const BlogDetailsClient = ({ params }) => {
                             <div className="flex gap-4">
                               <div className="relative w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
                                 <Image
-                                  src={
-                                    relatedBlog.featureImage ||
-                                    "/assets/portfolio-item/epharma-web.png"
-                                  }
+                                  src={getImageUrl(relatedBlog)}
                                   alt={relatedBlog.title}
                                   fill
                                   className="object-cover group-hover:scale-110 transition-transform duration-300"
@@ -366,8 +383,8 @@ const BlogDetailsClient = ({ params }) => {
                                 <h4 className="text-white font-semibold text-sm line-clamp-2 group-hover:text-primary transition-colors">
                                   {relatedBlog.title}
                                 </h4>
-                                <p className="text-gray-400 text-xs mt-1">
-                                  {relatedBlog.date}
+                                <p className="text-gray-400 text-xs mt-1 line-clamp-3">
+                                  {getSummary(relatedBlog)}
                                 </p>
                               </div>
                             </div>
