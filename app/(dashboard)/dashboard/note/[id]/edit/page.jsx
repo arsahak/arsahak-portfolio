@@ -245,7 +245,8 @@ const EditNotePage = () => {
                 Note Content: <span className="text-red-500">*</span>
               </label>
               <Editor
-                apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
+                apiKey="yi24dtz7dwp5hvxuqh39dkgw8ihdopvwpolo2ai55yw80u8n"
+                tinymceScriptSrc="/tinymce/tinymce.min.js"
                 onInit={(evt, editor) => {
                   try {
                     editorRef.current = editor;

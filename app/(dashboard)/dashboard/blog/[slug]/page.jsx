@@ -584,7 +584,8 @@ const EditBlogPage = () => {
               </label>
               <div className="border-2 border-gray-200 rounded-xl overflow-hidden">
                 <Editor
-                  apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
+                  apiKey="yi24dtz7dwp5hvxuqh39dkgw8ihdopvwpolo2ai55yw80u8n"
+                  tinymceScriptSrc="/tinymce/tinymce.min.js"
                   onInit={(evt, editor) => {
                     try {
                       editorRef.current = editor;
@@ -593,6 +594,8 @@ const EditBlogPage = () => {
                     }
                   }}
                   init={{
+                    skin_url: "/tinymce/skins/ui/oxide",
+                    content_css: "/tinymce/skins/content/default/content.css",
                     height: 500,
                     menubar: false,
                     plugins: [

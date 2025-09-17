@@ -759,8 +759,11 @@ const CreatePortfolioPage = () => {
                 }}
                 value={formData.description}
                 onEditorChange={handleEditorChange}
-                apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
+                apiKey="yi24dtz7dwp5hvxuqh39dkgw8ihdopvwpolo2ai55yw80u8n"
+                tinymceScriptSrc="/tinymce/tinymce.min.js"
                 init={{
+                  skin_url: "/tinymce/skins/ui/oxide",
+                  content_css: "/tinymce/skins/content/default/content.css",
                   height: 400,
                   menubar: false,
                   plugins: [
