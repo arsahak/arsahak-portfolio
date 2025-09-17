@@ -2,6 +2,9 @@ import connectDB from '@/lib/prisma';
 import { MongoClient } from 'mongodb';
 import { NextResponse } from 'next/server';
 
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+
 const generateSlug = (text = '') =>
   text
     .toString()
