@@ -4,13 +4,16 @@ import { Editor } from "@tinymce/tinymce-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import {
+  FiArrowLeft,
   FiGrid,
   FiImage,
   FiLoader,
   FiSave,
   FiSearch,
   FiSend,
+  FiTag,
   FiUpload,
+  FiUser,
   FiX,
 } from "react-icons/fi";
 import { toast } from "react-toastify";
@@ -473,10 +476,20 @@ const CreatePostPage = () => {
       <div className="w-full mx-auto">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent">
-              Add New Blog
-            </h1>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => router.push("/dashboard/blog")}
+              className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-purple-600 transition-colors duration-200"
+            >
+              <FiArrowLeft className="text-lg" />
+              Back to Blog
+            </button>
+            <div>
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent">
+                Add New Blog
+              </h1>
+              <p className="text-gray-600 mt-1">Create a new blog post</p>
+            </div>
           </div>
           <div className="flex items-center gap-3">
             <button
@@ -489,7 +502,7 @@ const CreatePostPage = () => {
               ) : (
                 <FiSave className="text-lg" />
               )}
-              Save as Draft
+              Save Draft
             </button>
             <button
               onClick={handlePublish}
@@ -512,7 +525,7 @@ const CreatePostPage = () => {
             {/* Title */}
             <div className="bg-white rounded-xl shadow-sm p-6 border border-purple-100">
               <label className="block text-sm font-semibold text-gray-700 mb-3">
-                Title: <span className="text-red-500">*</span>
+                Blog Title: <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -599,6 +612,7 @@ const CreatePostPage = () => {
             {/* Author */}
             <div className="bg-white rounded-xl shadow-sm p-6 border border-purple-100">
               <label className="block text-sm font-semibold text-gray-700 mb-3">
+                <FiUser className="inline mr-2 text-purple-500" />
                 Author: <span className="text-red-500">*</span>
               </label>
               <input
@@ -615,6 +629,7 @@ const CreatePostPage = () => {
             {/* Category */}
             <div className="bg-white rounded-xl shadow-sm p-6 border border-purple-100">
               <label className="block text-sm font-semibold text-gray-700 mb-4">
+                <FiTag className="inline mr-2 text-purple-500" />
                 Category: <span className="text-red-500">*</span>
               </label>
               <div className="space-y-3 max-h-48 overflow-y-auto">
@@ -645,6 +660,7 @@ const CreatePostPage = () => {
             {/* Featured Image */}
             <div className="bg-white rounded-xl shadow-sm p-6 border border-purple-100">
               <label className="block text-sm font-semibold text-gray-700 mb-3">
+                <FiImage className="inline mr-2 text-purple-500" />
                 Featured Image:
               </label>
 
@@ -766,6 +782,7 @@ const CreatePostPage = () => {
             {/* SEO */}
             <div className="bg-white rounded-xl shadow-sm p-6 border border-purple-100">
               <label className="block text-sm font-semibold text-gray-700 mb-3">
+                <FiSearch className="inline mr-2 text-purple-500" />
                 SEO:
               </label>
               <textarea
@@ -787,6 +804,7 @@ const CreatePostPage = () => {
             {/* Slug */}
             <div className="bg-white rounded-xl shadow-sm p-6 border border-purple-100">
               <label className="block text-sm font-semibold text-gray-700 mb-3">
+                <FiTag className="inline mr-2 text-purple-500" />
                 Slug: <span className="text-red-500">*</span>
               </label>
               <input

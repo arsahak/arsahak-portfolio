@@ -11,7 +11,9 @@ import {
   FiSave,
   FiSearch,
   FiSend,
+  FiTag,
   FiUpload,
+  FiUser,
   FiX,
 } from "react-icons/fi";
 import { toast } from "react-toastify";
@@ -57,10 +59,63 @@ const EditBlogPage = () => {
 
   // Fetch blog data on component mount
   useEffect(() => {
-    if (params.slug) {
-      fetchBlogData();
-    }
-  }, [params.slug, fetchBlogData]);
+    if (!params.slug) return;
+
+    const load = async () => {
+      try {
+        setLoadingBlog(true);
+        const blog = await getBlogBySlug(params.slug);
+
+        if (blog) {
+          console.log("Blog data received:", blog);
+          console.log("Blog ID:", blog._id);
+          setBlogId(blog._id);
+          setFormData({
+            title: blog.title || "",
+            author: blog.author || "",
+            category: Array.isArray(blog.category)
+              ? blog.category
+              : blog.category
+                ? blog.category
+                    .split(",")
+                    .map((cat) => cat.trim())
+                    .filter((cat) => cat)
+                : [],
+            metaDescription: blog.description || blog.metaDescription || "",
+            slug: blog.slug || "",
+            featuredImage: blog.featureImage
+              ? {
+                  imageTitle: "Featured Image",
+                  altText: "Blog featured image",
+                  image: {
+                    public_id: `featured_${blog._id}`,
+                    url: blog.featureImage,
+                  },
+                }
+              : blog.featuredImage || null,
+            bodyImage: blog.bodyImage || [],
+            published: blog.published || false,
+          });
+
+          // Set image preview if featured image exists
+          if (blog.featureImage) {
+            setImagePreview(blog.featureImage);
+          } else if (blog.featuredImage?.image?.url) {
+            setImagePreview(blog.featuredImage.image.url);
+          } else {
+            setImagePreview(null);
+          }
+        }
+      } catch (error) {
+        toast.error("Failed to fetch blog: " + error.message);
+        router.push("/dashboard/blog");
+      } finally {
+        setLoadingBlog(false);
+      }
+    };
+
+    load();
+  }, [params.slug]);
 
   // Cleanup effect for TinyMCE editor and search timeout when component unmounts
   useEffect(() => {
@@ -499,10 +554,59 @@ const EditBlogPage = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4">
         <div className="w-full mx-auto">
-          <div className="flex items-center justify-center h-64">
-            <div className="text-center">
-              <FiLoader className="text-4xl text-purple-600 animate-spin mx-auto mb-4" />
-              <p className="text-gray-600">Loading blog...</p>
+          {/* Header Skeleton */}
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+            <div className="space-y-3">
+              <div className="h-10 bg-gray-200 rounded-lg animate-pulse w-80"></div>
+              <div className="h-6 bg-gray-200 rounded-lg animate-pulse w-96"></div>
+            </div>
+            <div className="flex gap-2">
+              <div className="h-12 bg-gray-200 rounded-xl animate-pulse w-32"></div>
+              <div className="h-12 bg-gray-200 rounded-xl animate-pulse w-32"></div>
+            </div>
+          </div>
+
+          {/* Blog Edit Form Skeleton */}
+          <div className="bg-white rounded-xl shadow-sm border border-purple-100 overflow-hidden animate-pulse">
+            <div className="p-8">
+              {/* Form Fields Skeleton */}
+              <div className="space-y-6">
+                {/* Title Field Skeleton */}
+                <div>
+                  <div className="h-6 bg-gray-200 rounded w-16 mb-2"></div>
+                  <div className="h-12 bg-gray-200 rounded-lg"></div>
+                </div>
+
+                {/* Category and Status Skeleton */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <div className="h-6 bg-gray-200 rounded w-20 mb-2"></div>
+                    <div className="h-12 bg-gray-200 rounded-lg"></div>
+                  </div>
+                  <div>
+                    <div className="h-6 bg-gray-200 rounded w-16 mb-2"></div>
+                    <div className="h-12 bg-gray-200 rounded-lg"></div>
+                  </div>
+                </div>
+
+                {/* Featured Image Skeleton */}
+                <div>
+                  <div className="h-6 bg-gray-200 rounded w-24 mb-2"></div>
+                  <div className="h-48 bg-gray-200 rounded-lg"></div>
+                </div>
+
+                {/* Content Editor Skeleton */}
+                <div>
+                  <div className="h-6 bg-gray-200 rounded w-20 mb-2"></div>
+                  <div className="h-96 bg-gray-200 rounded-lg"></div>
+                </div>
+
+                {/* Action Buttons Skeleton */}
+                <div className="flex gap-4">
+                  <div className="h-12 bg-gray-200 rounded-lg w-32"></div>
+                  <div className="h-12 bg-gray-200 rounded-lg w-32"></div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -646,6 +750,7 @@ const EditBlogPage = () => {
             {/* Author */}
             <div className="bg-white rounded-xl shadow-sm p-6 border border-purple-100">
               <label className="block text-sm font-semibold text-gray-700 mb-3">
+                <FiUser className="inline mr-2 text-purple-500" />
                 Author: <span className="text-red-500">*</span>
               </label>
               <input
@@ -662,6 +767,7 @@ const EditBlogPage = () => {
             {/* Category */}
             <div className="bg-white rounded-xl shadow-sm p-6 border border-purple-100">
               <label className="block text-sm font-semibold text-gray-700 mb-4">
+                <FiTag className="inline mr-2 text-purple-500" />
                 Category: <span className="text-red-500">*</span>
               </label>
               <div className="space-y-3 max-h-48 overflow-y-auto">
@@ -696,6 +802,7 @@ const EditBlogPage = () => {
             {/* Featured Image */}
             <div className="bg-white rounded-xl shadow-sm p-6 border border-purple-100">
               <label className="block text-sm font-semibold text-gray-700 mb-3">
+                <FiImage className="inline mr-2 text-purple-500" />
                 Featured Image:
               </label>
 
@@ -817,6 +924,7 @@ const EditBlogPage = () => {
             {/* SEO */}
             <div className="bg-white rounded-xl shadow-sm p-6 border border-purple-100">
               <label className="block text-sm font-semibold text-gray-700 mb-3">
+                <FiSearch className="inline mr-2 text-purple-500" />
                 SEO:
               </label>
               <textarea
@@ -838,6 +946,7 @@ const EditBlogPage = () => {
             {/* Slug */}
             <div className="bg-white rounded-xl shadow-sm p-6 border border-purple-100">
               <label className="block text-sm font-semibold text-gray-700 mb-3">
+                <FiTag className="inline mr-2 text-purple-500" />
                 Slug: <span className="text-red-500">*</span>
               </label>
               <input

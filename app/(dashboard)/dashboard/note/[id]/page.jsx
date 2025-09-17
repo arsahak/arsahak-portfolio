@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   FiArchive,
   FiArrowLeft,
@@ -29,13 +29,7 @@ const ViewNotePage = () => {
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
 
-  useEffect(() => {
-    if (params.id) {
-      fetchNoteData();
-    }
-  }, [params.id, fetchNoteData]);
-
-  const fetchNoteData = async () => {
+  const fetchNoteData = useCallback(async () => {
     try {
       setLoading(true);
       const data = await getNoteById(params.id);
@@ -46,7 +40,13 @@ const ViewNotePage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [params.id, router]);
+
+  useEffect(() => {
+    if (params.id) {
+      fetchNoteData();
+    }
+  }, [params.id, fetchNoteData]);
 
   const handleDelete = async () => {
     if (!confirm("Are you sure you want to delete this note?")) {
@@ -99,10 +99,46 @@ const ViewNotePage = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4">
         <div className="w-full mx-auto">
-          <div className="flex items-center justify-center h-64">
-            <div className="text-center">
-              <FiLoader className="text-4xl text-purple-600 animate-spin mx-auto mb-4" />
-              <p className="text-gray-600">Loading note...</p>
+          {/* Header Skeleton */}
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+            <div className="space-y-3">
+              <div className="h-10 bg-gray-200 rounded-lg animate-pulse w-80"></div>
+              <div className="h-6 bg-gray-200 rounded-lg animate-pulse w-96"></div>
+            </div>
+            <div className="flex gap-2">
+              <div className="h-12 bg-gray-200 rounded-xl animate-pulse w-32"></div>
+              <div className="h-12 bg-gray-200 rounded-xl animate-pulse w-32"></div>
+            </div>
+          </div>
+
+          {/* Note Content Skeleton */}
+          <div className="bg-white rounded-xl shadow-sm border border-purple-100 overflow-hidden animate-pulse">
+            <div className="p-8">
+              {/* Title Skeleton */}
+              <div className="mb-6">
+                <div className="h-8 bg-gray-200 rounded mb-2"></div>
+                <div className="h-8 bg-gray-200 rounded w-3/4"></div>
+              </div>
+
+              {/* Meta Info Skeleton */}
+              <div className="flex flex-wrap gap-4 mb-6">
+                <div className="h-6 bg-gray-200 rounded-full w-20"></div>
+                <div className="h-6 bg-gray-200 rounded-full w-24"></div>
+                <div className="h-6 bg-gray-200 rounded-full w-16"></div>
+              </div>
+
+              {/* Content Skeleton */}
+              <div className="space-y-4">
+                <div className="h-4 bg-gray-200 rounded"></div>
+                <div className="h-4 bg-gray-200 rounded"></div>
+                <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+                <div className="h-4 bg-gray-200 rounded"></div>
+                <div className="h-4 bg-gray-200 rounded w-4/5"></div>
+                <div className="h-4 bg-gray-200 rounded"></div>
+                <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                <div className="h-4 bg-gray-200 rounded"></div>
+                <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+              </div>
             </div>
           </div>
         </div>

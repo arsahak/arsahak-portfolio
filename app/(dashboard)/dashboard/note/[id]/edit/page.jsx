@@ -45,10 +45,33 @@ const EditNotePage = () => {
   ];
 
   useEffect(() => {
-    if (params.id) {
-      fetchNoteData();
-    }
-  }, [params.id, fetchNoteData]);
+    if (!params.id) return;
+
+    const load = async () => {
+      try {
+        setLoadingNote(true);
+        const note = await getNoteById(params.id);
+
+        if (note) {
+          setNoteId(note._id);
+          setFormData({
+            title: note.title || "",
+            content: note.content || "",
+            category: note.category || "General",
+            tags: note.tags || [],
+            isPinned: note.isPinned || false,
+          });
+        }
+      } catch (error) {
+        toast.error("Failed to fetch note: " + error.message);
+        router.push("/dashboard/note");
+      } finally {
+        setLoadingNote(false);
+      }
+    };
+
+    load();
+  }, [params.id]);
 
   // Cleanup TinyMCE editor on unmount
   useEffect(() => {
@@ -74,29 +97,6 @@ const EditNotePage = () => {
       }
     };
   }, []);
-
-  const fetchNoteData = async () => {
-    try {
-      setLoadingNote(true);
-      const note = await getNoteById(params.id);
-
-      if (note) {
-        setNoteId(note._id);
-        setFormData({
-          title: note.title || "",
-          content: note.content || "",
-          category: note.category || "General",
-          tags: note.tags || [],
-          isPinned: note.isPinned || false,
-        });
-      }
-    } catch (error) {
-      toast.error("Failed to fetch note: " + error.message);
-      router.push("/dashboard/note");
-    } finally {
-      setLoadingNote(false);
-    }
-  };
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -171,10 +171,53 @@ const EditNotePage = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4">
         <div className="w-full mx-auto">
-          <div className="flex items-center justify-center h-64">
-            <div className="text-center">
-              <FiLoader className="text-4xl text-purple-600 animate-spin mx-auto mb-4" />
-              <p className="text-gray-600">Loading note...</p>
+          {/* Header Skeleton */}
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+            <div className="space-y-3">
+              <div className="h-10 bg-gray-200 rounded-lg animate-pulse w-80"></div>
+              <div className="h-6 bg-gray-200 rounded-lg animate-pulse w-96"></div>
+            </div>
+            <div className="flex gap-2">
+              <div className="h-12 bg-gray-200 rounded-xl animate-pulse w-32"></div>
+              <div className="h-12 bg-gray-200 rounded-xl animate-pulse w-32"></div>
+            </div>
+          </div>
+
+          {/* Note Edit Form Skeleton */}
+          <div className="bg-white rounded-xl shadow-sm border border-purple-100 overflow-hidden animate-pulse">
+            <div className="p-8">
+              {/* Form Fields Skeleton */}
+              <div className="space-y-6">
+                {/* Title Field Skeleton */}
+                <div>
+                  <div className="h-6 bg-gray-200 rounded w-16 mb-2"></div>
+                  <div className="h-12 bg-gray-200 rounded-lg"></div>
+                </div>
+
+                {/* Category and Tags Skeleton */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <div className="h-6 bg-gray-200 rounded w-20 mb-2"></div>
+                    <div className="h-12 bg-gray-200 rounded-lg"></div>
+                  </div>
+                  <div>
+                    <div className="h-6 bg-gray-200 rounded w-16 mb-2"></div>
+                    <div className="h-12 bg-gray-200 rounded-lg"></div>
+                  </div>
+                </div>
+
+                {/* Content Editor Skeleton */}
+                <div>
+                  <div className="h-6 bg-gray-200 rounded w-20 mb-2"></div>
+                  <div className="h-96 bg-gray-200 rounded-lg"></div>
+                </div>
+
+                {/* Action Buttons Skeleton */}
+                <div className="flex gap-4">
+                  <div className="h-12 bg-gray-200 rounded-lg w-32"></div>
+                  <div className="h-12 bg-gray-200 rounded-lg w-32"></div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -220,9 +263,9 @@ const EditNotePage = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content Area */}
-          <div className="lg:col-span-3 space-y-6">
+          <div className="lg:col-span-2 space-y-6">
             {/* Title */}
             <div className="bg-white rounded-xl shadow-sm p-6 border border-purple-100">
               <label className="block text-sm font-semibold text-gray-700 mb-3">
@@ -332,6 +375,7 @@ const EditNotePage = () => {
             {/* Tags */}
             <div className="bg-white rounded-xl shadow-sm p-6 border border-purple-100">
               <label className="block text-sm font-semibold text-gray-700 mb-3">
+                <FiTag className="inline mr-2 text-purple-500" />
                 Tags:
               </label>
               <div className="space-y-3">

@@ -67,15 +67,77 @@ const PortfolioPage = () => {
     return `$${budget.toLocaleString()}`;
   };
 
+  const generateSlug = (text = "") =>
+    text
+      .toString()
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)+/g, "");
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4">
         <div className="w-full mx-auto">
-          <div className="flex items-center justify-center h-64">
-            <div className="text-center">
-              <FiLoader className="text-4xl text-purple-600 animate-spin mx-auto mb-4" />
-              <p className="text-gray-600">Loading portfolios...</p>
+          {/* Header Skeleton */}
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+            <div className="space-y-3">
+              <div className="h-10 bg-gray-200 rounded-lg animate-pulse w-80"></div>
+              <div className="h-6 bg-gray-200 rounded-lg animate-pulse w-96"></div>
             </div>
+            <div className="h-12 bg-gray-200 rounded-xl animate-pulse w-32"></div>
+          </div>
+
+          {/* Portfolio Cards Skeleton */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[...Array(6)].map((_, index) => (
+              <div
+                key={index}
+                className="bg-white rounded-xl shadow-sm border border-purple-100 overflow-hidden animate-pulse"
+              >
+                {/* Featured Image Skeleton */}
+                <div className="h-48 bg-gray-200"></div>
+
+                {/* Content Skeleton */}
+                <div className="p-6">
+                  {/* Category Badge Skeleton */}
+                  <div className="mb-3">
+                    <div className="h-6 bg-gray-200 rounded-full w-24"></div>
+                  </div>
+
+                  {/* Title Skeleton */}
+                  <div className="h-6 bg-gray-200 rounded mb-2"></div>
+                  <div className="h-6 bg-gray-200 rounded w-3/4 mb-4"></div>
+
+                  {/* Description Skeleton */}
+                  <div className="space-y-2 mb-4">
+                    <div className="h-4 bg-gray-200 rounded"></div>
+                    <div className="h-4 bg-gray-200 rounded"></div>
+                    <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+                  </div>
+
+                  {/* Project Details Skeleton */}
+                  <div className="space-y-2 mb-4">
+                    <div className="h-4 bg-gray-200 rounded w-32"></div>
+                    <div className="h-4 bg-gray-200 rounded w-24"></div>
+                  </div>
+
+                  {/* Technologies Skeleton */}
+                  <div className="flex flex-wrap gap-1 mb-4">
+                    <div className="h-6 bg-gray-200 rounded-full w-16"></div>
+                    <div className="h-6 bg-gray-200 rounded-full w-20"></div>
+                    <div className="h-6 bg-gray-200 rounded-full w-14"></div>
+                  </div>
+
+                  {/* Action Buttons Skeleton */}
+                  <div className="flex gap-2">
+                    <div className="flex-1 h-8 bg-gray-200 rounded-lg"></div>
+                    <div className="flex-1 h-8 bg-gray-200 rounded-lg"></div>
+                    <div className="w-8 h-8 bg-gray-200 rounded-lg"></div>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
@@ -201,7 +263,9 @@ const PortfolioPage = () => {
                   <div className="flex gap-2">
                     <button
                       onClick={() =>
-                        router.push(`/dashboard/portfolio/${portfolio._id}`)
+                        router.push(
+                          `/portfolio/${portfolio.slug || generateSlug(portfolio.title)}`
+                        )
                       }
                       className="flex-1 px-3 py-2 text-sm border border-purple-200 text-purple-600 rounded-lg hover:bg-purple-50 transition-colors duration-200 flex items-center justify-center gap-1"
                     >

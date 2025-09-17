@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "postinstall": "node scripts/copy-tinymce.js",
-    "postbuild": "next-sitemap",
+    "postbuild": "node scripts/copy-tinymce.js && next-sitemap",
     "optimize": "node scripts/build-optimization.js",
     "build:prod": "npm run optimize && npm run build",
     "analyze": "ANALYZE=true npm run build"

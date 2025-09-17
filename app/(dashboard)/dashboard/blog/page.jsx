@@ -156,10 +156,95 @@ const BlogListPage = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4">
         <div className="w-full mx-auto">
-          <div className="flex items-center justify-center h-64">
-            <div className="text-center">
-              <FiLoader className="text-4xl text-purple-600 animate-spin mx-auto mb-4" />
-              <p className="text-gray-600">Loading blogs...</p>
+          {/* Header Skeleton */}
+          <div className="flex justify-between items-center mb-8">
+            <div className="space-y-3">
+              <div className="h-10 bg-gray-200 rounded-lg animate-pulse w-80"></div>
+              <div className="h-6 bg-gray-200 rounded-lg animate-pulse w-96"></div>
+            </div>
+            <div className="h-12 bg-gray-200 rounded-xl animate-pulse w-40"></div>
+          </div>
+
+          {/* Stats Cards Skeleton */}
+          <div className="mb-8 grid grid-cols-1 md:grid-cols-4 gap-6">
+            {[...Array(4)].map((_, index) => (
+              <div
+                key={index}
+                className="bg-white rounded-xl shadow-sm p-6 border border-purple-100 animate-pulse"
+              >
+                <div className="flex items-center">
+                  <div className="w-10 h-10 bg-gray-200 rounded-lg"></div>
+                  <div className="ml-4 flex-1">
+                    <div className="h-4 bg-gray-200 rounded w-20 mb-2"></div>
+                    <div className="h-8 bg-gray-200 rounded w-12"></div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Blog List Skeleton */}
+          <div className="bg-white rounded-xl shadow-sm border border-purple-100 overflow-hidden animate-pulse">
+            <div className="p-6">
+              {/* Table Header Skeleton */}
+              <div className="hidden md:grid md:grid-cols-12 gap-4 mb-4 pb-4 border-b border-gray-200">
+                <div className="col-span-4">
+                  <div className="h-4 bg-gray-200 rounded w-16"></div>
+                </div>
+                <div className="col-span-2">
+                  <div className="h-4 bg-gray-200 rounded w-12"></div>
+                </div>
+                <div className="col-span-2">
+                  <div className="h-4 bg-gray-200 rounded w-16"></div>
+                </div>
+                <div className="col-span-2">
+                  <div className="h-4 bg-gray-200 rounded w-14"></div>
+                </div>
+                <div className="col-span-2">
+                  <div className="h-4 bg-gray-200 rounded w-12"></div>
+                </div>
+              </div>
+
+              {/* Blog Rows Skeleton */}
+              <div className="space-y-4">
+                {[...Array(5)].map((_, index) => (
+                  <div
+                    key={index}
+                    className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center py-4 border-b border-gray-100 last:border-b-0"
+                  >
+                    {/* Blog Info */}
+                    <div className="col-span-4 flex items-center space-x-4">
+                      <div className="w-16 h-12 bg-gray-200 rounded-lg"></div>
+                      <div className="flex-1">
+                        <div className="h-5 bg-gray-200 rounded mb-2"></div>
+                        <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                      </div>
+                    </div>
+
+                    {/* Category */}
+                    <div className="col-span-2">
+                      <div className="h-6 bg-gray-200 rounded-full w-20"></div>
+                    </div>
+
+                    {/* Status */}
+                    <div className="col-span-2">
+                      <div className="h-6 bg-gray-200 rounded-full w-16"></div>
+                    </div>
+
+                    {/* Date */}
+                    <div className="col-span-2">
+                      <div className="h-4 bg-gray-200 rounded w-24"></div>
+                    </div>
+
+                    {/* Actions */}
+                    <div className="col-span-2 flex gap-2">
+                      <div className="w-8 h-8 bg-gray-200 rounded-lg"></div>
+                      <div className="w-8 h-8 bg-gray-200 rounded-lg"></div>
+                      <div className="w-8 h-8 bg-gray-200 rounded-lg"></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>

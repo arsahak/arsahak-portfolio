@@ -102,10 +102,57 @@ const EditPortfolioPage = () => {
   ];
 
   useEffect(() => {
-    if (params.id) {
-      fetchPortfolioData();
-    }
-  }, [params.id, fetchPortfolioData]);
+    if (!params.id) return;
+
+    const load = async () => {
+      try {
+        setLoadingPortfolio(true);
+        const portfolio = await getPortfolioById(params.id);
+
+        if (portfolio) {
+          setPortfolioId(portfolio._id);
+          setFormData({
+            title: portfolio.title || "",
+            description: portfolio.description || "",
+            category: portfolio.category || "",
+            projectDuration: {
+              startDate: portfolio.projectDuration?.startDate || "",
+              endDate: portfolio.projectDuration?.endDate || "",
+            },
+            projectBudget: portfolio.projectBudget || "",
+            featureImage: portfolio.featureImage
+              ? {
+                  imageTitle: "Featured Image",
+                  altText: "Portfolio featured image",
+                  image: {
+                    public_id: `featured_${portfolio._id}`,
+                    url: portfolio.featureImage,
+                  },
+                }
+              : null,
+            galleryImage: portfolio.galleryImage || [],
+            liveUrl: portfolio.liveUrl || "",
+            githubUrl: portfolio.githubUrl || "",
+            technologies: portfolio.technologies || [],
+          });
+
+          // Set preview
+          if (portfolio.featureImage) {
+            setImagePreview(portfolio.featureImage);
+          } else {
+            setImagePreview(null);
+          }
+        }
+      } catch (error) {
+        toast.error("Failed to fetch portfolio: " + error.message);
+        router.push("/dashboard/portfolio");
+      } finally {
+        setLoadingPortfolio(false);
+      }
+    };
+
+    load();
+  }, [params.id]);
 
   // Cleanup TinyMCE editor on unmount
   useEffect(() => {
@@ -662,10 +709,77 @@ const EditPortfolioPage = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4">
         <div className="w-full mx-auto">
-          <div className="flex items-center justify-center h-64">
-            <div className="text-center">
-              <FiLoader className="text-4xl text-purple-600 animate-spin mx-auto mb-4" />
-              <p className="text-gray-600">Loading portfolio...</p>
+          {/* Header Skeleton */}
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+            <div className="space-y-3">
+              <div className="h-10 bg-gray-200 rounded-lg animate-pulse w-80"></div>
+              <div className="h-6 bg-gray-200 rounded-lg animate-pulse w-96"></div>
+            </div>
+            <div className="flex gap-2">
+              <div className="h-12 bg-gray-200 rounded-xl animate-pulse w-32"></div>
+              <div className="h-12 bg-gray-200 rounded-xl animate-pulse w-32"></div>
+            </div>
+          </div>
+
+          {/* Portfolio Edit Form Skeleton */}
+          <div className="bg-white rounded-xl shadow-sm border border-purple-100 overflow-hidden animate-pulse">
+            <div className="p-8">
+              {/* Form Fields Skeleton */}
+              <div className="space-y-6">
+                {/* Title Field Skeleton */}
+                <div>
+                  <div className="h-6 bg-gray-200 rounded w-16 mb-2"></div>
+                  <div className="h-12 bg-gray-200 rounded-lg"></div>
+                </div>
+
+                {/* Category and Status Skeleton */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <div className="h-6 bg-gray-200 rounded w-20 mb-2"></div>
+                    <div className="h-12 bg-gray-200 rounded-lg"></div>
+                  </div>
+                  <div>
+                    <div className="h-6 bg-gray-200 rounded w-16 mb-2"></div>
+                    <div className="h-12 bg-gray-200 rounded-lg"></div>
+                  </div>
+                </div>
+
+                {/* Project Details Skeleton */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <div className="h-6 bg-gray-200 rounded w-24 mb-2"></div>
+                    <div className="h-12 bg-gray-200 rounded-lg"></div>
+                  </div>
+                  <div>
+                    <div className="h-6 bg-gray-200 rounded w-20 mb-2"></div>
+                    <div className="h-12 bg-gray-200 rounded-lg"></div>
+                  </div>
+                </div>
+
+                {/* Featured Image Skeleton */}
+                <div>
+                  <div className="h-6 bg-gray-200 rounded w-24 mb-2"></div>
+                  <div className="h-48 bg-gray-200 rounded-lg"></div>
+                </div>
+
+                {/* Technologies Skeleton */}
+                <div>
+                  <div className="h-6 bg-gray-200 rounded w-28 mb-2"></div>
+                  <div className="h-12 bg-gray-200 rounded-lg"></div>
+                </div>
+
+                {/* Content Editor Skeleton */}
+                <div>
+                  <div className="h-6 bg-gray-200 rounded w-20 mb-2"></div>
+                  <div className="h-96 bg-gray-200 rounded-lg"></div>
+                </div>
+
+                {/* Action Buttons Skeleton */}
+                <div className="flex gap-4">
+                  <div className="h-12 bg-gray-200 rounded-lg w-32"></div>
+                  <div className="h-12 bg-gray-200 rounded-lg w-32"></div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -823,9 +937,12 @@ const EditPortfolioPage = () => {
                     console.warn("Error initializing TinyMCE editor:", error);
                   }
                 }}
-                value={formData.description}
+                key={portfolioId || "new"}
+                initialValue={formData.description}
                 onEditorChange={handleEditorChange}
                 init={{
+                  skin_url: "/tinymce/skins/ui/oxide",
+                  content_css: "/tinymce/skins/content/default/content.css",
                   height: 400,
                   menubar: false,
                   plugins: [
@@ -860,10 +977,10 @@ const EditPortfolioPage = () => {
                   elementpath: false,
                   statusbar: false,
                   resize: false,
+                  auto_focus: false,
                   setup: (editor) => {
                     editor.on("remove", () => {
                       try {
-                        // Check if editor container still exists before destroying
                         const container = editor.getContainer();
                         if (container && container.parentNode) {
                           editor.destroy();
