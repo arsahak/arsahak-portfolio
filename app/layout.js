@@ -13,11 +13,11 @@ const lato = Lato({
 
 export const metadata = {
   title: {
-    default: "AR Sahak | Full Stack Developer & UI/UX Designer",
+    default: "AR Sahak | Full Stack Developer",
     template: "%s | AR Sahak"
   },
   description:
-    "AR Sahak is a passionate Full Stack Developer and UI/UX Designer specializing in React, Next.js, Node.js, and modern web technologies. Explore my portfolio of innovative web applications, mobile apps, and digital solutions.",
+    "AR Sahak is a passionate Full Stack Developer specializing in React, Next.js, Node.js, and modern web technologies. Explore my portfolio of innovative web applications, mobile apps, and digital solutions.",
   keywords: [
     "AR Sahak",
     "Full Stack Developer",
@@ -37,7 +37,7 @@ export const metadata = {
   authors: [{ name: "AR Sahak" }],
   creator: "AR Sahak",
   publisher: "AR Sahak",
-  metadataBase: new URL("https://arsahak.com"),
+  metadataBase: new URL("https://www.arsahak.com"),
   alternates: {
     canonical: "/",
     languages: {
@@ -47,7 +47,7 @@ export const metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://arsahak.com",
+    url: "https://www.arsahak.com",
     siteName: "AR Sahak Portfolio",
     title: "AR Sahak | Full Stack Developer & UI/UX Designer",
     description: "Passionate Full Stack Developer and UI/UX Designer specializing in React, Next.js, Node.js, and modern web technologies. Explore innovative web applications and digital solutions.",
