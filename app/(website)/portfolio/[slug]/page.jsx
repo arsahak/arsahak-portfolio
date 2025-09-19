@@ -5,18 +5,10 @@ export async function generateMetadata({ params }) {
   const { slug } = params;
 
   try {
-    const baseUrl =
-      process.env.NEXT_PUBLIC_SITE_URL || "https://www.arsahak.com";
-    const apiUrl =
-      process.env.NODE_ENV === "production"
-        ? `${baseUrl}/api`
-        : `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api"}`;
-
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
     const res = await fetch(
-      `${apiUrl}/portfolio?slug=${encodeURIComponent(slug)}`,
-      {
-        cache: "no-store",
-      }
+      `${baseUrl}/api/portfolio?slug=${encodeURIComponent(slug)}`,
+      { cache: "no-store" }
     );
 
     if (!res.ok) {
@@ -27,24 +19,31 @@ export async function generateMetadata({ params }) {
       };
     }
 
-    const portfolio = await res.json();
+    const json = await res.json().catch(() => null);
+    const portfolio = json;
     console.log("Portfolio metadata fetch:", portfolio);
 
     const siteUrl =
       process.env.NEXT_PUBLIC_SITE_URL || "https://www.arsahak.com";
 
-    // Ensure image URL is absolute for OG tags
-    const ogImageUrl = portfolio.featureImage
-      ? portfolio.featureImage.startsWith("http")
-        ? portfolio.featureImage
-        : `${siteUrl}${portfolio.featureImage}`
-      : `${siteUrl}/opengraph-image.png`;
+    // Simple image picker like blog
+    const pickImage = (p) => {
+      return p?.featureImage || "/opengraph-image.png";
+    };
+    const ogImageUrl = pickImage(portfolio);
 
     // Extract plain text from HTML description
     const stripHtml = (html) => {
       if (!html) return "";
       return html.replace(/<[^>]*>/g, "").substring(0, 160);
     };
+
+    if (!portfolio || !portfolio.slug) {
+      return {
+        title: "Portfolio Project Not Found | AR Sahak",
+        description: "The requested portfolio project could not be found.",
+      };
+    }
 
     const description =
       stripHtml(portfolio.description) ||
