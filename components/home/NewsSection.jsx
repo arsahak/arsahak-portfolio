@@ -3,47 +3,69 @@ import { motion } from "framer-motion";
 import { Orbitron } from "next/font/google";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import ScrollMotionEffect from "../motion/ScrollMotionEffect";
 
 const orbitron = Orbitron({ subsets: ["latin"] });
 
-const blogData = [
-  {
-    id: 1,
-    title: "Modern Web Development Trends 2024",
-    excerpt:
-      "Exploring the latest trends in web development including AI integration, performance optimization, and modern frameworks.",
-    img: "/assets/portfolio-item/epharma-web.png",
-    category: "Web Development",
-    date: "December 15, 2024",
-    readTime: "5 min read",
-    slug: "modern-web-development-trends-2024",
-  },
-  {
-    id: 2,
-    title: "Building Scalable APIs with Node.js",
-    excerpt:
-      "Learn how to design and implement robust, scalable APIs using Node.js and Express with best practices.",
-    img: "/assets/portfolio-item/butterfly-app.png",
-    category: "Backend Development",
-    date: "December 12, 2024",
-    readTime: "8 min read",
-    slug: "building-scalable-apis-nodejs",
-  },
-  {
-    id: 3,
-    title: "React Performance Optimization Techniques",
-    excerpt:
-      "Discover advanced techniques to optimize React applications for better performance and user experience.",
-    img: "/assets/portfolio-item/epharma-web.png",
-    category: "Frontend Development",
-    date: "December 10, 2024",
-    readTime: "6 min read",
-    slug: "react-performance-optimization-techniques",
-  },
-];
-
 const NewsSection = () => {
+  const [blogs, setBlogs] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Simple image URL getter for blog
+  const getImageUrl = (blog) => {
+    return blog?.featureImage?.image?.url || "/opengraph-image.png";
+  };
+
+  // Get clean description
+  const getDescription = (blog) => {
+    if (!blog?.metaDescription && !blog?.description)
+      return "Read this blog post to learn more.";
+    const text = (blog.metaDescription || blog.description)
+      .replace(/<[^>]*>/g, " ")
+      .trim()
+      .replace(/\s+/g, " ");
+    if (text.length <= 120) return text;
+    return text.slice(0, 120).replace(/[,;:.!?\s]*$/, "") + "...";
+  };
+
+  // Format date
+  const formatDate = (dateString) => {
+    if (!dateString) return "Recent";
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
+
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        setLoading(true);
+        const res = await fetch("/api/blog?published=true", {
+          cache: "no-store",
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          const publishedBlogs = Array.isArray(data)
+            ? data.filter((blog) => blog.published === true)
+            : [];
+          // Get latest 3 blogs
+          setBlogs(publishedBlogs.slice(0, 3));
+        }
+      } catch (error) {
+        console.error("Error fetching blogs:", error);
+        setBlogs([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBlogs();
+  }, []);
+
   return (
     <section className="py-16 md:py-24">
       <div className="container">
@@ -70,84 +92,111 @@ const NewsSection = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {blogData.map((blog, index) => (
-            <motion.div
-              key={blog.id}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: index * 0.1 }}
-              whileHover={{ y: -8 }}
-              className="group h-full"
-            >
-              <Link href={`/blog/${blog.slug}`} className="block h-full">
-                <div className="bg-gradient-to-br from-[#181818] to-[#1a1a1a] rounded-2xl overflow-hidden shadow hover:shadow-2xl transition-all duration-300 border border-white/10 group-hover:border-primary/30 h-full flex flex-col">
-                  {/* Image Container */}
-                  <div className="relative overflow-hidden h-64 flex-shrink-0">
-                    <Image
-                      src={blog.img}
-                      alt={blog.title}
-                      fill
-                      className="object-cover group-hover:scale-110 transition-transform duration-500"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-                    {/* Category Badge */}
-                    <div className="absolute top-4 left-4">
-                      <span className="bg-primary/90 text-white px-3 py-1 rounded-full text-xs font-medium backdrop-blur-sm">
-                        {blog.category}
-                      </span>
-                    </div>
+          {loading ? (
+            // Loading skeleton
+            [...Array(3)].map((_, index) => (
+              <div
+                key={`skeleton-${index}`}
+                className="bg-gradient-to-br from-[#181818] to-[#1a1a1a] rounded-2xl overflow-hidden border border-white/10 h-full flex flex-col animate-pulse"
+              >
+                <div className="h-64 bg-gray-700"></div>
+                <div className="p-6 flex flex-col flex-1">
+                  <div className="flex justify-between mb-3">
+                    <div className="w-20 h-4 bg-gray-600 rounded"></div>
+                    <div className="w-16 h-4 bg-gray-600 rounded"></div>
                   </div>
+                  <div className="w-full h-6 bg-gray-600 rounded mb-3"></div>
+                  <div className="w-3/4 h-6 bg-gray-600 rounded mb-4"></div>
+                  <div className="w-full h-4 bg-gray-600 rounded mb-2"></div>
+                  <div className="w-5/6 h-4 bg-gray-600 rounded mb-4"></div>
+                  <div className="w-24 h-4 bg-gray-600 rounded mt-auto"></div>
+                </div>
+              </div>
+            ))
+          ) : blogs.length > 0 ? (
+            blogs.map((blog, index) => (
+              <motion.div
+                key={blog._id || blog.slug}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: index * 0.1 }}
+                whileHover={{ y: -8 }}
+                className="group h-full"
+              >
+                <Link href={`/blog/${blog.slug}`} className="block h-full">
+                  <div className="bg-gradient-to-br from-[#181818] to-[#1a1a1a] rounded-2xl overflow-hidden shadow hover:shadow-2xl transition-all duration-300 border border-white/10 group-hover:border-primary/30 h-full flex flex-col">
+                    {/* Image Container */}
+                    <div className="relative overflow-hidden h-64 flex-shrink-0">
+                      <Image
+                        src={getImageUrl(blog)}
+                        alt={blog.title}
+                        fill
+                        className="object-cover group-hover:scale-110 transition-transform duration-500"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-                  {/* Content */}
-                  <div className="p-6 flex flex-col flex-1">
-                    <div className="flex items-center justify-between text-sm text-gray-400 mb-3">
-                      <span>{blog.date}</span>
-                      <span className="flex items-center gap-1">
+                      {/* Category Badge */}
+                      <div className="absolute top-4 left-4">
+                        <span className="bg-primary/90 text-white px-3 py-1 rounded-full text-xs font-medium backdrop-blur-sm">
+                          {blog.category || "General"}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Content */}
+                    <div className="p-6 flex flex-col flex-1">
+                      <div className="flex items-center justify-between text-sm text-gray-400 mb-3">
+                        <span>{formatDate(blog.createdAt)}</span>
+                        <span className="flex items-center gap-1">
+                          <svg
+                            className="w-4 h-4"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                          5 min read
+                        </span>
+                      </div>
+
+                      <h3 className="text-xl font-bold text-white mb-3 line-clamp-2 group-hover:text-primary transition-colors duration-300 flex-shrink-0">
+                        {blog.title}
+                      </h3>
+
+                      <p className="text-gray-400 text-sm leading-relaxed line-clamp-3 mb-4 flex-1">
+                        {getDescription(blog)}
+                      </p>
+
+                      <div className="flex items-center text-primary font-medium text-sm group-hover:gap-2 transition-all duration-300 mt-auto">
+                        Read More
                         <svg
-                          className="w-4 h-4"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
+                          className="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
                         >
                           <path
-                            fillRule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                            clipRule="evenodd"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M17 8l4 4m0 0l-4 4m4-4H3"
                           />
                         </svg>
-                        {blog.readTime}
-                      </span>
-                    </div>
-
-                    <h3 className="text-xl font-bold text-white mb-3 line-clamp-2 group-hover:text-primary transition-colors duration-300 flex-shrink-0">
-                      {blog.title}
-                    </h3>
-
-                    <p className="text-gray-400 text-sm leading-relaxed line-clamp-3 mb-4 flex-1">
-                      {blog.excerpt}
-                    </p>
-
-                    <div className="flex items-center text-primary font-medium text-sm group-hover:gap-2 transition-all duration-300 mt-auto">
-                      Read More
-                      <svg
-                        className="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M17 8l4 4m0 0l-4 4m4-4H3"
-                        />
-                      </svg>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </Link>
-            </motion.div>
-          ))}
+                </Link>
+              </motion.div>
+            ))
+          ) : (
+            <div className="col-span-full text-center py-16">
+              <div className="text-gray-400 text-lg">No blog posts found.</div>
+            </div>
+          )}
         </div>
 
         {/* View All Button */}

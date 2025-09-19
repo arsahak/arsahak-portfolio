@@ -99,11 +99,14 @@ const BlogDetailsClient = ({ params }) => {
   // Cleanup JSON-LD on unmount
   useEffect(() => {
     return () => {
-      const existingJsonLd = document.querySelector(
-        'script[type="application/ld+json"]'
-      );
-      if (existingJsonLd) {
-        existingJsonLd.remove();
+      try {
+        const existingJsonLd = document.getElementById("blog-json-ld");
+        if (existingJsonLd && existingJsonLd.parentNode) {
+          existingJsonLd.parentNode.removeChild(existingJsonLd);
+        }
+      } catch (error) {
+        // Silently handle DOM manipulation errors
+        console.warn("Error removing JSON-LD script:", error);
       }
     };
   }, []);
@@ -158,16 +161,19 @@ const BlogDetailsClient = ({ params }) => {
         };
 
         // Remove existing JSON-LD if any
-        const existingJsonLd = document.querySelector(
-          'script[type="application/ld+json"]'
-        );
-        if (existingJsonLd) {
-          existingJsonLd.remove();
+        try {
+          const existingJsonLd = document.getElementById("blog-json-ld");
+          if (existingJsonLd && existingJsonLd.parentNode) {
+            existingJsonLd.parentNode.removeChild(existingJsonLd);
+          }
+        } catch (error) {
+          console.warn("Error removing existing JSON-LD script:", error);
         }
 
-        // Add new JSON-LD
+        // Add new JSON-LD with unique ID
         const script = document.createElement("script");
         script.type = "application/ld+json";
+        script.id = "blog-json-ld";
         script.text = JSON.stringify(jsonLd);
         document.head.appendChild(script);
 

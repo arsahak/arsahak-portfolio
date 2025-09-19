@@ -12,8 +12,9 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { Orbitron } from "next/font/google";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
+import { getPinnedPortfolios } from "@/lib/portfolioService";
 import Link from "next/link";
 import ScrollMotionEffect from "../motion/ScrollMotionEffect";
 
@@ -56,6 +57,30 @@ const portfolioInfo = [
 const MyPortfolio = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [portfolioId, setPortfolioId] = useState();
+  const [portfolios, setPortfolios] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Simple image URL getter for portfolio
+  const getImageUrl = (portfolio) => {
+    return portfolio?.featureImage || "/assets/portfolio-item/epharma-web.png";
+  };
+
+  useEffect(() => {
+    const fetchPinnedPortfolios = async () => {
+      try {
+        setLoading(true);
+        const data = await getPinnedPortfolios();
+        setPortfolios(data.slice(0, 5)); // Get max 5 portfolios
+      } catch (error) {
+        console.error("Error fetching pinned portfolios:", error);
+        setPortfolios([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPinnedPortfolios();
+  }, []);
 
   return (
     <section className="bg-[#181818]">
@@ -84,186 +109,121 @@ const MyPortfolio = () => {
         </div>
         <div className="mt-14">
           <ScrollMotionEffect effect="fade-up" duration="2000">
-            <div className="max-w-[2000px] gap-6 grid grid-cols-12 grid-rows-2 ">
-              <Card className="col-span-12 sm:col-span-4 h-[300px] cursor-pointer">
-                <div
-                  onClick={() => {
-                    window.location.href = `/portfolio/${"swop-app"}`;
-                  }}
-                >
-                  <CardHeader className="absolute z-10 flex-col !items-center bg-[#75757595] rounded-full top-2 right-2 max-w-32 !p-1 !m-0">
-                    <h4 className="flex justify-center mx-0 text-sm text-center text-white">
-                      Swop App
-                    </h4>
-                  </CardHeader>
-                  <Image
-                    isZoomed
-                    removeWrapper
-                    alt="Card background"
-                    className="z-0 object-cover w-full h-full"
-                    src="assets/portfolio-item/swop-app.png"
-                  />
-                  <button className="bg-[#75757595] rounded-full p-4 m-2 flex justify-center items-center absolute bottom-0 z-10 cursor-pointer ">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      className="text-white size-4"
+            {loading ? (
+              // Loading skeleton with same layout
+              <div className="max-w-[2000px] gap-6 grid grid-cols-12 grid-rows-2">
+                {[...Array(5)].map((_, index) => (
+                  <Card
+                    key={`skeleton-${index}`}
+                    className={`h-[300px] cursor-pointer animate-pulse ${
+                      index < 3
+                        ? "col-span-12 sm:col-span-4"
+                        : index === 3
+                          ? "col-span-12 sm:col-span-5"
+                          : "col-span-12 sm:col-span-7"
+                    }`}
+                  >
+                    <div className="w-full h-full bg-gray-700 rounded-lg"></div>
+                  </Card>
+                ))}
+              </div>
+            ) : portfolios.length > 0 ? (
+              <div className="max-w-[2000px] gap-6 grid grid-cols-12 grid-rows-2">
+                {/* First 3 cards - top row */}
+                {portfolios.slice(0, 3).map((portfolio, index) => (
+                  <Card
+                    key={portfolio._id}
+                    className="col-span-12 sm:col-span-4 h-[300px] cursor-pointer"
+                  >
+                    <div
+                      onClick={() => {
+                        window.location.href = `/portfolio/${portfolio.slug}`;
+                      }}
                     >
-                      <path
-                        fillRule="evenodd"
-                        d="M8.25 3.75H19.5a.75.75 0 0 1 .75.75v11.25a.75.75 0 0 1-1.5 0V6.31L5.03 20.03a.75.75 0 0 1-1.06-1.06L17.69 5.25H8.25a.75.75 0 0 1 0-1.5Z"
-                        clipRule="evenodd"
+                      <CardHeader className="absolute z-10 flex-col !items-center bg-[#75757595] rounded-full top-2 right-2 max-w-32 !p-1 !m-0">
+                        <h4 className="flex justify-center mx-0 text-sm text-center text-white">
+                          {portfolio.title}
+                        </h4>
+                      </CardHeader>
+                      <Image
+                        isZoomed
+                        removeWrapper
+                        alt={portfolio.title}
+                        className="z-0 object-cover w-full h-full"
+                        src={getImageUrl(portfolio)}
                       />
-                    </svg>
-                  </button>
-                </div>
-              </Card>
+                      <button className="bg-[#75757595] rounded-full p-4 m-2 flex justify-center items-center absolute bottom-0 z-10 cursor-pointer">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          className="text-white size-4"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M8.25 3.75H19.5a.75.75 0 0 1 .75.75v11.25a.75.75 0 0 1-1.5 0V6.31L5.03 20.03a.75.75 0 0 1-1.06-1.06L17.69 5.25H8.25a.75.75 0 0 1 0-1.5Z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </Card>
+                ))}
 
-              <Card className="col-span-12 sm:col-span-4 h-[300px] cursor-pointer">
-                <div
-                  onClick={() => {
-                    window.location.href = `/portfolio/${"epharma-web"}`;
-                  }}
-                >
-                  <CardHeader className="absolute z-10 flex-col !items-center bg-[#75757595] rounded-full top-2 right-2 max-w-32 !p-1 !m-0">
-                    <h4 className="flex justify-center mx-0 text-sm text-center text-white">
-                      ePharma Web
-                    </h4>
-                  </CardHeader>
-                  <Image
-                    isZoomed
-                    removeWrapper
-                    alt="Card background"
-                    className="z-0 object-cover w-full h-full"
-                    src="assets/portfolio-item/epharma-web.png"
-                  />
-                  <button className="bg-[#75757595] rounded-full p-4 m-2 flex justify-center items-center absolute bottom-0 z-10 cursor-pointer ">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      className="text-white size-4"
+                {/* Last 2 cards - bottom row */}
+                {portfolios.slice(3, 5).map((portfolio, index) => (
+                  <Card
+                    key={portfolio._id}
+                    isFooterBlurred
+                    className={`w-full h-[300px] cursor-pointer ${
+                      index === 0
+                        ? "col-span-12 sm:col-span-5"
+                        : "col-span-12 sm:col-span-7"
+                    }`}
+                  >
+                    <div
+                      onClick={() => {
+                        window.location.href = `/portfolio/${portfolio.slug}`;
+                      }}
                     >
-                      <path
-                        fillRule="evenodd"
-                        d="M8.25 3.75H19.5a.75.75 0 0 1 .75.75v11.25a.75.75 0 0 1-1.5 0V6.31L5.03 20.03a.75.75 0 0 1-1.06-1.06L17.69 5.25H8.25a.75.75 0 0 1 0-1.5Z"
-                        clipRule="evenodd"
+                      <CardHeader className="absolute z-10 flex-col !items-center bg-[#75757595] rounded-full top-2 right-2 max-w-32 !p-1 !m-0">
+                        <h4 className="flex justify-center mx-0 text-sm text-center text-white">
+                          {portfolio.title}
+                        </h4>
+                      </CardHeader>
+                      <Image
+                        isZoomed
+                        removeWrapper
+                        alt={portfolio.title}
+                        className="z-0 object-cover w-full h-full"
+                        src={getImageUrl(portfolio)}
                       />
-                    </svg>
-                  </button>
+                      <button className="bg-[#75757595] rounded-full p-4 m-2 flex justify-center items-center absolute bottom-0 z-10 cursor-pointer">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          className="text-white size-4"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M8.25 3.75H19.5a.75.75 0 0 1 .75.75v11.25a.75.75 0 0 1-1.5 0V6.31L5.03 20.03a.75.75 0 0 1-1.06-1.06L17.69 5.25H8.25a.75.75 0 0 1 0-1.5Z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-16">
+                <div className="text-gray-400 text-lg">
+                  No pinned portfolios found. Please pin some portfolios from
+                  the dashboard.
                 </div>
-              </Card>
-              <Card className="col-span-12 sm:col-span-4 h-[300px] cursor-pointer">
-                <div
-                  onClick={() => {
-                    window.location.href = `/portfolio/${"nazara"}`;
-                  }}
-                >
-                  <CardHeader className="absolute z-10 flex-col !items-center bg-[#75757595] rounded-full top-2 right-2 max-w-32 !p-1 !m-0">
-                    <h4 className="flex justify-center mx-0 text-sm text-center text-white">
-                      Nazara
-                    </h4>
-                  </CardHeader>
-                  <Image
-                    isZoomed
-                    removeWrapper
-                    alt="Card background"
-                    className="z-0 object-cover w-full h-full"
-                    src="assets/portfolio-item/nazara-web.png"
-                  />
-                  <button className="bg-[#75757595] rounded-full p-4 m-2 flex justify-center items-center absolute bottom-0 z-10 cursor-pointer ">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      className="text-white size-4"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M8.25 3.75H19.5a.75.75 0 0 1 .75.75v11.25a.75.75 0 0 1-1.5 0V6.31L5.03 20.03a.75.75 0 0 1-1.06-1.06L17.69 5.25H8.25a.75.75 0 0 1 0-1.5Z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </button>
-                </div>
-              </Card>
-              <Card
-                isFooterBlurred
-                className="w-full h-[300px] col-span-12 sm:col-span-5 cursor-pointer"
-              >
-                <div
-                  onClick={() => {
-                    window.location.href = `/portfolio/${"butterfly-app"}`;
-                  }}
-                >
-                  <CardHeader className="absolute z-10 flex-col !items-center bg-[#75757595] rounded-full top-2 right-2 max-w-32 !p-1 !m-0">
-                    <h4 className="flex justify-center mx-0 text-sm text-center text-white">
-                      Butterfly App
-                    </h4>
-                  </CardHeader>
-                  <Image
-                    isZoomed
-                    removeWrapper
-                    alt="Card example background"
-                    className="z-0 object-cover w-full h-full"
-                    src="assets/portfolio-item/butterfly-appp.png"
-                  />
-                  <button className="bg-[#75757595] rounded-full p-4 m-2 flex justify-center items-center absolute bottom-0 z-10 cursor-pointer ">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      className="text-white size-4"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M8.25 3.75H19.5a.75.75 0 0 1 .75.75v11.25a.75.75 0 0 1-1.5 0V6.31L5.03 20.03a.75.75 0 0 1-1.06-1.06L17.69 5.25H8.25a.75.75 0 0 1 0-1.5Z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </button>
-                </div>
-              </Card>
-              <Card
-                isFooterBlurred
-                className="w-full h-[300px] col-span-12 sm:col-span-7 cursor-pointer"
-              >
-                <div
-                  onClick={() => {
-                    window.location.href = `/portfolio/${"epharma-app"}`;
-                  }}
-                >
-                  <CardHeader className="absolute z-10 flex-col !items-center bg-[#75757595] rounded-full top-2 right-2 max-w-32 !p-1 !m-0 ">
-                    <h4 className="flex justify-center mx-0 text-sm text-center text-white">
-                      ePharma App
-                    </h4>
-                  </CardHeader>
-                  <Image
-                    isZoomed
-                    removeWrapper
-                    alt="Relaxing app background"
-                    className="z-0 object-cover w-full h-full"
-                    src="assets/portfolio-item/epharma-app-850X770.png"
-                  />
-
-                  <button className="bg-[#75757595] rounded-full p-4 m-2 flex justify-center items-center absolute bottom-0 z-10 cursor-pointer ">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      className="text-white size-4"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M8.25 3.75H19.5a.75.75 0 0 1 .75.75v11.25a.75.75 0 0 1-1.5 0V6.31L5.03 20.03a.75.75 0 0 1-1.06-1.06L17.69 5.25H8.25a.75.75 0 0 1 0-1.5Z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </button>
-                </div>
-              </Card>
-            </div>
+              </div>
+            )}
           </ScrollMotionEffect>
           <div className="flex justify-center mx-0 mt-16">
             <ScrollMotionEffect effect="fade-up" duration="2000">

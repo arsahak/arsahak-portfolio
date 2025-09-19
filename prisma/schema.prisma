@@ -61,6 +61,7 @@ model Portfolio {
   images          Json[]   // Simple array for images
   published       Boolean  @default(false)
   featured        Boolean  @default(false)
+  pinned          Boolean  @default(false)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 

@@ -20,6 +20,7 @@ export async function GET(request) {
     const id = searchParams.get('id');
     const slug = searchParams.get('slug');
     const published = searchParams.get('published');
+    const pinned = searchParams.get('pinned');
 
     // Use direct MongoDB connection like blog route
     const client = new MongoClient(process.env.DATABASE_URL);
@@ -57,6 +58,7 @@ export async function GET(request) {
           images: Array.isArray(portfolio.images) ? portfolio.images : [],
           published: portfolio.published || false,
           featured: portfolio.featured || false,
+          pinned: portfolio.pinned === true || portfolio.pinned === 'true' || false,
           createdAt: portfolio.createdAt || new Date(),
           updatedAt: portfolio.updatedAt || new Date()
         };
@@ -97,6 +99,7 @@ export async function GET(request) {
           images: Array.isArray(portfolio.images) ? portfolio.images : [],
           published: portfolio.published || false,
           featured: portfolio.featured || false,
+          pinned: portfolio.pinned === true || portfolio.pinned === 'true' || false,
           createdAt: portfolio.createdAt || new Date(),
           updatedAt: portfolio.updatedAt || new Date()
         };
@@ -113,6 +116,12 @@ export async function GET(request) {
       const filter = {};
       if (published === 'true') filter.published = true;
       if (published === 'false') filter.published = false;
+      if (pinned === 'true') {
+        filter.$or = [
+          { pinned: true },
+          { pinned: 'true' }
+        ];
+      }
 
       const portfolios = await collection
         .find(filter)
@@ -122,6 +131,7 @@ export async function GET(request) {
       await client.close();
 
       // Transform portfolios to match expected format
+      console.log('Raw portfolios from DB:', portfolios.map(p => ({ id: p._id, title: p.title, pinned: p.pinned })));
       const transformedPortfolios = portfolios.map(portfolio => ({
         _id: portfolio._id.toString(),
         id: portfolio._id.toString(),
@@ -141,10 +151,12 @@ export async function GET(request) {
         images: Array.isArray(portfolio.images) ? portfolio.images : [],
         published: portfolio.published || false,
         featured: portfolio.featured || false,
+        pinned: portfolio.pinned === true || portfolio.pinned === 'true' || false,
         createdAt: portfolio.createdAt || new Date(),
         updatedAt: portfolio.updatedAt || new Date()
       }));
 
+      console.log('Transformed portfolios:', transformedPortfolios.map(p => ({ id: p.id, title: p.title, pinned: p.pinned })));
       return NextResponse.json(transformedPortfolios, { status: 200 });
     } catch (error) {
       await client.close();
@@ -198,6 +210,7 @@ export async function POST(request) {
       images: Array.isArray(body.images) ? body.images : [],
       published: body.published === true || body.published === 'true',
       featured: body.featured === true || body.featured === 'true',
+      pinned: body.pinned === true || body.pinned === 'true',
     };
 
     // Validate required fields

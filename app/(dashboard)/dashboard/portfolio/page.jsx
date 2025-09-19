@@ -1,4 +1,5 @@
 "use client";
+import { GrPin } from "react-icons/gr";
 
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
@@ -16,6 +17,7 @@ import { toast } from "react-toastify";
 import {
   deletePortfolio,
   getAllPortfolios,
+  invalidatePortfolioCache,
 } from "../../../../lib/portfolioService";
 
 const PortfolioPage = () => {
@@ -23,11 +25,13 @@ const PortfolioPage = () => {
   const [portfolios, setPortfolios] = useState([]);
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState(null);
+  const [pinningId, setPinningId] = useState(null);
 
-  const fetchPortfolios = useCallback(async () => {
+  const fetchPortfolios = useCallback(async (forceRefresh = false) => {
     try {
       setLoading(true);
-      const data = await getAllPortfolios();
+      const data = await getAllPortfolios(true, forceRefresh);
+      console.log("Fetched portfolios:", data);
       setPortfolios(data);
     } catch (error) {
       toast.error("Failed to fetch portfolios: " + error.message);
@@ -50,6 +54,38 @@ const PortfolioPage = () => {
       toast.error("Failed to delete portfolio: " + error.message);
     } finally {
       setDeletingId(null);
+    }
+  };
+
+  const handlePinToggle = async (id, currentPinned) => {
+    try {
+      setPinningId(id);
+      const response = await fetch("/api/portfolio/pin", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id,
+          pinned: !currentPinned,
+        }),
+      });
+
+      if (response.ok) {
+        toast.success(
+          `Portfolio ${!currentPinned ? "pinned" : "unpinned"} successfully!`
+        );
+        // Force refresh with cache invalidation
+        invalidatePortfolioCache();
+        fetchPortfolios(true);
+      } else {
+        const error = await response.json();
+        toast.error(error.error || "Failed to update pin status");
+      }
+    } catch (error) {
+      toast.error("Failed to update pin status: " + error.message);
+    } finally {
+      setPinningId(null);
     }
   };
 
@@ -144,6 +180,8 @@ const PortfolioPage = () => {
     );
   }
 
+  console.log("cehck", portfolios);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4">
       <div className="w-full mx-auto">
@@ -203,15 +241,21 @@ const PortfolioPage = () => {
 
                 {/* Content */}
                 <div className="p-6">
-                  {/* Category Badge */}
-                  {portfolio.category && (
-                    <div className="mb-3">
+                  {/* Category Badge and Pin Status */}
+                  <div className="mb-3 flex items-center gap-2">
+                    {portfolio.category && (
                       <span className="inline-flex items-center gap-1 px-3 py-1 bg-purple-100 text-purple-700 text-xs rounded-full">
                         <FiTag className="text-xs" />
                         {portfolio.category}
                       </span>
-                    </div>
-                  )}
+                    )}
+                    {portfolio.pinned && (
+                      <span className="inline-flex items-center gap-1 px-3 py-1 bg-orange-100 text-orange-700 text-xs rounded-full">
+                        <GrPin className="text-xs fill-current" />
+                        Pinned
+                      </span>
+                    )}
+                  </div>
 
                   <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
                     {portfolio.title}
@@ -283,6 +327,31 @@ const PortfolioPage = () => {
                     >
                       <FiEdit className="text-sm" />
                       Edit
+                    </button>
+
+                    <button
+                      onClick={() =>
+                        handlePinToggle(portfolio._id, portfolio.pinned)
+                      }
+                      disabled={pinningId === portfolio._id}
+                      className={`px-3 py-2 text-sm border rounded-lg transition-colors duration-200 flex items-center justify-center gap-1 disabled:opacity-50 ${
+                        portfolio.pinned
+                          ? "border-orange-400 bg-orange-400 text-white hover:bg-orange-500"
+                          : "border-gray-200 text-gray-600 hover:bg-gray-50"
+                      }`}
+                      title={
+                        portfolio.pinned
+                          ? "Unpin from home page"
+                          : "Pin to home page"
+                      }
+                    >
+                      {pinningId === portfolio._id ? (
+                        <FiLoader className="text-sm animate-spin" />
+                      ) : (
+                        <GrPin
+                          className={`text-sm ${portfolio.pinned ? "fill-current" : ""}`}
+                        />
+                      )}
                     </button>
 
                     <button
