@@ -14,25 +14,26 @@ const lato = Lato({
 export const metadata = {
   title: {
     default: "AR Sahak | Full Stack Developer",
-    template: "%s | AR Sahak"
+    template: "%s | AR Sahak",
   },
   description:
-    "AR Sahak is a passionate Full Stack Developer specializing in React, Next.js, Node.js, and modern web technologies. Explore my portfolio of innovative web applications, mobile apps, and digital solutions.",
+    "AR Sahak is a Full Stack Developer with expertise in React, Next.js, Node.js, AI, Machine Learning, dApps, Web3, and Blockchain technologies. Explore my portfolio of scalable web applications, smart contracts, and innovative digital solutions.",
   keywords: [
     "AR Sahak",
     "Full Stack Developer",
     "React Developer",
     "Next.js Developer",
     "Node.js Developer",
-    "UI/UX Designer",
+    "AI Developer",
+    "Machine Learning",
+    "Web3 Developer",
+    "Blockchain Developer",
+    "dApp Developer",
     "Web Developer",
-    "JavaScript Developer",
-    "Frontend Developer",
-    "Backend Developer",
     "Portfolio",
-    "Web Applications",
-    "Mobile Apps",
-    "Digital Solutions"
+    "Digital Solutions",
+    "Smart Contracts",
+    "Scalable Applications",
   ],
   authors: [{ name: "AR Sahak" }],
   creator: "AR Sahak",
@@ -49,21 +50,23 @@ export const metadata = {
     locale: "en_US",
     url: "https://www.arsahak.com",
     siteName: "AR Sahak Portfolio",
-    title: "AR Sahak | Full Stack Developer & UI/UX Designer",
-    description: "Passionate Full Stack Developer and UI/UX Designer specializing in React, Next.js, Node.js, and modern web technologies. Explore innovative web applications and digital solutions.",
+    title: "AR Sahak | Full Stack Developer & AI/Web3 Expert",
+    description:
+      "Full Stack Developer specializing in React, Next.js, Node.js, AI, Machine Learning, dApps, Web3, and Blockchain. Explore innovative web applications and smart contracts.",
     images: [
       {
         url: "/opengraph-image.png",
         width: 1200,
         height: 630,
-        alt: "AR Sahak - Full Stack Developer & UI/UX Designer",
+        alt: "AR Sahak - Full Stack Developer & AI/Web3 Expert",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "AR Sahak | Full Stack Developer & UI/UX Designer",
-    description: "Passionate Full Stack Developer and UI/UX Designer specializing in React, Next.js, Node.js, and modern web technologies.",
+    title: "AR Sahak | Full Stack Developer & AI/Web3 Expert",
+    description:
+      "Full Stack Developer specializing in React, Next.js, Node.js, AI, Machine Learning, dApps, Web3, and Blockchain.",
     images: ["/opengraph-image.png"],
     creator: "@arsahak",
   },
