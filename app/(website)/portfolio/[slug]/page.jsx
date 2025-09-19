@@ -28,6 +28,7 @@ export async function generateMetadata({ params }) {
     }
 
     const portfolio = await res.json();
+    console.log("Portfolio metadata fetch:", portfolio);
 
     const siteUrl =
       process.env.NEXT_PUBLIC_SITE_URL || "https://www.arsahak.com";
