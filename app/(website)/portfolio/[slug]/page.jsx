@@ -5,8 +5,15 @@ export async function generateMetadata({ params }) {
   const { slug } = params;
 
   try {
+    const baseUrl =
+      process.env.NEXT_PUBLIC_SITE_URL || "https://www.arsahak.com";
+    const apiUrl =
+      process.env.NODE_ENV === "production"
+        ? `${baseUrl}/api`
+        : `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api"}`;
+
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api"}/portfolio?slug=${encodeURIComponent(slug)}`,
+      `${apiUrl}/portfolio?slug=${encodeURIComponent(slug)}`,
       {
         cache: "no-store",
       }
@@ -24,7 +31,13 @@ export async function generateMetadata({ params }) {
 
     const siteUrl =
       process.env.NEXT_PUBLIC_SITE_URL || "https://www.arsahak.com";
-    const ogImageUrl = portfolio.featureImage || "/opengraph-image.png";
+
+    // Ensure image URL is absolute for OG tags
+    const ogImageUrl = portfolio.featureImage
+      ? portfolio.featureImage.startsWith("http")
+        ? portfolio.featureImage
+        : `${siteUrl}${portfolio.featureImage}`
+      : `${siteUrl}/opengraph-image.png`;
 
     // Extract plain text from HTML description
     const stripHtml = (html) => {
@@ -108,10 +121,23 @@ export async function generateMetadata({ params }) {
       },
     };
   } catch (error) {
-    console.error("Error generating metadata:", error);
+    console.error("Error generating portfolio metadata:", error);
+    console.error("Slug:", slug);
     return {
       title: "Portfolio Project | AR Sahak",
       description: "View portfolio project details and technologies used.",
+      openGraph: {
+        title: "Portfolio Project | AR Sahak",
+        description: "View portfolio project details and technologies used.",
+        images: [
+          {
+            url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://www.arsahak.com"}/opengraph-image.png`,
+            width: 1200,
+            height: 630,
+            alt: "AR Sahak Portfolio",
+          },
+        ],
+      },
     };
   }
 }
