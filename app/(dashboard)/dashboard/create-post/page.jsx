@@ -203,12 +203,20 @@ const CreatePostPage = () => {
         featuredImage: imageData,
       }));
 
+      // Debug: Log the featuredImage format
+      console.log("Featured image data after upload:", imageData);
+
+      // Update preview to use the uploaded image URL
+      setImagePreview(imageData.image.url);
+
       toast.success("Featured image uploaded successfully!");
       setSelectedFile(null);
 
-      // Refresh media library if it's open
+      // Refresh media library if it's open (with small delay to ensure DB write is complete)
       if (showMediaLibrary) {
-        fetchMediaLibrary();
+        setTimeout(() => {
+          fetchMediaLibrary();
+        }, 1000);
       }
     } catch (error) {
       toast.error("Failed to upload image: " + error.message);
@@ -278,16 +286,21 @@ const CreatePostPage = () => {
       // Add a small delay for better UX feedback
       await new Promise((resolve) => setTimeout(resolve, 300));
 
+      const featuredImageData = {
+        imageTitle: image.title,
+        altText: image.alt,
+        image: {
+          public_id: image.public_id,
+          url: image.url,
+        },
+      };
+
+      // Debug: Log the featuredImage format
+      console.log("Featured image data from media library:", featuredImageData);
+
       setFormData((prev) => ({
         ...prev,
-        featuredImage: {
-          imageTitle: image.title,
-          altText: image.alt,
-          image: {
-            public_id: image.public_id,
-            url: image.url,
-          },
-        },
+        featuredImage: featuredImageData,
       }));
       setImagePreview(image.url);
       setShowMediaLibrary(false);
@@ -403,6 +416,7 @@ const CreatePostPage = () => {
       };
 
       console.log("Creating blog with data:", blogData);
+      console.log("Featured image format being sent:", blogData.featuredImage);
 
       const result = await createBlog(blogData);
       console.log("Blog created successfully:", result);
@@ -441,6 +455,7 @@ const CreatePostPage = () => {
       };
 
       console.log("Publishing blog with data:", blogData);
+      console.log("Featured image format being sent:", blogData.featuredImage);
 
       const result = await createBlog(blogData);
       console.log("Blog published successfully:", result);
@@ -494,7 +509,7 @@ const CreatePostPage = () => {
           <div className="flex items-center gap-3">
             <button
               onClick={handleSaveDraft}
-              disabled={isLoadingDraft}
+              disabled={isLoadingDraft || isLoading}
               className="flex items-center gap-2 px-6 py-2.5 border-2 border-purple-200 text-purple-600 rounded-xl hover:bg-purple-50 transition-all duration-300 font-medium disabled:opacity-50"
             >
               {isLoadingDraft ? (
@@ -506,7 +521,7 @@ const CreatePostPage = () => {
             </button>
             <button
               onClick={handlePublish}
-              disabled={isLoading}
+              disabled={isLoading || isLoadingDraft}
               className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-xl hover:from-purple-700 hover:to-purple-800 transition-all duration-300 font-medium shadow-sm disabled:opacity-50"
             >
               {isLoading ? (

@@ -14,7 +14,7 @@ export async function GET(request) {
     await connectDB(); // Ensure connection is established
     
     const { searchParams } = new URL(request.url);
-    const folder = searchParams.get('folder') || 'dashboard-blogs';
+    const folder = searchParams.get('folder') || 'dashboard-media';
     const maxResults = parseInt(searchParams.get('max_results')) || 50;
     const search = searchParams.get('search') || '';
 
@@ -29,6 +29,7 @@ export async function GET(request) {
     
     // Build the query filter
     let query = { folder: folder };
+    console.log('Media query filter:', query);
 
     // Add search functionality if search term provided
     if (search.trim()) {
@@ -37,6 +38,7 @@ export async function GET(request) {
         { alt: { $regex: search, $options: 'i' } },
         { publicId: { $regex: search, $options: 'i' } },
       ];
+      console.log('Search query applied:', query);
     }
 
     // Fetch images from database
@@ -52,6 +54,7 @@ export async function GET(request) {
     await client.close();
 
     // Database query completed
+    console.log(`Found ${images.length} images in folder '${folder}'`);
 
     // Transform the results to match expected frontend format
     const transformedImages = images.map((image) => ({

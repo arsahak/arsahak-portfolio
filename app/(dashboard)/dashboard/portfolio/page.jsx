@@ -262,7 +262,10 @@ const PortfolioPage = () => {
                   </h3>
 
                   <p className="text-gray-600 text-sm mb-4 line-clamp-3">
-                    {portfolio.description}
+                    {portfolio.description
+                      ?.replace(/<[^>]*>/g, "")
+                      .replace(/&nbsp;/g, " ")
+                      .trim() || "No description available"}
                   </p>
 
                   {/* Project Details */}

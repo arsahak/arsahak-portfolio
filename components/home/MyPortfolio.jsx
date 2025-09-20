@@ -1,16 +1,5 @@
 "use client";
-import {
-  Button,
-  Card,
-  CardHeader,
-  Image,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  useDisclosure,
-} from "@nextui-org/react";
+import { Card, CardHeader, Image, useDisclosure } from "@nextui-org/react";
 import { Orbitron } from "next/font/google";
 import { useEffect, useState } from "react";
 
@@ -252,46 +241,6 @@ const MyPortfolio = () => {
             </ScrollMotionEffect>
           </div>
         </div>
-      </div>
-      <div className="flex flex-wrap">
-        <Modal
-          isOpen={isOpen}
-          onOpenChange={onOpenChange}
-          size="5xl"
-          scrollBehavior="outside"
-          className="bg-[#181818]"
-        >
-          <ModalContent>
-            {(onClose) => (
-              <>
-                <ModalHeader className="flex flex-col gap-1 text-white">
-                  Website
-                </ModalHeader>
-                <ModalBody>
-                  id:{portfolioId}
-                  {portfolioInfo
-                    ?.filter((item) => item.id === portfolioId)
-                    .map((el, index) => (
-                      <Image
-                        key={index}
-                        removeWrapper
-                        alt={"Portfolio image"}
-                        className="z-0 object-cover w-full h-full"
-                        src={
-                          el.fullImage || "assets/portfolio/website-image.png"
-                        }
-                      />
-                    ))}
-                </ModalBody>
-                <ModalFooter>
-                  <Button color="danger" variant="light" onPress={onClose}>
-                    Close
-                  </Button>
-                </ModalFooter>
-              </>
-            )}
-          </ModalContent>
-        </Modal>
       </div>
     </section>
   );

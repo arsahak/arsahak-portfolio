@@ -44,6 +44,7 @@ const EditBlogPage = () => {
     published: false,
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingDraft, setIsLoadingDraft] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
   const [imageUploading, setImageUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -83,28 +84,29 @@ const EditBlogPage = () => {
                 : [],
             metaDescription: blog.description || blog.metaDescription || "",
             slug: blog.slug || "",
-            featuredImage: blog.featureImage
-              ? {
-                  imageTitle: "Featured Image",
-                  altText: "Blog featured image",
-                  image: {
-                    public_id: `featured_${blog._id}`,
-                    url: blog.featureImage,
-                  },
-                }
-              : blog.featuredImage || null,
+            featuredImage: blog.featuredImage || null,
             bodyImage: blog.bodyImage || [],
             published: blog.published || false,
           });
 
           // Set image preview if featured image exists
-          if (blog.featureImage) {
-            setImagePreview(blog.featureImage);
-          } else if (blog.featuredImage?.image?.url) {
+          if (blog.featuredImage?.image?.url) {
             setImagePreview(blog.featuredImage.image.url);
           } else {
             setImagePreview(null);
           }
+
+          // Set editor content after a delay to ensure editor is initialized
+          setTimeout(() => {
+            if (
+              editorRef.current &&
+              editorRef.current.setContent &&
+              (blog.content || blog.body)
+            ) {
+              console.log("Setting editor content:", blog.content || blog.body);
+              editorRef.current.setContent(blog.content || blog.body);
+            }
+          }, 1500); // Increased delay to ensure editor is fully loaded
         }
       } catch (error) {
         toast.error("Failed to fetch blog: " + error.message);
@@ -115,7 +117,7 @@ const EditBlogPage = () => {
     };
 
     load();
-  }, [params.slug]);
+  }, [params.slug, router]);
 
   // Cleanup effect for TinyMCE editor and search timeout when component unmounts
   useEffect(() => {
@@ -249,68 +251,6 @@ const EditBlogPage = () => {
       toast.error("Failed to delete image: " + error.message);
     } finally {
       setDeletingImageId(null);
-    }
-  };
-
-  const fetchBlogData = async () => {
-    try {
-      setLoadingBlog(true);
-      const blog = await getBlogBySlug(params.slug);
-
-      if (blog) {
-        console.log("Blog data received:", blog);
-        console.log("Blog ID:", blog._id);
-        setBlogId(blog._id);
-        setFormData({
-          title: blog.title || "",
-          author: blog.author || "",
-          category: Array.isArray(blog.category)
-            ? blog.category
-            : blog.category
-              ? blog.category
-                  .split(",")
-                  .map((cat) => cat.trim())
-                  .filter((cat) => cat)
-              : [],
-          metaDescription: blog.description || blog.metaDescription || "",
-          slug: blog.slug || "",
-          featuredImage: blog.featureImage
-            ? {
-                imageTitle: "Featured Image",
-                altText: "Blog featured image",
-                image: {
-                  public_id: `featured_${blog._id}`,
-                  url: blog.featureImage,
-                },
-              }
-            : blog.featuredImage || null,
-          bodyImage: blog.bodyImage || [],
-          published: blog.published || false,
-        });
-
-        // Set image preview if featured image exists
-        if (blog.featureImage) {
-          setImagePreview(blog.featureImage);
-        } else if (blog.featuredImage?.image?.url) {
-          setImagePreview(blog.featuredImage.image.url);
-        }
-
-        // Set editor content after a short delay to ensure editor is initialized
-        setTimeout(() => {
-          if (
-            editorRef.current &&
-            editorRef.current.setContent &&
-            (blog.content || blog.body)
-          ) {
-            editorRef.current.setContent(blog.content || blog.body);
-          }
-        }, 1000); // Increased delay to ensure editor is fully loaded
-      }
-    } catch (error) {
-      toast.error("Failed to fetch blog: " + error.message);
-      router.push("/dashboard/blog");
-    } finally {
-      setLoadingBlog(false);
     }
   };
 
@@ -450,7 +390,7 @@ const EditBlogPage = () => {
       return;
     }
 
-    setIsLoading(true);
+    setIsLoadingDraft(true);
     try {
       let content = "";
       if (editorRef.current && editorRef.current.getContent) {
@@ -464,15 +404,14 @@ const EditBlogPage = () => {
 
       const blogData = {
         title: formData.title.trim(),
-        content: content, // Map to content field for API
+        body: content, // Use body field for API
         slug: formData.slug.trim(),
         author: formData.author.trim(),
         category: Array.isArray(formData.category)
-          ? formData.category.join(", ")
-          : formData.category || "", // Convert array to string for API
-        description: formData.metaDescription.trim(), // Map to description field for API
-        featureImage:
-          formData.featuredImage?.image?.url || formData.featuredImage || "", // Map to featureImage field
+          ? formData.category
+          : formData.category || "", // Keep as array for API
+        metaDescription: formData.metaDescription.trim(), // Use metaDescription field for API
+        featuredImage: formData.featuredImage, // Keep the object format
         published: false,
       };
 
@@ -486,7 +425,7 @@ const EditBlogPage = () => {
       toast.error("Failed to update draft: " + error.message);
       console.error("Update draft error:", error);
     } finally {
-      setIsLoading(false);
+      setIsLoadingDraft(false);
     }
   };
 
@@ -511,15 +450,14 @@ const EditBlogPage = () => {
 
       const blogData = {
         title: formData.title.trim(),
-        content: content, // Map to content field for API
+        body: content, // Use body field for API
         slug: formData.slug.trim(),
         author: formData.author.trim(),
         category: Array.isArray(formData.category)
-          ? formData.category.join(", ")
-          : formData.category || "", // Convert array to string for API
-        description: formData.metaDescription.trim(), // Map to description field for API
-        featureImage:
-          formData.featuredImage?.image?.url || formData.featuredImage || "", // Map to featureImage field
+          ? formData.category
+          : formData.category || "", // Keep as array for API
+        metaDescription: formData.metaDescription.trim(), // Use metaDescription field for API
+        featuredImage: formData.featuredImage, // Keep the object format
         published: true,
       };
 
@@ -637,10 +575,10 @@ const EditBlogPage = () => {
           <div className="flex items-center gap-3">
             <button
               onClick={handleSaveDraft}
-              disabled={isLoading}
+              disabled={isLoadingDraft || isLoading}
               className="flex items-center gap-2 px-6 py-2.5 border-2 border-purple-200 text-purple-600 rounded-xl hover:bg-purple-50 transition-all duration-300 font-medium disabled:opacity-50"
             >
-              {isLoading ? (
+              {isLoadingDraft ? (
                 <FiLoader className="text-lg animate-spin" />
               ) : (
                 <FiSave className="text-lg" />
@@ -649,7 +587,7 @@ const EditBlogPage = () => {
             </button>
             <button
               onClick={handlePublish}
-              disabled={isLoading}
+              disabled={isLoading || isLoadingDraft}
               className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-xl hover:from-purple-700 hover:to-purple-800 transition-all duration-300 font-medium shadow-sm disabled:opacity-50"
             >
               {isLoading ? (

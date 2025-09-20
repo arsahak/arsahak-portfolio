@@ -26,23 +26,45 @@ const saveMediaMetadata = async (uploadResult, imageTitle, altText, folder) => {
       resourceType: uploadResult.resource_type || 'image',
     };
 
-    const response = await fetch(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/media`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(mediaData),
-    });
+    // Use direct database connection instead of internal API call
+    const { MongoClient } = await import('mongodb');
+    const client = new MongoClient(process.env.DATABASE_URL);
+    await client.connect();
+    
+    const db = client.db();
+    const collection = db.collection('media');
 
-    if (!response.ok) {
-      const error = await response.json();
-      console.warn('Failed to save media metadata:', error.error);
-      // Don't throw error - upload was successful, just metadata saving failed
-    } else {
-      console.log('Media metadata saved successfully');
+    // Check if media already exists
+    const existingMedia = await collection.findOne({ publicId: mediaData.publicId });
+
+    if (existingMedia) {
+      await client.close();
+      console.log('Media with this public ID already exists');
+      return;
     }
+
+    // Create new media record
+    const newMediaDoc = {
+      title: mediaData.title,
+      alt: mediaData.alt,
+      url: mediaData.url,
+      publicId: mediaData.publicId,
+      folder: mediaData.folder,
+      format: mediaData.format,
+      width: parseInt(mediaData.width),
+      height: parseInt(mediaData.height),
+      bytes: parseInt(mediaData.bytes),
+      resourceType: mediaData.resourceType || 'image',
+      tags: [],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    await collection.insertOne(newMediaDoc);
+    await client.close();
+    console.log('Media metadata saved successfully to database');
   } catch (error) {
-    console.warn('Error saving media metadata:', error.message);
+    console.error('Error saving media metadata to database:', error);
     // Don't throw error - upload was successful, just metadata saving failed
   }
 };
@@ -50,7 +72,7 @@ const saveMediaMetadata = async (uploadResult, imageTitle, altText, folder) => {
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { file, folder = 'dashboard-blogs', imageTitle = '', altText = '' } = body || {};
+    const { file, folder = 'dashboard-media', imageTitle = '', altText = '' } = body || {};
 
     if (!file) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 });

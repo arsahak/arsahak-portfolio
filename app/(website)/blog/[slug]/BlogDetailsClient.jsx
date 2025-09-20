@@ -281,7 +281,7 @@ const BlogDetailsClient = ({ params }) => {
   }
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-black pt-16">
       {/* Hero Section */}
       <section className="relative h-96 md:h-[500px] overflow-hidden">
         <Image
@@ -293,7 +293,7 @@ const BlogDetailsClient = ({ params }) => {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
 
-        <div className="absolute bottom-0 left-0 right-0 p-8">
+        <div className="absolute bottom-0 left-0 right-0 p-4">
           <div className="container">
             <Link
               href="/blog"
@@ -304,26 +304,26 @@ const BlogDetailsClient = ({ params }) => {
             </Link>
 
             <div className="flex items-center gap-4 text-white/80 text-sm mb-4">
-              <span className="bg-primary/90 text-white px-3 py-1 rounded-full text-xs">
+              <span className="bg-primary/90 text-white px-3 py-1 rounded-full text-xs md:text-base">
                 {blog.category || "General"}
               </span>
-              <span className="flex items-center gap-1">
+              <span className="flex items-center gap-1 text-xs md:text-base">
                 <FaCalendar className="w-4 h-4" />
                 {blog.createdAt
                   ? new Date(blog.createdAt).toLocaleDateString()
                   : ""}
               </span>
-              <span className="flex items-center gap-1">
+              <span className="flex items-center gap-1 text-xs md:text-base">
                 <FaClock className="w-4 h-4" />5 min read
               </span>
-              <span className="flex items-center gap-1">
+              <span className="flex items-center gap-1 text-xs md:text-base ">
                 <FaUser className="w-4 h-4" />
                 {blog.author || "AR Sahak"}
               </span>
             </div>
 
             <h1
-              className={`text-3xl md:text-5xl text-white font-bold leading-tight ${orbitron.className}`}
+              className={`text-2xl md:text-5xl text-white font-bold leading-tight ${orbitron.className}`}
             >
               {blog.title}
             </h1>
