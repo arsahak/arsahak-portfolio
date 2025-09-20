@@ -7,8 +7,9 @@ import MySpecialties from "../../components/home/MySpecialties";
 import NewsSection from "../../components/home/NewsSection";
 
 export const metadata = {
-  title: "Home",
-  description: "Welcome to AR Sahak's portfolio. I'm a passionate Full Stack Developer and UI/UX Designer creating innovative web applications, mobile apps, and digital solutions using React, Next.js, Node.js, and modern technologies.",
+  title: "AR Sahak | Full Stack Developer | AI, Machine Learning, Web3 & Blockchain",
+  description:
+    "AR Sahak is a passionate Full Stack Developer specializing in React, Next.js, Node.js, Express, Django, FastAPI, AI, Machine Learning, Web3, and Blockchain. Building innovative web apps, dApps, and smart contracts with modern technologies.",
   keywords: [
     "AR Sahak",
     "Full Stack Developer",
@@ -21,14 +22,16 @@ export const metadata = {
     "Home"
   ],
   openGraph: {
-    title: "AR Sahak | A Passionate Full Stack Developer",
-    description: "Welcome to AR Sahak's portfolio. Passionate Full Stack Developer and UI/UX Designer creating innovative web applications and digital solutions.",
+    title: "AR Sahak | Full Stack Developer | AI, Machine Learning, Web3 & Blockchain",
+    description:
+      "AR Sahak is a passionate Full Stack Developer specializing in React, Next.js, Node.js, Express, Django, FastAPI, AI, Machine Learning, Web3, and Blockchain. Building innovative web apps, dApps, and smart contracts with modern technologies.",
     url: "https://arsahak.com",
     type: "website",
   },
   twitter: {
-    title: "AR Sahak | A Passionate Full Stack Developer",
-    description: "Welcome to AR Sahak's portfolio. Passionate Full Stack Developer and UI/UX Designer creating innovative web applications and digital solutions.",
+    title: "AR Sahak | Full Stack Developer | AI, Machine Learning, Web3 & Blockchain",
+    description:
+      "AR Sahak is a passionate Full Stack Developer specializing in React, Next.js, Node.js, Express, Django, FastAPI, AI, Machine Learning, Web3, and Blockchain. Building innovative web apps, dApps, and smart contracts with modern technologies.",
   },
   alternates: {
     canonical: "https://arsahak.com",

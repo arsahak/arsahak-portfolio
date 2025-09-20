@@ -50,9 +50,9 @@ export const metadata = {
     locale: "en_US",
     url: "https://www.arsahak.com",
     siteName: "AR Sahak Portfolio",
-    title: "AR Sahak | Full Stack Developer & AI/Web3 Expert",
+    title: "AR Sahak | Full Stack Developer | AI, Machine Learning, Web3 & Blockchain",
     description:
-      "Full Stack Developer specializing in React, Next.js, Node.js, AI, Machine Learning, dApps, Web3, and Blockchain. Explore innovative web applications and smart contracts.",
+      "AR Sahak is a passionate Full Stack Developer specializing in React, Next.js, Node.js, Express, Django, FastAPI, AI, Machine Learning, Web3, and Blockchain. Building innovative web apps, dApps, and smart contracts with modern technologies.",
     images: [
       {
         url: "/opengraph-image.png",
@@ -64,9 +64,9 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "AR Sahak | A Passionate Full Stack Developer",
+    title: "AR Sahak | Full Stack Developer | AI, Machine Learning, Web3 & Blockchain",
     description:
-      "Full Stack Developer specializing in React, Next.js, Node.js, AI, Machine Learning, dApps, Web3, and Blockchain.",
+      "AR Sahak is a passionate Full Stack Developer specializing in React, Next.js, Node.js, Express, Django, FastAPI, AI, Machine Learning, Web3, and Blockchain. Building innovative web apps, dApps, and smart contracts with modern technologies.",
     images: ["/opengraph-image.png"],
     creator: "@arsahak",
   },
