@@ -131,7 +131,7 @@ const MyPortfolio = () => {
                     >
                       <CardHeader className="absolute z-10 flex-col !items-center bg-[#75757595] rounded-full top-2 right-2 max-w-32 !p-1 !m-0">
                         <h4 className="flex justify-center mx-0 text-sm text-center text-white">
-                          {portfolio.title}
+                          {portfolio.category}
                         </h4>
                       </CardHeader>
                       <Image
@@ -177,7 +177,7 @@ const MyPortfolio = () => {
                     >
                       <CardHeader className="absolute z-10 flex-col !items-center bg-[#75757595] rounded-full top-2 right-2 max-w-32 !p-1 !m-0">
                         <h4 className="flex justify-center mx-0 text-sm text-center text-white">
-                          {portfolio.title}
+                          {portfolio.category}
                         </h4>
                       </CardHeader>
                       <Image
