@@ -64,7 +64,7 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "AR Sahak | Full Stack Developer & AI/Web3 Expert",
+    title: "AR Sahak | A Passionate Full Stack Developer",
     description:
       "Full Stack Developer specializing in React, Next.js, Node.js, AI, Machine Learning, dApps, Web3, and Blockchain.",
     images: ["/opengraph-image.png"],

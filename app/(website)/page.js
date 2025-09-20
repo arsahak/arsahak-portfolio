@@ -21,13 +21,13 @@ export const metadata = {
     "Home"
   ],
   openGraph: {
-    title: "AR Sahak | Full Stack Developer & UI/UX Designer",
+    title: "AR Sahak | A Passionate Full Stack Developer",
     description: "Welcome to AR Sahak's portfolio. Passionate Full Stack Developer and UI/UX Designer creating innovative web applications and digital solutions.",
     url: "https://arsahak.com",
     type: "website",
   },
   twitter: {
-    title: "AR Sahak | Full Stack Developer & UI/UX Designer",
+    title: "AR Sahak | A Passionate Full Stack Developer",
     description: "Welcome to AR Sahak's portfolio. Passionate Full Stack Developer and UI/UX Designer creating innovative web applications and digital solutions.",
   },
   alternates: {
