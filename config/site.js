@@ -79,7 +79,7 @@ export const SITECONFIG = {
       },
       {
         title: "Contact Us",
-        slug: "/contact-us",
+        slug: "/contact",
       },
     ],
   },

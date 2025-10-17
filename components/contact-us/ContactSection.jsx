@@ -40,10 +40,10 @@ const ContactSection = () => {
       errors.phone = "Phone number is required!";
     }
     if (!values.country) {
-      errors.country = "Phone number is required!";
+      errors.country = "Country is required!";
     }
     if (!values.message) {
-      errors.message = "Question is required!";
+      errors.message = "Message is required!";
     }
     return errors;
   };
@@ -58,13 +58,20 @@ const ContactSection = () => {
 
     // Check if there are any errors
     if (Object.keys(errors).length === 0) {
-      send("", "", emailForm, "")
+      // EmailJS Configuration
+      const serviceId = "service_y81k0o6";
+      const templateId = "template_ajwpp6i";
+      const publicKey = "Fy5I0nB56nwQxuNDA";
+
+      send(serviceId, templateId, emailForm, publicKey)
         .then((response) => {
           setLoading(false); // Stop loading
           Swal.fire({
             icon: "success",
-            text: "Thank you for reaching out. Your information has been successfully submitted. Our team will respond to your inquiry shortly.",
-            confirmButtonColor: "#131b2a",
+            title: "Message Sent Successfully!",
+            text: "Thank you for reaching out. Your information has been successfully submitted. I will respond to your inquiry shortly.",
+            confirmButtonColor: "#3b82f6",
+            confirmButtonText: "Great!",
           }).then(() => {
             setEmailForm({
               name: "",
@@ -76,19 +83,13 @@ const ContactSection = () => {
           });
         })
         .catch((err) => {
-          console.log("err", err);
+          console.error("EmailJS Error:", err);
+          setLoading(false); // Stop loading
           Swal.fire({
             icon: "error",
-            text: "Something went wrong!",
-          }).then(() => {
-            setEmailForm({
-              name: "",
-              phone: "",
-              email: "",
-              country: "",
-              message: "",
-            });
-            setLoading(false); // Stop loading
+            title: "Oops...",
+            text: "Something went wrong while sending your message. Please try again or contact me directly at arsahakbd@gmail.com",
+            confirmButtonColor: "#ef4444",
           });
         });
     } else {
@@ -242,7 +243,7 @@ const ContactSection = () => {
                       placeholder="USA"
                       required
                       type="text"
-                      name="name"
+                      name="country"
                       value={emailForm.country}
                       onChange={(event) => {
                         setEmailForm({
