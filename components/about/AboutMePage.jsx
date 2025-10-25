@@ -30,7 +30,7 @@ const AboutMePage = () => {
                         aria-label="Trophy"
                       />
 
-                      <span className="text-black">3+</span>
+                      <span className="text-black">4+</span>
 
                       <span className="text-black">Years Experience</span>
                     </div>
@@ -114,11 +114,11 @@ const AboutMePage = () => {
               >
                 About Me
               </h2>
-              <p className="mb-6 text-base text-center text-white md:text-lg md:text-left">
-                {`I'm AR Sahak, a passionate Full Stack Developer focused on creating seamless and innovative web experiences. I graduated from Jiangsu University of Science and Technology, China, and currently work at Bayshore Communication in Dhaka, Bangladesh. I specialize in building responsive front-end interfaces using React and Next Js, and developing robust back-end systems with Node.js and Express. I am experienced in managing databases like MySQL, PostgreSQL, and MongoDB.`}
+              <p className="mb-6 text-base text-center text-white md:text-lg md:text-left leading-relaxed">
+                {`I'm AR Sahak, a Full Stack Developer with 4+ years of experience specializing in AI-powered web applications. I graduated from Jiangsu University of Science and Technology, China, and currently work at Bayshore Communication in Dhaka, Bangladesh, architecting intelligent solutions with modern technologies.`}
               </p>
-              <p className="text-base text-center text-white md:text-lg md:text-left">
-                {`I am skilled in designing RESTful APIs, implementing microservices, and deploying applications on AWS and Azure. I thrive in Agile environments, using Git for version control, and continually learning new technologies to deliver high-performance, secure, and user-friendly applications.`}
+              <p className="text-base text-center text-white md:text-lg md:text-left leading-relaxed">
+                {`I build scalable applications using React.js, Next.js, Node.js, and FastAPI. My expertise includes RAG models with LangChain & Pinecone, AI chatbots, OpenAI integration, and full-stack development from database design (MongoDB, PostgreSQL) to cloud deployment (AWS, Azure).`}
               </p>
             </ScrollMotionEffect>
             <div className="mt-12 md:mt-20">
@@ -139,7 +139,7 @@ const AboutMePage = () => {
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-xl font-extrabold text-white truncate md:text-4xl">
-                            <CountUp start={1} end={3} duration={3} delay={0} />
+                            <CountUp start={1} end={4} duration={3} delay={0} />
                           </p>
                           <p className="text-xs text-white truncate md:text-lg">
                             Years of experience
@@ -165,13 +165,13 @@ const AboutMePage = () => {
                           <p className="text-2xl font-extrabold text-white truncate md:text-4xl">
                             <CountUp
                               start={1}
-                              end={45}
+                              end={60}
                               duration={3}
                               delay={0}
                             />
                           </p>
                           <p className="text-sm text-white truncate md:text-lg">
-                            Problem Solved
+                            Projects Completed
                           </p>
                         </div>
                       </div>
@@ -194,13 +194,13 @@ const AboutMePage = () => {
                           <p className="text-2xl font-extrabold text-white truncate md:text-4xl">
                             <CountUp
                               start={1}
-                              end={90}
+                              end={120}
                               duration={3}
                               delay={0}
                             />
                           </p>
                           <p className="text-sm text-white truncate md:text-lg">
-                            Global Clients
+                            Happy Clients
                           </p>
                         </div>
                       </div>
@@ -219,10 +219,15 @@ const AboutMePage = () => {
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-2xl font-extrabold text-white truncate md:text-4xl">
-                            <CountUp start={1} end={6} duration={3} delay={0} />
+                            <CountUp
+                              start={1}
+                              end={10}
+                              duration={3}
+                              delay={0}
+                            />
                           </p>
                           <p className="text-sm text-white truncate md:text-lg">
-                            Global Award Win
+                            Awards & Recognition
                           </p>
                         </div>
                       </div>

@@ -9,7 +9,7 @@ import { MdOutlineDesignServices } from "react-icons/md";
 import { CgWebsite } from "react-icons/cg";
 import { FiCopy, FiMail } from "react-icons/fi";
 import { LuCloudCog, LuDatabase } from "react-icons/lu";
-import { MdOutlineAppShortcut } from "react-icons/md";
+import { SiOpenai } from "react-icons/si";
 import { TbApi } from "react-icons/tb";
 
 const orbitron = Orbitron({ subsets: ["latin"] });
@@ -37,27 +37,38 @@ const item = {
 const specialties = [
   {
     icon: <CgWebsite className="text-black size-10" />,
-    title: "Web App Development",
+    title: "Full Stack Development",
+    description:
+      "Building scalable web apps using React.js, Next.js, Node.js & FastAPI",
   },
   {
     icon: <TbApi className="text-black size-12" />,
-    title: "API Design & Development",
+    title: "API Design & Integration",
+    description:
+      "Designing RESTful & GraphQL APIs with robust security and performance",
   },
   {
     icon: <LuDatabase className="text-black size-10" />,
-    title: "Database Management",
+    title: "Database Architecture",
+    description: "Expert in MongoDB, PostgreSQL, Prisma, and Vector Databases",
   },
   {
-    icon: <LuCloudCog className="text-black size-16" />,
-    title: "Cloud & Server Management",
+    icon: <SiOpenai className="text-black size-10" />,
+    title: "AI Chatbot & RAG Systems",
+    description:
+      "Developing intelligent assistants using LangChain, OpenAI, and Pinecone",
+  },
+  {
+    icon: <LuCloudCog className="text-black size-10" />,
+    title: "Cloud & DevOps",
+    description:
+      "Deploying and scaling apps using AWS, Docker & CI/CD pipelines",
   },
   {
     icon: <MdOutlineDesignServices className="text-black size-10" />,
-    title: "UI/UX Design & Development",
-  },
-  {
-    icon: <MdOutlineAppShortcut className="text-black size-10" />,
-    title: "Mobile App Development:",
+    title: "System Design & Optimization",
+    description:
+      "Architecting secure, high-performance, and maintainable systems",
   },
 ];
 
@@ -90,9 +101,7 @@ const MySpecialties = () => {
           <div className="w-[100%] md:w-[55%]">
             <ScrollMotionEffect effect="fade-left" duration="2000">
               <p className="text-lg text-center md:text-left">
-                {`Crafting intuitive interfaces, combining creativity with
-                data-driven insights, and excelling in wireframing, prototyping,
-                and user research.`}
+                {`Combining cutting-edge AI technologies like RAG models, LangChain, and Pinecone with modern web development to build intelligent, production-ready applications that transform businesses.`}
               </p>
             </ScrollMotionEffect>
           </div>
@@ -107,67 +116,77 @@ const MySpecialties = () => {
           >
             {specialties.map((el, index) => (
               <motion.div
-                className={`bg-[#181818] rounded-lg w-full h-[200px] p-6 flex flex-col item ${index === 2 ? "primary-gradient" : ""}`}
+                className={`bg-[#181818] rounded-lg w-full h-[220px] md:h-[235px] p-5 md:p-6 flex flex-col hover:scale-105 transition-transform duration-300 ${index === 2 ? "primary-gradient" : ""}`}
                 key={index}
                 variants={item}
               >
-                <div className="flex items-center justify-center p-4 bg-white rounded-full w-14 h-14">
+                <div className="flex items-center justify-center p-3 bg-white rounded-full w-12 h-12 md:w-14 md:h-14 mb-3">
                   {el?.icon}
                 </div>
 
                 <div className="mt-auto">
-                  <div className="flex items-center justify-between text-white">
-                    <h2
-                      className={`text-[15px] md:text-[20px] font-semibold ${orbitron.className}`}
-                    >
-                      {el.title}
-                    </h2>
-                  </div>
+                  <h2
+                    className={`text-[15px] md:text-[17px] font-bold text-white mb-2 leading-tight ${orbitron.className}`}
+                  >
+                    {el.title}
+                  </h2>
+                  <p className="text-[11px] md:text-[13px] text-gray-300 leading-relaxed">
+                    {el.description}
+                  </p>
                 </div>
               </motion.div>
             ))}
           </motion.div>
           <div className="w-[100%] md:w-[30%] mt-6 md:mt-0">
             <ScrollMotionEffect effect="fade-up" duration="2000">
-              <div className="rounded-2xl w-full h-[415px] p-6 flex flex-col items-center justify-center bg-white/10 border border-white/20 shadow-2xl backdrop-blur-lg relative overflow-hidden">
+              <div className="rounded-2xl w-full h-[456px] md:h-[486px] p-6 flex flex-col items-center justify-center bg-white/10 border border-white/20 shadow-2xl backdrop-blur-lg relative overflow-hidden">
                 {/* Glowing icon */}
-                <div className="flex items-center justify-center mb-4 mt-2">
-                  <div className="bg-gradient-to-br from-primary to-[#8750f7] rounded-full w-20 h-20 flex items-center justify-center shadow-lg animate-pulse-slow">
+                <div className="flex items-center justify-center mb-6">
+                  <div className="bg-gradient-to-br from-primary to-[#8750f7] rounded-full w-16 h-16 md:w-20 md:h-20 flex items-center justify-center shadow-lg animate-pulse-slow">
                     <FiMail
-                      className="text-white text-4xl drop-shadow-lg"
+                      className="text-white text-3xl md:text-4xl drop-shadow-lg"
                       aria-label="Contact"
                     />
                   </div>
                 </div>
                 {/* Heading */}
                 <h3
-                  className={`text-2xl font-extrabold text-white mb-2 ${orbitron.className}`}
+                  className={`text-xl md:text-2xl font-extrabold text-white mb-3 ${orbitron.className}`}
                 >
-                  Let&apos;s Contact
+                  Let&apos;s Connect
                 </h3>
                 {/* Subtitle */}
-                <p className="text-sm text-white/80 mb-4 text-center">
-                  Available for freelance & collaboration
+                <p className="text-sm md:text-base text-white/80 mb-6 text-center px-2">
+                  Available for freelance work & collaboration opportunities
                 </p>
                 {/* Email with copy button */}
-                <div className="flex items-center bg-white/20 border border-white/30 rounded-full px-4 py-2 mb-2 w-full max-w-[260px] mx-auto">
-                  <span className="text-white text-base select-all flex-1">
+                <div className="flex items-center bg-white/20 border border-white/30 rounded-full px-4 py-2.5 mb-2 w-full max-w-[280px] mx-auto shadow-lg">
+                  <span className="text-white text-sm md:text-base select-all flex-1 truncate">
                     {email}
                   </span>
                   <button
                     onClick={handleCopy}
-                    className="ml-2 p-1 rounded-full hover:bg-primary/30 transition"
+                    className="ml-2 p-1.5 rounded-full hover:bg-primary/30 transition-all duration-300"
                     title="Copy Email"
                     type="button"
                   >
                     <FiCopy
-                      className={`text-white text-lg ${copied ? "text-primary" : ""}`}
+                      className={`text-white text-base md:text-lg transition-colors ${copied ? "text-primary" : ""}`}
                     />
                   </button>
                 </div>
                 {copied && (
-                  <span className="text-primary text-xs mt-1">Copied!</span>
+                  <span className="text-primary text-sm font-semibold mt-2 animate-pulse">
+                    ✓ Copied to clipboard!
+                  </span>
                 )}
+                {/* Availability Badge */}
+                <div className="mt-6 flex items-center gap-2 bg-green-500/20 border border-green-500/30 rounded-full px-4 py-2">
+                  <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                  <span className="text-green-400 text-xs md:text-sm font-medium">
+                    Available for Projects
+                  </span>
+                </div>
               </div>
             </ScrollMotionEffect>
           </div>

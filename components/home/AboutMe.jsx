@@ -30,7 +30,7 @@ const AboutMe = () => {
                         aria-label="Trophy"
                       />
 
-                      <span className="text-black">3+</span>
+                      <span className="text-black">4+</span>
 
                       <span className="text-black">Years Experience</span>
                     </div>
@@ -113,32 +113,52 @@ const AboutMe = () => {
               >
                 About Me
               </h2>
-              <p className="mb-6 text-base text-center text-white md:text-lg md:text-left">
-                {`I'm AR Sahak, a passionate Full Stack Developer focused on creating seamless and innovative web experiences. I graduated from Jiangsu University of Science and Technology, China, and currently work at Bayshore Communication in Dhaka, Bangladesh. I specialize in building responsive front-end interfaces using React and Next Js, and developing robust back-end systems with Node.js and Express. I am experienced in managing databases like MySQL, PostgreSQL, and MongoDB.`}
+              <p className="mb-6 text-base text-center text-white md:text-lg md:text-left leading-relaxed">
+                {`I'm AR Sahak, a Full Stack Developer specializing in AI-powered web applications with expertise in Generative AI integration and intelligent chatbot development. With a degree from Jiangsu University of Science and Technology, China, I currently work at Bayshore Communication in Dhaka, Bangladesh, where I architect cutting-edge AI solutions for modern businesses.`}
               </p>
-              <p className="text-base text-center text-white md:text-lg md:text-left">
-                {`I am skilled in designing RESTful APIs, implementing microservices, and deploying applications on AWS and Azure. I thrive in Agile environments, using Git for version control, and continually learning new technologies to deliver high-performance, secure, and user-friendly applications.`}
+              <p className="mb-6 text-base text-center text-white md:text-lg md:text-left leading-relaxed">
+                {`I build production-ready applications using React.js and Next.js on the frontend, paired with Node.js, Express.js, and FastAPI on the backend. My expertise in AI includes developing RAG (Retrieval-Augmented Generation) models with LangChain and Pinecone for vector search, creating intelligent chatbots, and integrating OpenAI's GPT models to deliver context-aware, conversational AI experiences.`}
               </p>
-              <div className="flex justify-center md:justify-start">
-                <Link
-                  href={"/assets/arsahak-resume.pdf"}
-                  className="flex items-center justify-center px-2 py-2.5 mb-2 text-sm font-medium text-white md:text-lg md:px-8 me-0 md:me-6 rounded-md max-w-56 mt-8 primary-gradient"
+              <p className="text-base text-center text-white md:text-lg md:text-left leading-relaxed">
+                {`From database architecture (MongoDB, PostgreSQL, MySQL) to cloud deployment (AWS, Azure), I deliver end-to-end solutions that combine modern web development with advanced AI capabilities. Whether it's building AI chatbots from scratch, implementing RAG systems for knowledge retrieval, or creating generative AI applications, I transform complex requirements into scalable, high-performance products.`}
+              </p>
+              <div className="flex flex-wrap gap-4 justify-center md:justify-start mt-8">
+                <a
+                  href="/assets/arsahak-resume.pdf"
+                  download="AR_Sahak_Resume.pdf"
+                  className="flex items-center justify-center px-6 py-3 text-sm md:text-lg font-medium text-white rounded-md primary-gradient hover:opacity-90 transition-all duration-300"
                 >
-                  View Resume
-                  <span>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      className="ml-2 text-white size-4 md:size-5"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M8.25 3.75H19.5a.75.75 0 0 1 .75.75v11.25a.75.75 0 0 1-1.5 0V6.31L5.03 20.03a.75.75 0 0 1-1.06-1.06L17.69 5.25H8.25a.75.75 0 0 1 0-1.5Z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    className="size-5 mr-2"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M12 2.25a.75.75 0 0 1 .75.75v11.69l3.22-3.22a.75.75 0 1 1 1.06 1.06l-4.5 4.5a.75.75 0 0 1-1.06 0l-4.5-4.5a.75.75 0 1 1 1.06-1.06l3.22 3.22V3a.75.75 0 0 1 .75-.75Zm-9 13.5a.75.75 0 0 1 .75.75v2.25a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5V16.5a.75.75 0 0 1 1.5 0v2.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V16.5a.75.75 0 0 1 .75-.75Z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  Download Resume
+                </a>
+                <Link
+                  href="/contact"
+                  className="flex items-center justify-center px-6 py-3 text-sm md:text-lg font-medium text-white bg-transparent border-2 border-white hover:bg-white hover:text-black rounded-md transition-all duration-300"
+                >
+                  Get In Touch
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    className="ml-2 size-5"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M8.25 3.75H19.5a.75.75 0 0 1 .75.75v11.25a.75.75 0 0 1-1.5 0V6.31L5.03 20.03a.75.75 0 0 1-1.06-1.06L17.69 5.25H8.25a.75.75 0 0 1 0-1.5Z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
                 </Link>
               </div>
             </ScrollMotionEffect>
