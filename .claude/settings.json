@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node -e ' *)",
+      "Bash(node -e \"require\\('@playwright/test'\\)\")",
+      "Bash(ls \"C:\\\\Users\\\\arsah\\\\AppData\\\\Roaming\\\\npm\\\\node_modules\\\\\" 2>/dev/null || ls \"C:\\\\Users\\\\arsah\\\\AppData\\\\Local\\\\npm-cache\\\\_npx\\\\\" 2>/dev/null | head -20)",
+      "Read(//c/Users/arsah/AppData/Roaming/npm/node_modules\" 2>/dev/**)",
+      "Bash(npm root *)",
+      "Bash(node -e \"require\\(require\\('path'\\).join\\(require\\('child_process'\\).execSync\\('npm root -g'\\).toString\\(\\).trim\\(\\), 'playwright'\\)\\)\")",
+      "Bash(npm install *)",
+      "Read(//c/Users/arsah/AppData/Local/Temp/**)"
+    ]
+  }
+}
