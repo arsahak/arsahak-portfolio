@@ -124,7 +124,7 @@ const AboutMe = () => {
               </p>
               <div className="flex flex-wrap gap-4 justify-center md:justify-start mt-8">
                 <a
-                  href="/assets/arsahak-resume.pdf"
+                  href="/assets/ar_sahak_resume.pdf"
                   download="AR_Sahak_Resume.pdf"
                   className="flex items-center justify-center px-6 py-3 text-sm md:text-lg font-medium text-white rounded-md primary-gradient hover:opacity-90 transition-all duration-300"
                 >
